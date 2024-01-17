@@ -38,8 +38,8 @@ function App() {
             </Route>
           </Route>
           <Route path="identity">
-          <Route path="loguit" element={<Loguit />}></Route>
-            </Route>
+            <Route path="loguit" element={<Loguit />}></Route>
+          </Route>
         </Route>
           <Route path="identity">
             <Route path="login" element={<Login />}></Route>

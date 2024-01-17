@@ -7,7 +7,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { AuthProvider
  } from './context/AuthProvider.jsx'
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <React.StrictMode>
+
     <AuthProvider>
         <Router>
           <Routes>
@@ -15,5 +15,5 @@ ReactDOM.createRoot(document.getElementById('root')).render(
           </Routes>
     </Router>
     </AuthProvider>
-  </React.StrictMode>,
+
 )

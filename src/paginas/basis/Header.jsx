@@ -6,10 +6,11 @@ import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import Image from 'react-bootstrap/Image';
 import logo from '../../assets/favicon-32x32.png'
+import { Button } from 'react-bootstrap';
 
-const Header = ({huidige_gebruiker}) => {
+const Header = ({ huidige_gebruiker }) => {
   console.log(huidige_gebruiker)
-  
+  const rollen = huidige_gebruiker?.rollen
   return (
     <>
       <Navbar expand="lg" className="bg-body-tertiary">
@@ -21,20 +22,33 @@ const Header = ({huidige_gebruiker}) => {
               <Nav.Link href="/">Home</Nav.Link>
               {/* <Nav.Link href="#link">Link</Nav.Link> */}
               {
-                huidige_gebruiker?.find(role => ["gebruiker"].includes(role) )
-                ? <NavDropdown title="Financieel" id="basic-nav-dropdown">
+                rollen?.find(role => ["gebruiker"].includes(role))
+                  ? <NavDropdown title="Financieel" id="basic-nav-dropdown">
                     <NavDropdown.Item href="/financieel/uitleg">Uitleg</NavDropdown.Item>
                     <NavDropdown.Item href="/financieel/overzicht/:id">Uw Spaarboekske</NavDropdown.Item>
-                    
+
                     {
-                      huidige_gebruiker?.find(role => ["admin"].includes(role) )
-                      ? <><NavDropdown.Divider /><NavDropdown.Item href="#action/3.4">Transactie</NavDropdown.Item></>
-                      : ''
+                      rollen?.find(role => ["admin"].includes(role))
+                        ? <><NavDropdown.Divider /><NavDropdown.Item href="#action/3.4">Transactie</NavDropdown.Item></>
+                        : ''
                     }
-                    
+
                   </NavDropdown>
-                : ''
+                  : ''
               }
+
+            </Nav>
+            <Nav>
+              {huidige_gebruiker?.rollen !== undefined ? (
+                <>
+                  <Button href="/identity/loguit" className='me-2 mb-2'>Log Uit</Button>
+                </>
+              ) : (
+                <>
+                  <Button href="/identity/registreer" className='me-2 mb-2'>Registreer</Button>
+                  <Button href="/identity/login" className='me-2 mb-2'>Log In</Button>
+                </>
+              )}
 
             </Nav>
           </Navbar.Collapse>

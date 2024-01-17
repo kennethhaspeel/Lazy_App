@@ -8,11 +8,11 @@ const Layout = () => {
   return (
     <div className="container">
       <div className="App">
-        <Header huidige_gebruiker={auth?.rollen}/>
+        <Header huidige_gebruiker={auth}/>
         <div className="pt-3">
           <Outlet />
         </div>
-        <Footer />
+        <Footer  huidige_gebruiker={auth}/>
       </div>
     </div>
   );

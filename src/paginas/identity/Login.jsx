@@ -1,9 +1,9 @@
 import { useRef, useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import useAuth from '../../hooks/useAuth';
+import axios, {axiosUrls} from '../../api/axios';
+import { Alert } from 'react-bootstrap';
 
-import axios from '../../api/axios';
-const LOGIN_URL = '/Auth/login';
 
 const Login = () => {
     const { setAuth, persist, setPersist } = useAuth();
@@ -41,7 +41,7 @@ const Login = () => {
         setLoading(true)
         try {
 
-            const response = await axios.post(LOGIN_URL,
+            const response = await axios.post(axiosUrls('login'),
                 JSON.stringify({ username, paswoord }),
                 {
                     headers: { 'Content-Type': 'application/json' },
@@ -54,6 +54,7 @@ const Login = () => {
             const user = {
                 naam: response?.data?.naam,
                 voornaam: response?.data?.voornaam,
+                volledigenaam: response?.data?.volledigenaam,
                 username: username
             }
             setAuth({ user, rollen, accessToken });
@@ -74,14 +75,16 @@ const Login = () => {
     }
     return (
         <>
+            <h1>Log In</h1>
+            <p ref={errRef} className={errMsg ? "errmsg" : "offscreen"} aria-live="assertive">{errMsg}</p>
+            
             {
                 loading ? (
-                    console.log("laden")
+                    <Alert variant='info'>Even geduld... U wordt ingelogd</Alert>
                 ) :
                     (
                         <section>
-                            <p ref={errRef} className={errMsg ? "errmsg" : "offscreen"} aria-live="assertive">{errMsg}</p>
-                            <h1>Log In</h1>
+
                             <form onSubmit={handleSubmit}>
                                 <div className="mb-3">
                                     <label htmlFor="username" className="form-label">Uw emaildres</label>

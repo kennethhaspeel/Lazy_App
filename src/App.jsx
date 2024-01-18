@@ -9,6 +9,7 @@ import GeenToegang from "./paginas/basis/GeenToegang";
 import NietGevonden from "./paginas/basis/NietGevonden";
 import BevestigRegistratie from "./paginas/identity/BevestigRegistratie";
 import Registreer from "./paginas/identity/Registreer";
+import RegistreerIngediend from "./paginas/identity/RegistreerIngediend";
 import Loguit from "./paginas/identity/Loguit";
 
 // financieel
@@ -44,6 +45,7 @@ function App() {
           <Route path="identity">
             <Route path="login" element={<Login />}></Route>
             <Route path="geentoegang" element={<GeenToegang />}></Route>
+            <Route path="registreeringediend" element={<RegistreerIngediend />}></Route>
             <Route path="bevestigregistratie" element={<BevestigRegistratie/>}></Route>
             <Route path="registreer" element={<Registreer/>}></Route>
           </Route>        

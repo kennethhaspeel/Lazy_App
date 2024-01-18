@@ -9,7 +9,6 @@ import logo from '../../assets/favicon-32x32.png'
 import { Button } from 'react-bootstrap';
 
 const Header = ({ huidige_gebruiker }) => {
-  console.log(huidige_gebruiker)
   const rollen = huidige_gebruiker?.rollen
   return (
     <>

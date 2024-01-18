@@ -1,18 +1,17 @@
 import { useRef, useState, useEffect } from "react";
-import axios from '../../api/axios';
-import { Link } from "react-router-dom";
-import { Alert, Button, Col, FloatingLabel, Form, Row } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
+import { Alert, Button, Col, FloatingLabel, Form, Row, Spinner } from "react-bootstrap";
+import axios, {axiosUrls} from '../../api/axios';
 
-const pw_regex = /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*\W)(?!.* ).{8,16}$/
-const email_regex = /^[^.\s@]+(\.[^.\s@]+)*@[^.\s@]+(\.[^.\s@]+)+$/
 
 const Registreer = () => {
   const userRef = useRef();
   const errRef = useRef();
 
-  const [user, setUser] = useState('');
-  const [userError, setUserError] = useState('');
+  const navigate = useNavigate();
+  const [errMsg, setErrMsg] = useState('');
 
+  const [user, setUser] = useState('');
   const [naam, setNaam] = useState('');
   const [voornaam, setVoornaam] = useState('');
   const [straat, setStraat] = useState('');
@@ -23,48 +22,63 @@ const Registreer = () => {
   const [geheimevraag, setGeheimeVraag] = useState('');
   const [paswoord, setPaswoord] = useState('');
   const [paswoordBevestig, setPaswoordBevestig] = useState('');
-  const [paswoordvalid, setPaswoordvalid] = useState(true)
-  const [paswoordInvalidBoodschap, setPaswoordInvalidBoodschap] = useState([])
-  const [validated, setValidated] = useState(false);
-
-  useEffect(() => {
-    console.log(email_regex.test(user))
-  }, [user])
-
-  useEffect(() => {
-    setPaswoordvalid(true)
-    setPaswoordInvalidBoodschap([])
-    if (!pw_regex.test(paswoord)) {
-      setPaswoordvalid(false)
-      setPaswoordInvalidBoodschap(oldArr => [...oldArr, "Paswoord niet complex genoeg: minimum 1 kleine letter, 1 hoofdletter, 1 cijfer en 1 speciaal teken"])
-    }
-    if (paswoord !== paswoordBevestig) {
-      setPaswoordvalid(false)
-      setPaswoordInvalidBoodschap(oldArr => [...oldArr, "Paswoord en bevestiging komen niet overeen"])
-    }
-    console.log(paswoordvalid)
-  },[paswoord,paswoordBevestig,paswoordvalid])
-
-  // aparte useeffect gebruiken misschien
-
+  const [loading, setLoading] = useState(false)
+ 
   const VerwerkRegistratie = async (e) => {
-    console.log('indienen registratie')
     e.preventDefault()
     const form = e.currentTarget;
     if (form.checkValidity() === false) {
       e.stopPropagation();
     }
-    console.log(form.checkValidity())
-    setValidated(true);
+    const body = {
+      email: user,
+      paswoord,
+      paswoordBevestig,
+      voornaam,
+      naam,
+      volledigenaam: `${voornaam} ${naam}`,
+      straat,
+      huisnr,
+      busnr,
+      postcode,
+      gemeente,
+      geheimevraag
+    }
+
+    setLoading(true)
+    try {
+
+        const response = await axios.post(axiosUrls('registratie'),
+            JSON.stringify(body),
+            {
+                headers: { 'Content-Type': 'application/json' }
+            }
+        );
+        console.log(response.data);
+        setLoading(false)
+        navigate('/identity/registreeringediend', { replace: true });
+    } catch (err) {
+        console.log(err)
+        if (!err?.response) {
+            setErrMsg('No Server Response');
+        } else {
+            setErrMsg(err.response.data);
+        }
+        errRef.current.focus();
+        setLoading(false)
+    }
   }
   return (
     <>
+
       <h2>Registreer</h2>
-      <Form className="pt-3" noValidate validated={validated} onSubmit={VerwerkRegistratie}>
+      {loading ? (<Alert variant='info'>Even geduld... Uw registratie wordt verwerkt</Alert>):('')}
+      <p ref={errRef} className={errMsg ? "errmsg" : "offscreen"} aria-live="assertive">{errMsg}</p>
+      <Form className="pt-3" onSubmit={VerwerkRegistratie} name="RegistratieFormulier">
         <Row>
           <Col>
             <Form.Group className="mb-3" controlId="validationEmail">
-              <FloatingLabel label="Het antwoord" className="mb-3">
+              <FloatingLabel label="Het antwoord *" className="mb-3">
                 <Form.Control
                   type="text"
                   id="antwoord"
@@ -73,11 +87,9 @@ const Registreer = () => {
                   value={geheimevraag}
                   placeholder="Het Antwoord"
                   required
+                  title="Geef het geheime woord in"
                 />
               </FloatingLabel>
-              <Form.Control.Feedback type="invalid">
-                Gelieve het antwoord in te geven
-              </Form.Control.Feedback>
             </Form.Group>
           </Col>
         </Row>
@@ -93,11 +105,9 @@ const Registreer = () => {
               value={user}
               placeholder="Uw emailadres"
               required
+              title="Gelieve uw emailadres in te geven"
             />
           </FloatingLabel>
-          <Form.Control.Feedback type="invalid">
-            Gelieve uw emailadres in te geven
-          </Form.Control.Feedback>
         </Form.Group>
         <hr />
         <Row>
@@ -112,11 +122,9 @@ const Registreer = () => {
                   value={voornaam}
                   placeholder="Uw voornaam"
                   required
+                  title="Gelieve uw voornaam in te geven"
                 />
               </FloatingLabel>
-              <Form.Control.Feedback type="invalid">
-                Gelieve uw emailadres in te geven
-              </Form.Control.Feedback>
             </Form.Group>
           </Col>
           <Col xs={12} md={6}>
@@ -130,11 +138,9 @@ const Registreer = () => {
                   value={naam}
                   placeholder="Uw familienaam"
                   required
+                  title="Gelieve uw familienaam in te geven"
                 />
               </FloatingLabel>
-              <Form.Control.Feedback type="invalid">
-                Gelieve uw emailadres in te geven
-              </Form.Control.Feedback>
             </Form.Group>
           </Col>
         </Row>
@@ -150,11 +156,10 @@ const Registreer = () => {
                   value={straat}
                   placeholder="Straatnaam"
                   required
+                  title="Gelieve een straatnaam in te geven"
                 />
               </FloatingLabel>
-              <Form.Control.Feedback type="invalid">
-                Gelieve een straat in te geven
-              </Form.Control.Feedback>
+
             </Form.Group>
           </Col>
           <Col xs={12} md={3}>
@@ -168,11 +173,9 @@ const Registreer = () => {
                   value={huisnr}
                   placeholder="Huisnummer"
                   required
+                  title="Gelieve een huisnummer in te geven"
                 />
               </FloatingLabel>
-              <Form.Control.Feedback type="invalid">
-                Gelieve een huisnummer in te geven
-              </Form.Control.Feedback>
             </Form.Group>
           </Col>
           <Col xs={12} md={3}>
@@ -202,11 +205,9 @@ const Registreer = () => {
                   value={postcode}
                   placeholder="Postcode"
                   required
+                  title="Gelieve een postcode in te geven"
                 />
               </FloatingLabel>
-              <Form.Control.Feedback type="invalid">
-                Gelieve een postcode in te geven
-              </Form.Control.Feedback>
             </Form.Group>
           </Col>
           <Col xs={12} md={9}>
@@ -220,11 +221,9 @@ const Registreer = () => {
                   value={gemeente}
                   placeholder="Gemeente"
                   required
+                  title="Gelieve een gemeente in te geven"
                 />
               </FloatingLabel>
-              <Form.Control.Feedback type="invalid">
-                Gelieve een gemeente in te geven
-              </Form.Control.Feedback>
             </Form.Group>
           </Col>
         </Row>
@@ -240,12 +239,11 @@ const Registreer = () => {
                   onChange={(e) => setPaswoord(e.target.value)}
                   value={paswoord}
                   placeholder="Paswoord"
+                  pattern = "^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$"
+                  title="Paswoord niet complex genoeg: minimum 1 kleine letter, 1 hoofdletter, 1 cijfer en 1 speciaal teken"
                   required
                 />
               </FloatingLabel>
-              <Form.Control.Feedback type="invalid">
-                Gelieve een paswoord in te geven
-              </Form.Control.Feedback>
             </Form.Group>
           </Col>
           <Col xs={12} md={6}>
@@ -257,35 +255,22 @@ const Registreer = () => {
                   autoComplete="off"
                   onChange={(e) => setPaswoordBevestig(e.target.value)}
                   value={paswoordBevestig}
+                  pattern={paswoord}
+                  title="Paswoorden komen niet overeen"
                   placeholder="Bevestig Paswoord"
                   required
                 />
               </FloatingLabel>
-              <Form.Control.Feedback type="invalid">
-
-              </Form.Control.Feedback>
             </Form.Group>
           </Col>
         </Row>
-        {paswoordvalid ? (
-          <>
-            <Row>
-              <Col>
-                <Alert variant="danger">
-                  <ul>
-                    <li>dit is een foutboodschap</li>
-                    {paswoordInvalidBoodschap.map((boodschap) => {
-                      <li>{boodschap}</li>
-                    })}
-                  </ul>
-                </Alert>
-              </Col>
-            </Row>
-          </>
-        ) : ('')}
-
         <hr />
-        <Button variant="primary" type="submit">Registreren</Button>
+        {/* {loading ? (
+          <Button variant="primary" disabled><Spinner animation="border" role="status"><span className="visually-hidden">Loading...</span></Spinner> Registreren</Button>
+        ) : ( */}
+          <Button variant="primary" type="submit">Registreren</Button>
+        {/* )} */}
+        
       </Form>
     </>
   )

@@ -5,6 +5,7 @@ export const axiosUrls = (url)=>{
         base_url:'https://localhost:7023',
         login:'/Auth/login',
         loguit: 'Auth/loguit',
+        registratie:'Auth/registreer',
         bevestigRegistratie: 'Auth/BevestigRegistratie'
     }
 

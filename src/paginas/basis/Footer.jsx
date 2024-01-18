@@ -3,7 +3,6 @@ import { Col, Row } from "react-bootstrap";
 const Footer = ({ huidige_gebruiker }) => {
     const datum = new Date();
     const naam = huidige_gebruiker?.user?.volledigenaam
-    console.log(naam)
   return (
   <div className="Footer bg-body-tertiary">
     <Row>

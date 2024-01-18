@@ -35,7 +35,6 @@ const Header = ({ huidige_gebruiker }) => {
                   </NavDropdown>
                   : ''
               }
-
             </Nav>
             <Nav>
               {huidige_gebruiker?.rollen !== undefined ? (
@@ -48,7 +47,6 @@ const Header = ({ huidige_gebruiker }) => {
                   <Button href="/identity/login" className='me-2 mb-2'>Log In</Button>
                 </>
               )}
-
             </Nav>
           </Navbar.Collapse>
         </Container>

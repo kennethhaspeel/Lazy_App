@@ -17,10 +17,6 @@ import Uitleg from "./paginas/financieel/Uitleg";
 import OverzichtSpaarboek from "./paginas/financieel/OverzichtSpaarboek";
 import TransactieToevoegen from "./paginas/financieel/TransactieToevoegen";
 
-
-
-
-
 function App() {
   return (
     <Routes>

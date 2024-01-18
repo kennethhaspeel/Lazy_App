@@ -31,7 +31,6 @@ useEffect(()=>{
   VerzendBevestiging()
 },[])
   
-
   return (
     <>
     <h2>Bevestig Registratie</h2>

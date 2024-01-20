@@ -9,7 +9,8 @@ export const axiosUrls = (url)=>{
         bevestigRegistratie: 'Auth/BevestigRegistratie',
         GetOverzichtTransacties: 'Financieel/GetOverzichtTransacties',
         NieuweTransactie: 'Financieel/NieuweTransactie',
-        GetAllUsers: 'user/GetAllUsers'
+        GetAllUsers: 'user/GetAllUsers',
+        NieuweMissie: 'missie/NieuweMissie'
     }
 
   return overzicht[url]

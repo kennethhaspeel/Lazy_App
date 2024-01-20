@@ -55,13 +55,15 @@ const Login = () => {
                 naam: response?.data?.naam,
                 voornaam: response?.data?.voornaam,
                 volledigenaam: response?.data?.volledigenaam,
-                username: username
+                username: username,
+                id: response?.data?.id
             }
+            console.log(user)
             setAuth({ user, rollen, accessToken });
             setUsername('');
             setPaswoord('');
             setLoading(false)
-            navigate(from, { replace: true });
+            //navigate(from, { replace: true });
         } catch (err) {
             console.log(err)
             if (!err?.response) {

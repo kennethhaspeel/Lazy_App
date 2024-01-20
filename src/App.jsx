@@ -17,6 +17,10 @@ import OverzichtSpaarboek from "./paginas/financieel/OverzichtSpaarboek";
 import TransactieOverzicht from "./paginas/financieel/TransactieOverzicht"
 import TransactieToevoegen from "./paginas/financieel/TransactieToevoegen";
 
+// missie
+import NieuweMissie from "./paginas/missie/NieuweMissie";
+import MissieDetail from "./paginas/missie/MissieDetail";
+
 function App() {
   return (
     <Routes>
@@ -31,6 +35,12 @@ function App() {
             <Route element={<AuthRequired allowedRoles={["financieel"]} />}>
               <Route path="TransactieOverzicht" element={<TransactieOverzicht />}></Route>
               <Route path="TransactieToevoegen" element={<TransactieToevoegen />}></Route>
+            </Route>
+          </Route>
+          <Route path="missie">
+            <Route element={<AuthRequired allowedRoles={["gebruiker"]} />}>
+              <Route path="NieuweMissie" element={<NieuweMissie />}></Route>
+              <Route path="MissieDetail" element={<MissieDetail />}></Route>
             </Route>
           </Route>
           <Route path="identity">

@@ -15,7 +15,8 @@ const useRefreshToken = () => {
                     naam: response?.data?.naam,
                     voornaam: response?.data?.voornaam,
                     volledigenaam: response?.data?.volledigenaam,
-                    username: response?.data?.username
+                    username: response?.data?.username,
+                    id: response?.data?.id
                 },
                 rollen: response.data.rollen,
                 accessToken: response.data.accessToken

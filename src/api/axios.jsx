@@ -6,7 +6,10 @@ export const axiosUrls = (url)=>{
         login:'/Auth/login',
         loguit: 'Auth/loguit',
         registratie:'Auth/registreer',
-        bevestigRegistratie: 'Auth/BevestigRegistratie'
+        bevestigRegistratie: 'Auth/BevestigRegistratie',
+        GetOverzichtTransacties: 'Financieel/GetOverzichtTransacties',
+        NieuweTransactie: 'Financieel/NieuweTransactie',
+        GetAllUsers: 'user/GetAllUsers'
     }
 
   return overzicht[url]

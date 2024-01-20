@@ -265,11 +265,11 @@ const Registreer = () => {
           </Col>
         </Row>
         <hr />
-        {/* {loading ? (
+        {loading ? (
           <Button variant="primary" disabled><Spinner animation="border" role="status"><span className="visually-hidden">Loading...</span></Spinner> Registreren</Button>
-        ) : ( */}
+        ) : ( 
           <Button variant="primary" type="submit">Registreren</Button>
-        {/* )} */}
+        )}
         
       </Form>
     </>

@@ -24,11 +24,15 @@ const Header = ({ huidige_gebruiker }) => {
                 rollen?.find(role => ["gebruiker"].includes(role))
                   ? <NavDropdown title="Financieel" id="basic-nav-dropdown">
                     <NavDropdown.Item href="/financieel/uitleg">Uitleg</NavDropdown.Item>
-                    <NavDropdown.Item href="/financieel/overzicht/:id">Uw Spaarboekske</NavDropdown.Item>
+                    <NavDropdown.Item href="/financieel/overzichtspaarboek">Uw Spaarboekske</NavDropdown.Item>
 
                     {
-                      rollen?.find(role => ["admin"].includes(role))
-                        ? <><NavDropdown.Divider /><NavDropdown.Item href="#action/3.4">Transactie</NavDropdown.Item></>
+                      rollen?.find(role => ["financieel"].includes(role))
+                        ? <>
+                        <NavDropdown.Divider />
+                        <NavDropdown.Item href="/financieel/TransactieOverzicht">Alle Verrichtingen</NavDropdown.Item>
+                        <NavDropdown.Item href="/financieel/TransactieToevoegen">Transactie Toevoegen</NavDropdown.Item>
+                          </>
                         : ''
                     }
 

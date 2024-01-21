@@ -10,7 +10,8 @@ export const axiosUrls = (url)=>{
         GetOverzichtTransacties: 'Financieel/GetOverzichtTransacties',
         NieuweTransactie: 'Financieel/NieuweTransactie',
         GetAllUsers: 'user/GetAllUsers',
-        NieuweMissie: 'missie/NieuweMissie'
+        NieuweMissie: 'missie/NieuweMissie',
+        MissieDetail: 'missie/GetMissieDetail'
     }
 
   return overzicht[url]

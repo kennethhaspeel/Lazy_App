@@ -10,6 +10,7 @@ import { Button, Col, InputGroup, Row } from 'react-bootstrap'
 import { Modal } from 'react-bootstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faFloppyDisk, faTrashCan, faPlus, faSquarePlus } from '@fortawesome/free-solid-svg-icons'
+import { GetMissieDagen } from '../../components/DatumFuncties'
 
 const MissieDetail = () => {
   const showLoader = () => {
@@ -41,6 +42,7 @@ const MissieDetail = () => {
   const [users, setUsers] = useState([])
   const [startdatum, setStartdatum] = useState(format(new Date(), 'yyyy-MM-dd'))
   const [einddatum, setEinddatum] = useState(format(new Date(), 'yyyy-MM-dd'))
+  const [missiedagen, setMissiedagen] = useState([])
   const [saveEdits, setSaveEdits] = useState(false)
 
   useEffect(() => {
@@ -53,7 +55,7 @@ const MissieDetail = () => {
         //   signal: controller.signal
         // });
         // console.log(response.data)
-        //setData(response.data);
+        // setData(response.data);
         let response = {
           data:
           {
@@ -141,6 +143,7 @@ const MissieDetail = () => {
           }
 
         }
+        setMissiedagen(GetMissieDagen(response.data.startDatum,response.data.eindDatum))
         setTitel(response.data.titel)
         setOmschrijving(response.data.omschrijving)
         setStartdatum(format(response.data.startDatum, 'yyyy-MM-dd'))
@@ -205,6 +208,7 @@ const MissieDetail = () => {
       <h2>Details Missie: {titel} <Button variant="success" disabled={!saveEdits}><FontAwesomeIcon icon={faFloppyDisk} /> Bewaar</Button></h2>
       {
         isOrganisator ? (
+          <>
           <form onSubmit={handleSubmit} className='mb-4'>
             <Form.Group as={Row} className="mb-3">
               <Form.Label column md={2} sm={12}>Titel</Form.Label>
@@ -273,14 +277,14 @@ const MissieDetail = () => {
               <Col md={2} sm={12} >Organisatoren <Button variant="info"><FontAwesomeIcon icon={faPlus} onClick={() => { setShowModalSelectOrganisator(true) }} /></Button></Col>
               <Col md={8} sm={12}>
                 {
-                  users.map((u) => (
-                    u.isOrganisator ? (
+                  users.filter((u)=>{if(u.isOrganisator){ return true} else { return false}}).map((u) => (
+
                       <>
                         <Button key={u.id} variant="danger" className='me-2 mb-2' onClick={() => { ToggleOrganisator(u.id) }}>
                           <FontAwesomeIcon icon={faTrashCan} /> {u.volledigeNaam}
                         </Button>
                       </>
-                    ) : ('')
+
                   ))
                 }
               </Col>
@@ -292,9 +296,8 @@ const MissieDetail = () => {
               </Col>
               <Col md={8} sm={12}>
                 {
-                  users.map((u) => (
-
-                    (u.isDeelnemer && !u.isOrganisator) ? (
+                  users.filter((u)=>{if(!u.isOrganisator && u.isDeelnemer){ return true} else { return false}})
+                  .map((u) => (
                       <>
                         <Button
                           key={u.id}
@@ -305,14 +308,14 @@ const MissieDetail = () => {
                           <FontAwesomeIcon icon={faTrashCan} /> {u.volledigeNaam}
                         </Button>
                       </>
-                    ) : ('')
                   ))
                 }
               </Col>
             </Row>
             <hr />
           </form>
-
+<h3>Etappes</h3>
+</>
         ) : (
           <form onSubmit={handleSubmit} className='mb-4'>
             <Form.Group as={Row} className="mb-3">

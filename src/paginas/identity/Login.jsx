@@ -63,7 +63,7 @@ const Login = () => {
             setUsername('');
             setPaswoord('');
             setLoading(false)
-            //navigate(from, { replace: true });
+            navigate(from, { replace: true });
         } catch (err) {
             console.log(err)
             if (!err?.response) {

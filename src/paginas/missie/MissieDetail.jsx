@@ -1,5 +1,5 @@
 import { useSearchParams } from 'react-router-dom'
-import { useState, useEffect,Suspense } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { axiosUrls } from '../../api/axios'
 import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 import { format, parse, isValid } from 'date-fns'
@@ -10,7 +10,7 @@ import { Button, Col, InputGroup, Row } from 'react-bootstrap'
 import { Modal } from 'react-bootstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faFloppyDisk, faTrashCan, faPlus, faSquarePlus } from '@fortawesome/free-solid-svg-icons'
-import { GetMissieDagen } from '../../components/DatumFuncties'
+import { GetMissieDagen, DateToDDMMYYYY } from '../../components/DatumFuncties'
 import SuspenseParagraaf from '../../components/SuspenseParagraaf'
 import EtappeComponent from './missiedetail/EtappeComponent'
 
@@ -145,7 +145,7 @@ const MissieDetail = () => {
           }
 
         }
-        setMissiedagen(GetMissieDagen(response.data.startDatum,response.data.eindDatum))
+        setMissiedagen(GetMissieDagen(response.data.startDatum, response.data.eindDatum))
         setTitel(response.data.titel)
         setOmschrijving(response.data.omschrijving)
         setStartdatum(format(response.data.startDatum, 'yyyy-MM-dd'))
@@ -205,12 +205,13 @@ const MissieDetail = () => {
   const handleCloseSelectOrganisator = () => {
     setShowModalSelectOrganisator(false)
   }
+
+  const handleToevoegenEtappe = (missie,datum)=>{
+    console.log(datum)
+  }
   return (
     <>
       <h2>Details Missie: {titel} <Button variant="success" disabled={!saveEdits}><FontAwesomeIcon icon={faFloppyDisk} /> Bewaar</Button></h2>
-
-
-      <>
         <form onSubmit={handleSubmit} className='mb-4'>
           <Form.Group as={Row} className="mb-3">
             <Form.Label column md={2} sm={12}>Titel</Form.Label>
@@ -314,14 +315,22 @@ const MissieDetail = () => {
         </form>
         <h3>Etappes</h3>
         {
-          missiedagen.map((dag,index )=> (
-            <Suspense fallback={<SuspenseParagraaf />} key={dag.toString()}>
-              <EtappeComponent missieid={missieid} datum={dag} key={index} index={index} />
-            </Suspense>
+          missiedagen.map((dag, index) => (
+            <div key={`div${index}`}>
+              <div className="alert alert-primary" role="alert" key={`alert${index}`}>
+              <Button key={`button${index}`} variant="info" className='me-2 mb-2' onClick={() => { handleToevoegenEtappe(missieid,dag) }}>
+                    <FontAwesomeIcon icon={faPlus} />
+                  </Button>
+                {
+                  index === 0 ? ('Algemeen') : DateToDDMMYYYY(dag)
+                }
 
+              </div>
+                <EtappeComponent missieid={missieid} datum={dag} key={index} index={index} />
+            </div>
           ))
         }
-      </>
+   
       <Modal show={showModalSelectDeelnemer} onHide={handleCloseSelectDeelnemer}>
         <Modal.Header closeButton>
           <Modal.Title>Deelnemer toevoegen</Modal.Title>

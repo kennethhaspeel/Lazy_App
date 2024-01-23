@@ -12,7 +12,8 @@ export const axiosUrls = (url)=>{
         GetAllUsers: 'user/GetAllUsers',
         NieuweMissie: 'missie/NieuweMissie',
         MissieDetail: 'missie/GetMissieDetail',
-        GetEtappesPerDag: 'MissieEtappe/GetEtappesPerDag'
+        GetEtappesPerDag: 'MissieEtappe/GetEtappesPerDag',
+        PostMissieEtappe: 'MissieEtappe/NieuweEtappe'
     }
 
   return overzicht[url]

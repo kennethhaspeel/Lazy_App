@@ -1,4 +1,4 @@
-import { format, parse, isValid ,parseISO} from 'date-fns'
+import { format, parse, isValid, parseISO, setHours, setMinutes } from 'date-fns'
 
 
 Date.prototype.addDay = function (days) {
@@ -21,10 +21,19 @@ export const GetMissieDagen = (startdatum, einddatum) => {
     return dagen
 }
 
-export const DateToYYYYMMDD = (datum)=>{
+export const DateToYYYYMMDD = (datum) => {
     return format(datum, "yyyy-MM-dd")
 }
 
-export const DateToDDMMYYYY = (datum)=>{
+export const DateToDDMMYYYY = (datum) => {
     return format(datum, "dd/MM/yyyy")
+}
+
+export const HHMM_To_date = (datum, tijd) => {
+    let date = parse(datum, "dd/MM/yyyy",new Date())
+    console.log(date)
+    let times = tijd.split(':')
+    date.setHours(times[0])
+    date.setMinutes(times[1])
+    return date
 }

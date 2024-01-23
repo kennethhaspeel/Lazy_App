@@ -20,6 +20,7 @@ import TransactieToevoegen from "./paginas/financieel/TransactieToevoegen";
 // missie
 import NieuweMissie from "./paginas/missie/NieuweMissie";
 import MissieDetail from "./paginas/missie/MissieDetail";
+import EtappeToevoegen from "./paginas/missie/missiedetail/EtappeToevoegen";
 
 function App() {
   return (
@@ -41,6 +42,7 @@ function App() {
             <Route element={<AuthRequired allowedRoles={["gebruiker"]} />}>
               <Route path="NieuweMissie" element={<NieuweMissie />}></Route>
               <Route path="MissieDetail" element={<MissieDetail />}></Route>
+              <Route path="MissieEtappeToevoegen" element={<EtappeToevoegen />}></Route>
             </Route>
           </Route>
           <Route path="identity">

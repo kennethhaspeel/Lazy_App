@@ -1,5 +1,5 @@
 import { useSearchParams } from 'react-router-dom'
-import { useState, useEffect } from 'react'
+import { useState, useEffect,Suspense } from 'react'
 import { axiosUrls } from '../../api/axios'
 import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 import { format, parse, isValid } from 'date-fns'
@@ -11,6 +11,8 @@ import { Modal } from 'react-bootstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faFloppyDisk, faTrashCan, faPlus, faSquarePlus } from '@fortawesome/free-solid-svg-icons'
 import { GetMissieDagen } from '../../components/DatumFuncties'
+import SuspenseParagraaf from '../../components/SuspenseParagraaf'
+import EtappeComponent from './missiedetail/EtappeComponent'
 
 const MissieDetail = () => {
   const showLoader = () => {
@@ -206,186 +208,120 @@ const MissieDetail = () => {
   return (
     <>
       <h2>Details Missie: {titel} <Button variant="success" disabled={!saveEdits}><FontAwesomeIcon icon={faFloppyDisk} /> Bewaar</Button></h2>
-      {
-        isOrganisator ? (
-          <>
-          <form onSubmit={handleSubmit} className='mb-4'>
-            <Form.Group as={Row} className="mb-3">
-              <Form.Label column md={2} sm={12}>Titel</Form.Label>
-              <Col md={6} sm={12}>
-                <Form.Control
-                  id="formTitel"
-                  type="text"
-                  onChange={(e) => { setTitel(e.target.value); setSaveEdits(true) }}
-                  readOnly={isOrganisator ? false : true}
-                  value={titel}
-                />
-              </Col>
-            </Form.Group>
-            <Form.Group as={Row} className="mb-3">
-              <Form.Label column md={2} sm={12}>Locatie</Form.Label>
-              <Col md={6} sm={12}>
-                <Form.Control
-                  id="formLocatie"
-                  type="text"
-                  onChange={(e) => { setLocatie(e.target.value); setSaveEdits(true) }}
-                  readOnly={isOrganisator ? false : true}
-                  value={locatie}
-                />
-              </Col>
-            </Form.Group>
-            <Form.Group as={Row} className="mb-3">
-              <Form.Label column md={2} sm={12}>Omschrijving</Form.Label>
-              <Col md={6} sm={12}>
-                <Form.Control as="textarea"
-                  id="formOmschrijving"
-                  rows={3}
-                  onChange={(e) => { setOmschrijving(e.target.value); setSaveEdits(true) }}
-                  readOnly={isOrganisator ? false : true}
-                  value={omschrijving}
-                />
-              </Col>
-            </Form.Group>
-            <Form.Group as={Row} className="mb-3">
-              <Form.Label column md={2} sm={12}>Startdatum</Form.Label>
-              <Col md={6} sm={12}>
 
-                <Form.Control
-                  id="formDatumStart"
-                  type="date"
-                  onChange={(e) => { setStartdatum(e.target.value); setSaveEdits(true) }}
-                  readOnly={isOrganisator ? false : true}
-                  value={startdatum}
-                />
 
-              </Col>
-            </Form.Group>
-            <Form.Group as={Row} className="mb-3">
-              <Form.Label column md={2} sm={12}>Einddatum</Form.Label>
-              <Col md={6} sm={12}>
-                <Form.Control
-                  id="formDatumEinde"
-                  type="date"
-                  onChange={(e) => { setEinddatum(e.target.value); setSaveEdits(true) }}
-                  readOnly={isOrganisator ? false : true}
-                  value={einddatum}
-                />
-              </Col>
-            </Form.Group>
-            <hr />
-            <Row className="mb-3">
-              <Col md={2} sm={12} >Organisatoren <Button variant="info"><FontAwesomeIcon icon={faPlus} onClick={() => { setShowModalSelectOrganisator(true) }} /></Button></Col>
-              <Col md={8} sm={12}>
-                {
-                  users.filter((u)=>{if(u.isOrganisator){ return true} else { return false}}).map((u) => (
+      <>
+        <form onSubmit={handleSubmit} className='mb-4'>
+          <Form.Group as={Row} className="mb-3">
+            <Form.Label column md={2} sm={12}>Titel</Form.Label>
+            <Col md={6} sm={12}>
+              <Form.Control
+                id="formTitel"
+                type="text"
+                onChange={(e) => { setTitel(e.target.value); setSaveEdits(true) }}
+                readOnly={isOrganisator ? false : true}
+                value={titel}
+              />
+            </Col>
+          </Form.Group>
+          <Form.Group as={Row} className="mb-3">
+            <Form.Label column md={2} sm={12}>Locatie</Form.Label>
+            <Col md={6} sm={12}>
+              <Form.Control
+                id="formLocatie"
+                type="text"
+                onChange={(e) => { setLocatie(e.target.value); setSaveEdits(true) }}
+                readOnly={isOrganisator ? false : true}
+                value={locatie}
+              />
+            </Col>
+          </Form.Group>
+          <Form.Group as={Row} className="mb-3">
+            <Form.Label column md={2} sm={12}>Omschrijving</Form.Label>
+            <Col md={6} sm={12}>
+              <Form.Control as="textarea"
+                id="formOmschrijving"
+                rows={3}
+                onChange={(e) => { setOmschrijving(e.target.value); setSaveEdits(true) }}
+                readOnly={isOrganisator ? false : true}
+                value={omschrijving}
+              />
+            </Col>
+          </Form.Group>
+          <Form.Group as={Row} className="mb-3">
+            <Form.Label column md={2} sm={12}>Startdatum</Form.Label>
+            <Col md={6} sm={12}>
 
-                      <>
-                        <Button key={u.id} variant="danger" className='me-2 mb-2' onClick={() => { ToggleOrganisator(u.id) }}>
-                          <FontAwesomeIcon icon={faTrashCan} /> {u.volledigeNaam}
-                        </Button>
-                      </>
+              <Form.Control
+                id="formDatumStart"
+                type="date"
+                onChange={(e) => { setStartdatum(e.target.value); setSaveEdits(true) }}
+                readOnly={isOrganisator ? false : true}
+                value={startdatum}
+              />
 
-                  ))
-                }
-              </Col>
-            </Row>
-            <hr />
-            <Row className="mb-3">
-              <Col md={2} sm={12} >
-                Deelnemers <Button variant="info"><FontAwesomeIcon icon={faPlus} onClick={() => setShowModalSelectDeelnemer(true)} /></Button>
-              </Col>
-              <Col md={8} sm={12}>
-                {
-                  users.filter((u)=>{if(!u.isOrganisator && u.isDeelnemer){ return true} else { return false}})
+            </Col>
+          </Form.Group>
+          <Form.Group as={Row} className="mb-3">
+            <Form.Label column md={2} sm={12}>Einddatum</Form.Label>
+            <Col md={6} sm={12}>
+              <Form.Control
+                id="formDatumEinde"
+                type="date"
+                onChange={(e) => { setEinddatum(e.target.value); setSaveEdits(true) }}
+                readOnly={isOrganisator ? false : true}
+                value={einddatum}
+              />
+            </Col>
+          </Form.Group>
+          <hr />
+          <Row className="mb-3">
+            <Col md={2} sm={12} >Organisatoren <Button variant="info"><FontAwesomeIcon icon={faPlus} onClick={() => { setShowModalSelectOrganisator(true) }} /></Button></Col>
+            <Col md={8} sm={12}>
+              {
+                users.filter((u) => { if (u.isOrganisator) { return true } else { return false } }).map((u) => (
+                  <Button key={u.id} variant="danger" className='me-2 mb-2' onClick={() => { ToggleOrganisator(u.id) }}>
+                    <FontAwesomeIcon icon={faTrashCan} /> {u.volledigeNaam}
+                  </Button>
+                ))
+              }
+            </Col>
+          </Row>
+          <hr />
+          <Row className="mb-3">
+            <Col md={2} sm={12} >
+              Deelnemers <Button variant="info"><FontAwesomeIcon icon={faPlus} onClick={() => setShowModalSelectDeelnemer(true)} /></Button>
+            </Col>
+            <Col md={8} sm={12}>
+              {
+                users.filter((u) => { if (!u.isOrganisator && u.isDeelnemer) { return true } else { return false } })
                   .map((u) => (
-                      <>
-                        <Button
-                          key={u.id}
-                          variant="info"
-                          className='me-2 mb-2'
-                          onClick={() => { ToggleDeelnemer(u.id) }}
-                        >
-                          <FontAwesomeIcon icon={faTrashCan} /> {u.volledigeNaam}
-                        </Button>
-                      </>
+
+                    <Button
+                      key={u.id}
+                      variant="info"
+                      className='me-2 mb-2'
+                      onClick={() => { ToggleDeelnemer(u.id) }}
+                    >
+                      <FontAwesomeIcon icon={faTrashCan} /> {u.volledigeNaam}
+                    </Button>
+
                   ))
-                }
-              </Col>
-            </Row>
-            <hr />
-          </form>
-<h3>Etappes</h3>
-</>
-        ) : (
-          <form onSubmit={handleSubmit} className='mb-4'>
-            <Form.Group as={Row} className="mb-3">
-              <Form.Label column md={2} sm={12}>Titel</Form.Label>
-              <Col md={6} sm={12}>
-                <Form.Control
-                  id="formTitel"
-                  type="text"
-                  onChange={(e) => setTitel(e.target.value)}
-                  readOnly={isOrganisator ? false : true}
-                  value={titel}
-                />
-              </Col>
+              }
+            </Col>
+          </Row>
+          <hr />
+        </form>
+        <h3>Etappes</h3>
+        {
+          missiedagen.map((dag,index )=> (
+            <Suspense fallback={<SuspenseParagraaf />} key={dag.toString()}>
+              <EtappeComponent missieid={missieid} datum={dag} key={index} index={index} />
+            </Suspense>
 
-            </Form.Group>
-            <Form.Group as={Row} className="mb-3">
-              <Form.Label column md={2} sm={12}>Locatie</Form.Label>
-              <Col md={6} sm={12}>
-                <Form.Control
-                  id="formLocatie"
-                  type="text"
-                  onChange={(e) => setLocatie(e.target.value)}
-                  readOnly={isOrganisator ? false : true}
-                  value={locatie}
-                />
-              </Col>
-            </Form.Group>
-            <Form.Group as={Row} className="mb-3">
-              <Form.Label column md={2} sm={12}>Omschrijving</Form.Label>
-              <Col md={6} sm={12}>
-                <Form.Control as="textarea"
-                  id="formOmschrijving"
-                  rows={3}
-                  onChange={(e) => setOmschrijving(e.target.value)}
-                  readOnly={isOrganisator ? false : true}
-                  value={omschrijving}
-                />
-              </Col>
-            </Form.Group>
-            <Form.Group as={Row} className="mb-3">
-              <Form.Label column md={2} sm={12}>Startdatum</Form.Label>
-              <Col md={6} sm={12}>
-                <Form.Control
-                  id="formDatumStart"
-                  type="date"
-                  onChange={(e) => setStartdatum(e.target.value)}
-                  readOnly={isOrganisator ? false : true}
-                  value={startdatum}
-                />
-              </Col>
-            </Form.Group>
-            <Form.Group as={Row} className="mb-3">
-              <Form.Label column md={2} sm={12}>Einddatum</Form.Label>
-              <Col md={6} sm={12}>
-                <Form.Control
-                  id="formDatumEinde"
-                  type="date"
-                  onChange={(e) => setEinddatum(e.target.value)}
-                  readOnly={isOrganisator ? false : true}
-                  value={einddatum}
-                />
-              </Col>
-            </Form.Group>
-
-            <hr />
-
-          </form>
-        )
-      }
-
+          ))
+        }
+      </>
       <Modal show={showModalSelectDeelnemer} onHide={handleCloseSelectDeelnemer}>
         <Modal.Header closeButton>
           <Modal.Title>Deelnemer toevoegen</Modal.Title>

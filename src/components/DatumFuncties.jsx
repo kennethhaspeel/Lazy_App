@@ -1,3 +1,5 @@
+import { format, parse, isValid ,parseISO} from 'date-fns'
+
 
 Date.prototype.addDay = function (days) {
     let date = new Date(this.valueOf());
@@ -17,4 +19,12 @@ export const GetMissieDagen = (startdatum, einddatum) => {
         cDate = cDate.addDay(1)
     }
     return dagen
+}
+
+export const DateToYYYYMMDD = (datum)=>{
+    return format(datum, "yyyy-MM-dd")
+}
+
+export const DateToDDMMYYYY = (datum)=>{
+    return format(datum, "dd/MM/yyyy")
 }

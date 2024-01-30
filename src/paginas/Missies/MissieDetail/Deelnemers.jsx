@@ -21,7 +21,6 @@ const Deelnemers = ({ users, setUsers, isOrganisator, setIsOrganisator,setIsDeel
 
       try {
         const response = await axiosPrivate.get(`${axiosUrls('MissieDeelnemers')}?missieid=${missieid}`);
-        console.log(response.data)
         setUsers(response.data)
         setIsLoading(false)
         

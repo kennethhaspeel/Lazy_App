@@ -19,7 +19,6 @@ const DetailComponent = ({ missieid, missiedetail, setMissiedetail, isOrganisato
             try {
                 const response = await axiosPrivate.get(`${axiosUrls('MissieDetails')}?missieid=${missieid}`);
                 setMissiedetail(response.data)
-                console.log(response.data)
                 setIsLoading(false)
             } catch (err) {
                 console.error(err);

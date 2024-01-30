@@ -13,7 +13,7 @@ export const axiosUrls = (url)=>{
         NieuweMissie: 'missie/NieuweMissie',
         MissieDetails: 'missie/GetMissieDetails',
         MissieDeelnemers: 'missie/GetMissieDeelnemers',
-        GetEtappesPerDag: 'MissieEtappe/GetEtappesPerDag',
+        GetMissieEtappes: 'Missie/GetMissieEtappes',
         PostMissieEtappe: 'MissieEtappe/NieuweEtappe'
     }
 

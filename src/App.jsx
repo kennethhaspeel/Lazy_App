@@ -22,12 +22,20 @@ import NieuweMissie from "./paginas/missie/NieuweMissie";
 import MissieDetail from "./paginas/missie/MissieDetail";
 import EtappeToevoegen from "./paginas/missie/missiedetail/EtappeToevoegen";
 
+// temp
+import Pagina from "./paginas/Missies/MissieDetail/Pagina";
+
 function App() {
   return (
     <Routes>
       <Route path="/" element={<Layout />}>
+     
         <Route element={<PersistLogin />}>
           <Route index element={<Home />} />
+          <Route path="missie">
+              <Route path="TestDetail" element={<Pagina />}></Route>
+          </Route>
+
           <Route path="financieel">
             <Route element={<AuthRequired allowedRoles={["gebruiker"]} />}>
               <Route path="uitleg" element={<Uitleg />}></Route>
@@ -43,6 +51,7 @@ function App() {
               <Route path="NieuweMissie" element={<NieuweMissie />}></Route>
               <Route path="MissieDetail" element={<MissieDetail />}></Route>
               <Route path="MissieEtappeToevoegen" element={<EtappeToevoegen />}></Route>
+
             </Route>
           </Route>
           <Route path="identity">

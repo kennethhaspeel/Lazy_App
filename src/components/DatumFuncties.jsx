@@ -1,4 +1,4 @@
-import { format, parse, isValid, parseISO, setHours, setMinutes } from 'date-fns'
+import { format, parse,isEqual, isValid, parseISO, setHours, setMinutes } from 'date-fns'
 
 
 Date.prototype.addDay = function (days) {
@@ -7,11 +7,11 @@ Date.prototype.addDay = function (days) {
     return date;
 }
 
-export const GetMissieDagen = (startdatum, einddatum) => {
+export const GetMissieDagen = (startDatum, eindDatum) => {
 
     let dagen = new Array();
-    let start = new Date(startdatum)
-    let einde = new Date(einddatum)
+    let start = new Date(startDatum)
+    let einde = new Date(eindDatum)
 
     let cDate = start.addDay(-1);
     while (cDate <= einde) {
@@ -36,4 +36,10 @@ export const HHMM_To_date = (datum, tijd) => {
     date.setHours(times[0])
     date.setMinutes(times[1])
     return date
+}
+export const CompareDates = (date1,date2)=>{
+    let datum1 = format(new Date(date1),'ddMMyyyy')
+    let datum2 = format(new Date(date2),'ddMMyyyy')
+    //console.log(datum1,datum2)
+return datum1===datum2 ? true : false
 }

@@ -11,7 +11,8 @@ export const axiosUrls = (url)=>{
         NieuweTransactie: 'Financieel/NieuweTransactie',
         GetAllUsers: 'user/GetAllUsers',
         NieuweMissie: 'missie/NieuweMissie',
-        MissieDetail: 'missie/GetMissieDetail',
+        MissieDetails: 'missie/GetMissieDetails',
+        MissieDeelnemers: 'missie/GetMissieDeelnemers',
         GetEtappesPerDag: 'MissieEtappe/GetEtappesPerDag',
         PostMissieEtappe: 'MissieEtappe/NieuweEtappe'
     }

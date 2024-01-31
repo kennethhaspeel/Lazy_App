@@ -2,13 +2,29 @@ import { GetMissieDagen, DateToDDMMYYYY, CompareDates } from "../../../component
 import { useState, useEffect } from "react"
 import { axiosUrls } from '../../../api/axios'
 import useAxiosPrivate from '../../../hooks/useAxiosPrivate'
-import { Alert, Col, ListGroup, Row } from "react-bootstrap"
+import { Alert, Col, ListGroup, Row, Button, Modal, Form } from "react-bootstrap"
+import { faCirclePlus } from "@fortawesome/free-solid-svg-icons"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { DateToYYYYMMDD } from "../../../components/DatumFuncties"
+
+
 
 const EtappeComponent = ({ etappes, setEtappes, isOrganisator, missiedetail, missieid }) => {
+  let EtappeTemplate = {
+    startDatum: '',
+    eindDatum: '',
+    omschrijving:'',
+    titel: '',
+    bedrag: 0
+
+  }
+
   const axiosPrivate = useAxiosPrivate();
   const [missiedagen, setMissiedagen] = useState([])
-  const [nieuweEtappe, setNieuweEtappe] = useState({})
+  const [nieuweEtappe, setNieuweEtappe] = useState(EtappeTemplate)
   const [isLoading, setIsLoading] = useState(true)
+  const [showModalNieuweEtappe, setShowModalNieuweEtappe] = useState(false)
+
 
 
   useEffect(() => {
@@ -31,11 +47,26 @@ const EtappeComponent = ({ etappes, setEtappes, isOrganisator, missiedetail, mis
 
   useEffect(() => {
     setMissiedagen(GetMissieDagen(missiedetail.startDatum, missiedetail.eindDatum))
-    console.log(missiedagen)
+    //console.log(missiedagen)
   }, [missiedetail])
 
+// useEffect(()=>{
+// console.log(nieuweEtappe)
+// },[nieuweEtappe])
 
+  const handleCloseModalEtappe = () => {
+    setShowModalNieuweEtappe(false)
+  }
+const maakNieuweEtappe= (datum)=>{
+  datum.setHours(datum.getHours() + 12)
 
+  setNieuweEtappe({...nieuweEtappe,startDatum: datum.toISOString().split('.')[0],eindDatum: datum.toISOString().split('.')[0]})
+  setShowModalNieuweEtappe(true)
+}
+
+const bewaarNieuweEtappe=()=>{
+  console.log(nieuweEtappe)
+}
 
 
   return (
@@ -45,7 +76,24 @@ const EtappeComponent = ({ etappes, setEtappes, isOrganisator, missiedetail, mis
           missiedagen.map((dag, index) => (
             <div key={index} className="ps-5">
               <Alert key={index} variant='light'>
-                {index === 0 ? ('Algemeen') : DateToDDMMYYYY(dag)}
+                <Row>
+                  <Col>
+                    {index === 0 ? ('Algemeen') : DateToDDMMYYYY(dag)}
+                    <span className="ms-3">
+                      <Button variant="secondary" size="sm" onClick={()=>{maakNieuweEtappe(dag)}}>
+                      <FontAwesomeIcon icon={faCirclePlus} />
+                    </Button>
+                    </span>
+                  </Col>
+                  <Col className="text-end pe-3"> Totaal:&nbsp;
+                    {
+                      etappes
+                        .filter(etappe => { return CompareDates(dag, etappe.startDatum) })
+                        .reduce((n, { bedrag }) => n + bedrag, 0)
+                        .toFixed(2)
+                    }
+                  </Col>
+                </Row>
               </Alert>
               <ListGroup variant="flush" className="pb-4 ps-4">
                 {
@@ -64,7 +112,7 @@ const EtappeComponent = ({ etappes, setEtappes, isOrganisator, missiedetail, mis
                               {etappe.locatie}
                             </Col>
                             <Col className="text-end pe-3">
-                              {Math.floor(etappe.bedrag).toFixed(2)}
+                              {etappe.bedrag.toFixed(2)}
                             </Col>
                           </Row>
                         </ListGroup.Item>
@@ -81,6 +129,60 @@ const EtappeComponent = ({ etappes, setEtappes, isOrganisator, missiedetail, mis
           <p>Nog geen etappes</p>
         )
       }
+
+      <Modal show={showModalNieuweEtappe} onHide={handleCloseModalEtappe}>
+        <Modal.Header closeButton>
+          <Modal.Title>Deelnemer toevoegen</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <form>
+          <Form.Group as={Row}>
+            <Form.Label column md={3} sm={12}>Start</Form.Label>
+              <Form.Control
+                id="formstartDatum"
+                type="datetime-local"
+                onChange={(e) => { setNieuweEtappe({ ...nieuweEtappe, startDatum: e.target.value }) }}
+                value={nieuweEtappe.startDatum}
+              />
+           </Form.Group>
+           <Form.Group as={Row}>
+            <Form.Label column md={3} sm={12}>Einde</Form.Label>
+              <Form.Control
+                id="formEinddatum"
+                type="datetime-local"
+                onChange={(e) => { setNieuweEtappe({ ...nieuweEtappe, eindDatum: e.target.value }) }}
+                value={nieuweEtappe.eindDatum}
+              />
+           </Form.Group>
+           <Form.Group as={Row}>
+            <Form.Label column md={3} sm={12}>Omschrijving</Form.Label>
+              <Form.Control
+                id="formOmschrijving"
+                type="text"
+                onChange={(e) => { setNieuweEtappe({ ...nieuweEtappe, omschrijving: e.target.value }) }}
+                value={nieuweEtappe.omschrijving}
+              />
+           </Form.Group>
+           <Form.Group as={Row}>
+            <Form.Label column md={3} sm={12}>Locatie</Form.Label>
+              <Form.Control
+                id="formLocatie"
+                type="text"
+                onChange={(e) => { setNieuweEtappe({ ...nieuweEtappe, locatie: e.target.value }) }}
+                value={nieuweEtappe.locatie}
+              />
+           </Form.Group>
+          </form>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleCloseModalEtappe}>
+            Sluit
+          </Button>
+          <Button variant="success" onClick={bewaarNieuweEtappe}>
+            Bewaar
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </>
   )
 }

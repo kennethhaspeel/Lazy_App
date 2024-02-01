@@ -11,9 +11,10 @@ import { DateToYYYYMMDD } from "../../../components/DatumFuncties"
 
 const EtappeComponent = ({ etappes, setEtappes, isOrganisator, missiedetail, missieid }) => {
   let EtappeTemplate = {
+    missieid: missieid,
     startDatum: '',
     eindDatum: '',
-    omschrijving:'',
+    omschrijving: '',
     titel: '',
     bedrag: 0
 
@@ -50,23 +51,32 @@ const EtappeComponent = ({ etappes, setEtappes, isOrganisator, missiedetail, mis
     //console.log(missiedagen)
   }, [missiedetail])
 
-// useEffect(()=>{
-// console.log(nieuweEtappe)
-// },[nieuweEtappe])
+  // useEffect(()=>{
+  // console.log(nieuweEtappe)
+  // },[nieuweEtappe])
 
   const handleCloseModalEtappe = () => {
     setShowModalNieuweEtappe(false)
   }
-const maakNieuweEtappe= (datum)=>{
-  datum.setHours(datum.getHours() + 12)
+  const maakNieuweEtappe = (datum) => {
+    datum.setHours(datum.getHours() + 12)
 
-  setNieuweEtappe({...nieuweEtappe,startDatum: datum.toISOString().split('.')[0],eindDatum: datum.toISOString().split('.')[0]})
-  setShowModalNieuweEtappe(true)
-}
+    setNieuweEtappe({ ...nieuweEtappe, startDatum: datum.toISOString().split('.')[0], eindDatum: datum.toISOString().split('.')[0] })
+    setShowModalNieuweEtappe(true)
+  }
 
-const bewaarNieuweEtappe=()=>{
-  console.log(nieuweEtappe)
-}
+
+  const bewaarNieuweEtappe = async () => {
+    try {
+      const response = await axiosPrivate.post(`${axiosUrls('PostMissieEtappe')}`, JSON.stringify(nieuweEtappe));
+      setEtappes(...etappes, response.data)
+      setShowModalNieuweEtappe(false)
+      console.log(response.data)
+    } catch (err) {
+      console.error(err);
+    }
+    console.log(nieuweEtappe)
+  }
 
 
   return (
@@ -80,9 +90,9 @@ const bewaarNieuweEtappe=()=>{
                   <Col>
                     {index === 0 ? ('Algemeen') : DateToDDMMYYYY(dag)}
                     <span className="ms-3">
-                      <Button variant="secondary" size="sm" onClick={()=>{maakNieuweEtappe(dag)}}>
-                      <FontAwesomeIcon icon={faCirclePlus} />
-                    </Button>
+                      <Button variant="secondary" size="sm" onClick={() => { maakNieuweEtappe(dag) }}>
+                        <FontAwesomeIcon icon={faCirclePlus} />
+                      </Button>
                     </span>
                   </Col>
                   <Col className="text-end pe-3"> Totaal:&nbsp;
@@ -136,42 +146,51 @@ const bewaarNieuweEtappe=()=>{
         </Modal.Header>
         <Modal.Body>
           <form>
-          <Form.Group as={Row}>
-            <Form.Label column md={3} sm={12}>Start</Form.Label>
+            <Form.Group as={Row}>
+              <Form.Label column md={3} sm={12}>Start</Form.Label>
               <Form.Control
                 id="formstartDatum"
                 type="datetime-local"
-                onChange={(e) => { setNieuweEtappe({ ...nieuweEtappe, startDatum: e.target.value }) }}
+                onChange={(e) => { setNieuweEtappe({ ...nieuweEtappe, startDatum: e.target.value, eindDatum: e.target.value }) }}
                 value={nieuweEtappe.startDatum}
               />
-           </Form.Group>
-           <Form.Group as={Row}>
-            <Form.Label column md={3} sm={12}>Einde</Form.Label>
+            </Form.Group>
+            <Form.Group as={Row}>
+              <Form.Label column md={3} sm={12}>Einde</Form.Label>
               <Form.Control
                 id="formEinddatum"
                 type="datetime-local"
                 onChange={(e) => { setNieuweEtappe({ ...nieuweEtappe, eindDatum: e.target.value }) }}
                 value={nieuweEtappe.eindDatum}
               />
-           </Form.Group>
-           <Form.Group as={Row}>
-            <Form.Label column md={3} sm={12}>Omschrijving</Form.Label>
+            </Form.Group>
+            <Form.Group as={Row}>
+              <Form.Label column md={3} sm={12}>Omschrijving</Form.Label>
               <Form.Control
                 id="formOmschrijving"
                 type="text"
                 onChange={(e) => { setNieuweEtappe({ ...nieuweEtappe, omschrijving: e.target.value }) }}
                 value={nieuweEtappe.omschrijving}
               />
-           </Form.Group>
-           <Form.Group as={Row}>
-            <Form.Label column md={3} sm={12}>Locatie</Form.Label>
+            </Form.Group>
+            <Form.Group as={Row}>
+              <Form.Label column md={3} sm={12}>Kost</Form.Label>
+              <Form.Control
+                id="formBedrag"
+                type="number"
+                onChange={(e) => { setNieuweEtappe({ ...nieuweEtappe, bedrag: e.target.value }) }}
+                value={nieuweEtappe.bedrag}
+              />
+            </Form.Group>
+            <Form.Group as={Row}>
+              <Form.Label column md={3} sm={12}>Locatie</Form.Label>
               <Form.Control
                 id="formLocatie"
                 type="text"
                 onChange={(e) => { setNieuweEtappe({ ...nieuweEtappe, locatie: e.target.value }) }}
                 value={nieuweEtappe.locatie}
               />
-           </Form.Group>
+            </Form.Group>
           </form>
         </Modal.Body>
         <Modal.Footer>

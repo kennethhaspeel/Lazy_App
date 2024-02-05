@@ -41,7 +41,7 @@ const Pagina = () => {
             <Alert variant='primary'>
                 Deelnemers
             </Alert>
-                {/* <Deelnemers users={users} setUsers={setUsers} isOrganisator={isOrganisator} setIsOrganisator={setIsOrganisator} setIsDeelnemer={setIsDeelnemer} missieid={missieid} currentUser={currentUser} /> */}
+                <Deelnemers users={users} setUsers={setUsers} isOrganisator={isOrganisator} setIsOrganisator={setIsOrganisator} setIsDeelnemer={setIsDeelnemer} missieid={missieid} currentUser={currentUser} />
             <Alert variant='primary'>
                 Etappes
             </Alert>

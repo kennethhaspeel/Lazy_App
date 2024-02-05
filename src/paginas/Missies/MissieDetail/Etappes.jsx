@@ -14,7 +14,7 @@ const EtappeComponent = ({ etappes, setEtappes, isOrganisator, missiedetail, mis
     missieid: missieid,
     startDatum: '',
     eindDatum: '',
-    omschrijving: '',
+locatie:'',
     titel: '',
     bedrag: 0
 
@@ -36,7 +36,6 @@ const EtappeComponent = ({ etappes, setEtappes, isOrganisator, missiedetail, mis
         setEtappes(response.data)
         console.log(response.data)
         setIsLoading(false)
-
       } catch (err) {
         console.error(err);
       }
@@ -69,13 +68,13 @@ const EtappeComponent = ({ etappes, setEtappes, isOrganisator, missiedetail, mis
   const bewaarNieuweEtappe = async () => {
     try {
       const response = await axiosPrivate.post(`${axiosUrls('PostMissieEtappe')}`, JSON.stringify(nieuweEtappe));
-      setEtappes(...etappes, response.data)
+
+      setEtappes(etappes => [...etappes, response.data])
       setShowModalNieuweEtappe(false)
-      console.log(response.data)
+      console.log(etappes)
     } catch (err) {
       console.error(err);
     }
-    console.log(nieuweEtappe)
   }
 
 
@@ -169,8 +168,8 @@ const EtappeComponent = ({ etappes, setEtappes, isOrganisator, missiedetail, mis
               <Form.Control
                 id="formOmschrijving"
                 type="text"
-                onChange={(e) => { setNieuweEtappe({ ...nieuweEtappe, omschrijving: e.target.value }) }}
-                value={nieuweEtappe.omschrijving}
+                onChange={(e) => { setNieuweEtappe({ ...nieuweEtappe, titel: e.target.value }) }}
+                value={nieuweEtappe.titel}
               />
             </Form.Group>
             <Form.Group as={Row}>

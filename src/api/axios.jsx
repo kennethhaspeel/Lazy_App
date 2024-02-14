@@ -10,6 +10,7 @@ export const axiosUrls = (url)=>{
         GetOverzichtTransacties: 'Financieel/GetOverzichtTransacties',
         NieuweTransactie: 'Financieel/NieuweTransactie',
         GetAllUsers: 'user/GetAllUsers',
+        GetAllMissies: 'user/GetAllMissies',
         NieuweMissie: 'missie/NieuweMissie',
         MissieDetails: 'missie/GetMissieDetails',
         MissieDeelnemers: 'missie/GetMissieDeelnemers',
@@ -29,4 +30,6 @@ export const axiosPrivate = axios.create({
     headers: { 'Content-Type': 'application/json' },
     withCredentials: true
 });
+
+
 

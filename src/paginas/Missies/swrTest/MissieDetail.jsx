@@ -2,17 +2,17 @@ import { useState, useEffect } from "react"
 import { useSearchParams } from 'react-router-dom'
 
 import useSWR from "swr"
-import { GetMissions } from "../../../api/missieApi"
-import axios, { axiosPrivate, axiosUrls } from "../../../api/axios"
+import useAxiosPrivate from "../../../hooks/useAxiosPrivate"
+import { axiosUrls } from "../../../api/axios"
 
 
 const MissieDetail = () => {
-
+    const axiosPrivate = useAxiosPrivate();
     const { data: missions, isLoading, error } =
-        useSWR('GetMissions', GetMissions, {
-            onSuccess(data, key, config) {
-                console.log(data)
-            }
+        useSWR('GetMissions', async ()=>{const response = await axiosPrivate(axiosUrls('GetAllMissions')); return response.data}, {
+            // onSuccess(data, key, config) {
+            //     console.log(data)
+            // }
         })
 
 

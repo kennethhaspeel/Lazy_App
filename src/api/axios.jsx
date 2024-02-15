@@ -1,11 +1,13 @@
 import axios from 'axios';
+import useRefreshToken from '../hooks/useRefreshToken';
+import useAuth from '../hooks/useAuth';
 
-export const axiosUrls = (url)=>{
+export const axiosUrls = (url) => {
     const overzicht = {
-        base_url:'https://localhost:7023',
-        login:'/Auth/login',
+        base_url: 'https://localhost:7023',
+        login: '/Auth/login',
         loguit: 'Auth/loguit',
-        registratie:'Auth/registreer',
+        registratie: 'Auth/registreer',
         bevestigRegistratie: 'Auth/BevestigRegistratie',
         GetOverzichtTransacties: 'Financieel/GetOverzichtTransacties',
         NieuweTransactie: 'Financieel/NieuweTransactie',
@@ -18,7 +20,7 @@ export const axiosUrls = (url)=>{
         PostMissieEtappe: 'MissieEtappe/NieuweEtappe'
     }
 
-  return overzicht[url]
+    return overzicht[url]
 }
 
 export default axios.create({
@@ -30,6 +32,8 @@ export const axiosPrivate = axios.create({
     headers: { 'Content-Type': 'application/json' },
     withCredentials: true
 });
+
+
 
 
 

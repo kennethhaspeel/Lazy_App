@@ -1,12 +1,12 @@
-import { axiosPrivate,axiosUrls } from "./axios";
-import useAxiosPrivate from "../hooks/useAxiosPrivate";
+import axios,{ axiosPrivate } from "./axios";
 
 export const missionEndpoint = '/missie'
+const delay = () => new Promise(res => setTimeout(() => res(), 1000))
 
-
-export const getMissions = async ()=>{
-    const axiospr = useAxiosPrivate()
-    const response = await axiospr.get(`${missionEndpoint}/GetAllMissions`)
-    console.log(response.data)
+export const GetMissions = async () => {
+    await delay()
+    
+    const response = await axios.get(`${missionEndpoint}/GetAllMissions`)
     return response.data
 }
+

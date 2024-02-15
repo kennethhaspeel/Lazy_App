@@ -2,33 +2,39 @@ import { useState, useEffect } from "react"
 import { useSearchParams } from 'react-router-dom'
 
 import useSWR from "swr"
-import { getMissions, missionEndpoint } from "../../../api/missieApi"
+import { GetMissions } from "../../../api/missieApi"
+import axios, { axiosPrivate, axiosUrls } from "../../../api/axios"
 
 
 const MissieDetail = () => {
-    const {
-        data,
-        isLoading,
-        error
 
-    } = useSWR(missionEndpoint, getMissions())
+    const { data: missions, isLoading, error } =
+        useSWR('GetMissions', GetMissions, {
+            onSuccess(data, key, config) {
+                console.log(data)
+            }
+        })
 
 
-    if (isLoading) return <p>Loading...</p>
-
-    if (error) return <p>{error.message}</p>
-
+    let content
+    if (isLoading) { content = <p>Loading...</p> }
+    if (error) { content = <p>{error.message}</p> }
+    content =
+        <ul>
+            {
+                missions?.length ? (
+                    missions.map((mission) => {
+                        return <li key={mission.id}>{mission.titel}</li>
+                    })) : (
+                    <li>Geen gegevens</li>
+                )
+            }
+        </ul>
     return (
-        <>
+        <main>
             <h2>Mission List</h2>
-            <div>
-                {
-                    data.map(mission => {
-                        <p key={mission.id}>{mission.titel}</p>
-                    })
-                }
-            </div>
-        </>
+            {content}
+        </main>
     )
 
 }

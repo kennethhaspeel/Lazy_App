@@ -16,8 +16,8 @@ const Login = () => {
     const errRef = useRef();
 
     const [loading, setLoading] = useState(false);
-    const [username, setUsername] = useState("kenneth@haspeel.be");
-    const [paswoord, setPaswoord] = useState("8940Wervik+");
+    const [username, setUsername] = useState("");
+    const [paswoord, setPaswoord] = useState("");
     const [errMsg, setErrMsg] = useState('');
 
     useEffect(() => {

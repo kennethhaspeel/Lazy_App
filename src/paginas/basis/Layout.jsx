@@ -9,17 +9,6 @@ const Layout = () => {
   const { auth } = useAuth();
   return (
     <div className="container">
-      <LoaderContainer>
-        <ThreeCircles
-          visible={true}
-          height="200"
-          width="200"
-          color="#4fa94d"
-          ariaLabel="three-circles-loading"
-          wrapperStyle={{}}
-          wrapperClass=""
-        />
-      </LoaderContainer>
       <div className="App">
         <Header huidige_gebruiker={auth} />
         <div className="pt-3">

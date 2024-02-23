@@ -7,6 +7,7 @@ import NavDropdown from 'react-bootstrap/NavDropdown';
 import Image from 'react-bootstrap/Image';
 import logo from '../../assets/favicon-32x32.png'
 import { Button } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
 
 const Header = ({ huidige_gebruiker }) => {
   const rollen = huidige_gebruiker?.rollen
@@ -23,15 +24,23 @@ const Header = ({ huidige_gebruiker }) => {
               {
                 rollen?.find(role => ["gebruiker"].includes(role))
                   ? <NavDropdown title="Financieel" id="basic-nav-dropdown">
-                    <NavDropdown.Item href="/financieel/uitleg">Uitleg</NavDropdown.Item>
-                    <NavDropdown.Item href="/financieel/overzichtspaarboek">Uw Spaarboekske</NavDropdown.Item>
+                    <Link to="financieel/uitleg" className='nav-link'>
+                      Uitleg
+                    </Link>
+                    <Link to="financieel/overzichtspaarboek" className='nav-link'>
+                      Uw Spaarboekske
+                    </Link>
 
                     {
                       rollen?.find(role => ["financieel"].includes(role))
                         ? <>
                           <NavDropdown.Divider />
-                          <NavDropdown.Item href="/financieel/TransactieOverzicht">Alle Verrichtingen</NavDropdown.Item>
-                          <NavDropdown.Item href="/financieel/TransactieToevoegen">Transactie Toevoegen</NavDropdown.Item>
+                          <Link to="financieel/TransactieOverzicht" className='nav-link' >
+                            Alle Verrichtingen
+                          </Link>
+                          <Link to="financieel/TransactieToevoegen" className='nav-link' >
+                            Transactie Toevoegen
+                          </Link>
                         </>
                         : ''
                     }
@@ -43,7 +52,9 @@ const Header = ({ huidige_gebruiker }) => {
               {
                 rollen?.find(role => ["gebruiker"].includes(role))
                   ? <NavDropdown title="Missies" id="basic-nav-dropdown">
-                    <NavDropdown.Item href="/missie/NieuweMissie">Nieuwe Missie</NavDropdown.Item>
+                    <Link to="missies/MissieOverzicht" className='nav-link' >
+                      Missie Overzicht
+                    </Link>
                   </NavDropdown>
                   : ''
               }
@@ -55,8 +66,8 @@ const Header = ({ huidige_gebruiker }) => {
                 </>
               ) : (
                 <>
-                  <Button href="/identity/registreer" className='me-2 mb-2'>Registreer</Button>
-                  <Button href="/identity/login" className='me-2 mb-2'>Log In</Button>
+                <Link to='identity/registreer' className='me-2 mb-2 btn btn-info'>Registreer</Link>
+                <Link to='identity/login' className='me-2 mb-2 btn btn-info'>Log in</Link>
                 </>
               )}
             </Nav>

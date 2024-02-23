@@ -13,18 +13,19 @@ const PersistLogin = () => {
 
         const verifyRefreshToken = async () => {
             try {
+                console.log('accestoken via persistlogin')
                 await refresh();
             }
             catch (err) {
                 console.error(err);
             }
             finally {
+                console.log(auth?.accessToken)
                 isMounted && setIsLoading(false);
             }
         }
-
+        console.log(auth?.accessToken)
         !auth?.accessToken && persist ? verifyRefreshToken() : setIsLoading(false);
-
         return () => isMounted = false;
     }, [])
 

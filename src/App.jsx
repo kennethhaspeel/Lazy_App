@@ -1,4 +1,5 @@
 import { Route, Routes } from "react-router-dom";
+
 import AuthRequired from "./components/AuthRequired";
 import PersistLogin from "./components/PersistLogin";
 import Layout from "./paginas/basis/Layout";
@@ -18,13 +19,8 @@ import TransactieOverzicht from "./paginas/financieel/TransactieOverzicht"
 import TransactieToevoegen from "./paginas/financieel/TransactieToevoegen";
 
 // missie
-import NieuweMissie from "./paginas/missie/NieuweMissie";
-//import MissieDetail from "./paginas/missie/MissieDetail";
-import EtappeToevoegen from "./paginas/missie/missiedetail/EtappeToevoegen";
+import MissieOverzicht from "./paginas/Missies/MissieLijst/MissieOverzicht";
 
-import MissieDetail from "./paginas/Missies/swrTest/MissieDetail";
-// temp
-//import Pagina from "./paginas/Missies/MissieDetail2/Pagina";
 
 function App() {
   return (
@@ -34,7 +30,7 @@ function App() {
         <Route element={<PersistLogin />}>
           <Route index element={<Home />} />
           <Route path="Missies">
-              <Route path="MissieDetail" element={<MissieDetail />}></Route>
+              <Route path="MissieOverzicht" element={<MissieOverzicht />}></Route>
           </Route>
 
           <Route path="financieel">
@@ -49,9 +45,9 @@ function App() {
           </Route>
           <Route path="missie">
             <Route element={<AuthRequired allowedRoles={["gebruiker"]} />}>
-              <Route path="NieuweMissie" element={<NieuweMissie />}></Route>
-              {/* <Route path="MissieDetail" element={<MissieDetail />}></Route> */}
-              <Route path="MissieEtappeToevoegen" element={<EtappeToevoegen />}></Route>
+            <Route path="MissieOverzicht" element={<MissieOverzicht />}></Route>
+              {/* <Route path="MissieDetail" element={<MissieDetail />}></Route>
+              <Route path="MissieEtappeToevoegen" element={<EtappeToevoegen />}></Route> */}
 
             </Route>
           </Route>

@@ -9,7 +9,7 @@ import { ListGroup } from "react-bootstrap"
 const MissieOverzicht = () => {
     const axiosPrivate = useAxiosPrivate();
     const { data: missions, isLoading, error, isValidating } =
-        useSWR('GetMissions', async () => { const response = await axiosPrivate(axiosUrls('GetAllMissions')); return response.data }, {
+        useSWR('GetMissions', async () => { const response = await axiosPrivate(axiosUrls('GetOverzichtMissies')); return response.data }, {
             onSuccess(data, key, config) {
                 console.log(data)
             },

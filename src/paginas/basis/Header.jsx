@@ -1,5 +1,5 @@
 import { useRef, useState, useEffect } from 'react';
-
+import { useNavigate } from 'react-router-dom';
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
@@ -11,9 +11,10 @@ import { Link } from 'react-router-dom';
 
 const Header = ({ huidige_gebruiker }) => {
   const rollen = huidige_gebruiker?.rollen
+  const navigate = useNavigate();
   return (
     <>
-      <Navbar expand="lg" className="bg-body-tertiary">
+      <Navbar collapseOnSelect  expand="lg" className="bg-body-tertiary">
         <Container>
           <Navbar.Brand href="/"><Image src={logo} fluid /></Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
@@ -24,23 +25,14 @@ const Header = ({ huidige_gebruiker }) => {
               {
                 rollen?.find(role => ["gebruiker"].includes(role))
                   ? <NavDropdown title="Financieel" id="basic-nav-dropdown">
-                    <Link to="financieel/uitleg" className='nav-link'>
-                      Uitleg
-                    </Link>
-                    <Link to="financieel/overzichtspaarboek" className='nav-link'>
-                      Uw Spaarboekske
-                    </Link>
-
+                    <NavDropdown.Item onClick={()=>{navigate('financieel/uitleg')}}>Uitleg</NavDropdown.Item>
+                    <NavDropdown.Item onClick={()=>{navigate('financieel/overzichtspaarboek')}}>Uw Spaarboekske</NavDropdown.Item>
                     {
                       rollen?.find(role => ["financieel"].includes(role))
                         ? <>
                           <NavDropdown.Divider />
-                          <Link to="financieel/TransactieOverzicht" className='nav-link' >
-                            Alle Verrichtingen
-                          </Link>
-                          <Link to="financieel/TransactieToevoegen" className='nav-link' >
-                            Transactie Toevoegen
-                          </Link>
+                          <NavDropdown.Item onClick={()=>{navigate('financieel/TransactieOverzicht')}}>Alle Verrichtingen</NavDropdown.Item>
+                          <NavDropdown.Item onClick={()=>{navigate('financieel/TransactieToevoegen')}}>Transactie Toevoegen</NavDropdown.Item>
                         </>
                         : ''
                     }
@@ -52,9 +44,7 @@ const Header = ({ huidige_gebruiker }) => {
               {
                 rollen?.find(role => ["gebruiker"].includes(role))
                   ? <NavDropdown title="Missies" id="basic-nav-dropdown">
-                    <Link to="missies/MissieOverzicht" className='nav-link' >
-                      Missie Overzicht
-                    </Link>
+                    <NavDropdown.Item onClick={()=>{navigate('missies/MissieOverzicht')}}>Missie Overzicht</NavDropdown.Item>
                   </NavDropdown>
                   : ''
               }

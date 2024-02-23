@@ -52,10 +52,8 @@ const OverzichtSpaarboek = () => {
               </thead>
               <tbody>
                 {
-                  transacties.lenght ?
+                  !transacties.lenght ?
                     (
-
-
                       transacties.map((transactie) => (
                         <tr key={transactie.id}>
                           <td className='text-center'>{format(parseISO(transactie.datum), 'dd/MM/yyyy')}</td>
@@ -64,8 +62,6 @@ const OverzichtSpaarboek = () => {
                         </tr>
 
                       ))
-
-
                     )
                     :
                     (

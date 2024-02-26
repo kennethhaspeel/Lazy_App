@@ -1,55 +1,28 @@
-import { useSearchParams } from 'react-router-dom'
-import { useState, useEffect, Suspense } from 'react'
-import { axiosUrls } from '../../../api/axios'
-import useAxiosPrivate from '../../../hooks/useAxiosPrivate'
-import useAuth from '../../../hooks/useAuth'
-import { tempData } from './tempData'
-import { CheckCurrentUser } from './functies'
-import DetailComponent from './Details'
-import Deelnemers from './Deelnemers'
-import EtappeComponent from './Etappes'
-import Alert from 'react-bootstrap/Alert'
-import { format, parse, isValid } from 'date-fns'
-import { GetMissieDagen, DateToDDMMYYYY, HHMM_To_date, CompareDates } from '../../../components/DatumFuncties'
-import SuspenseParagraaf from '../../../components/SuspenseParagraaf'
+import useSWR from "swr"
+import useAxiosPrivate from "../../../hooks/useAxiosPrivate"
+import { axiosUrls } from "../../../api/axios"
+import { Suspense } from "react"
+import SuspenseParagraaf from "../../../components/SuspenseParagraaf"
+
 
 const MissieDetail = () => {
-    const [queryParam] = useSearchParams()
-    const missieid = queryParam.get("missieid")
-    const { auth } = useAuth()
-    const currentUser = auth?.user
-    const [isOrganisator, setIsOrganisator] = useState(false)
-    const [isDeelnemer, setIsDeelnemer] = useState(false)
     const axiosPrivate = useAxiosPrivate();
+    const { data: missions, isLoading, error, isValidating } =
+        useSWR('GetMissions', async () => { const response = await axiosPrivate(axiosUrls('GetOverzichtMissies')); return response.data }, {
+            onSuccess(data, key, config) {
+                console.log(data)
+            },
+            onErrorRetry: (error, key, config, revalidate, { retryCount }) => {
+                if (error.status === 404) return
+                if (retryCount >= 3) return
+                revalidate({ retryCount })
+            },
+            suspense: true
 
-    const [missiedetail, setMissiedetail] = useState({})
-    const [users, setUsers] = useState([])
-    const [etappes, setEtappes] = useState([])
-
-    return (
-        <>
-            <Alert variant='info'>
-                <Alert.Heading>
-                    Missie {missiedetail?.titel}
-                </Alert.Heading>
-            </Alert>
-             <Alert variant='primary'>
-                Details
-            </Alert>
-                {/* <DetailComponent missieid={missieid} missiedetail={missiedetail} setMissiedetail={setMissiedetail} isOrganisator={isOrganisator} />
-            
-            <Alert variant='primary'>
-                Deelnemers
-            </Alert>
-                <Deelnemers users={users} setUsers={setUsers} isOrganisator={isOrganisator} setIsOrganisator={setIsOrganisator} setIsDeelnemer={setIsDeelnemer} missieid={missieid} currentUser={currentUser} />
-            <Alert variant='primary'>
-                Etappes
-            </Alert>
-            <EtappeComponent etappes={etappes} setEtappes={setEtappes} isOrganisator={isOrganisator} missiedetail={missiedetail} missieid={missieid} /> */}
-       <hr/>
-        </>
-
-    )
+        })
+  return (
+    <div>MissieDetail</div>
+  )
 }
 
 export default MissieDetail

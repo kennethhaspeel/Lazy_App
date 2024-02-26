@@ -29,6 +29,12 @@ export const DateToDDMMYYYY = (datum) => {
     return format(datum, "dd/MM/yyyy")
 }
 
+export const DatumVoorbij = (datum)=>{
+    let dat = new Date(datum)
+    let vandaag = new Date()
+    return dat < vandaag
+}
+
 export const HHMM_To_date = (datum, tijd) => {
     let date = parse(datum, "dd/MM/yyyy",new Date())
     console.log(date)

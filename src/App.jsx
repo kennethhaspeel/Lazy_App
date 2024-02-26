@@ -20,6 +20,7 @@ import TransactieToevoegen from "./paginas/financieel/TransactieToevoegen";
 
 // missie
 import MissieOverzicht from "./paginas/Missies/MissieLijst/MissieOverzicht";
+import MissieDetail from "./paginas/Missies/MissieDetail/MissieDetail";
 
 
 function App() {
@@ -46,8 +47,8 @@ function App() {
           <Route path="missie">
             <Route element={<AuthRequired allowedRoles={["gebruiker"]} />}>
             <Route path="MissieOverzicht" element={<MissieOverzicht />}></Route>
-              {/* <Route path="MissieDetail" element={<MissieDetail />}></Route>
-              <Route path="MissieEtappeToevoegen" element={<EtappeToevoegen />}></Route> */}
+               <Route path="MissieDetail" element={<MissieDetail />}></Route>
+             {/* <Route path="MissieEtappeToevoegen" element={<EtappeToevoegen />}></Route> */}
 
             </Route>
           </Route>

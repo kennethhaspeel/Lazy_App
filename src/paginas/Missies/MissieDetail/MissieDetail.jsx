@@ -13,7 +13,7 @@ import { format, parse, isValid } from 'date-fns'
 import { GetMissieDagen, DateToDDMMYYYY, HHMM_To_date, CompareDates } from '../../../components/DatumFuncties'
 import SuspenseParagraaf from '../../../components/SuspenseParagraaf'
 
-const Pagina = () => {
+const MissieDetail = () => {
     const [queryParam] = useSearchParams()
     const missieid = queryParam.get("missieid")
     const { auth } = useAuth()
@@ -36,7 +36,7 @@ const Pagina = () => {
              <Alert variant='primary'>
                 Details
             </Alert>
-                <DetailComponent missieid={missieid} missiedetail={missiedetail} setMissiedetail={setMissiedetail} isOrganisator={isOrganisator} />
+                {/* <DetailComponent missieid={missieid} missiedetail={missiedetail} setMissiedetail={setMissiedetail} isOrganisator={isOrganisator} />
             
             <Alert variant='primary'>
                 Deelnemers
@@ -45,11 +45,11 @@ const Pagina = () => {
             <Alert variant='primary'>
                 Etappes
             </Alert>
-            <EtappeComponent etappes={etappes} setEtappes={setEtappes} isOrganisator={isOrganisator} missiedetail={missiedetail} missieid={missieid} />
+            <EtappeComponent etappes={etappes} setEtappes={setEtappes} isOrganisator={isOrganisator} missiedetail={missiedetail} missieid={missieid} /> */}
        <hr/>
         </>
 
     )
 }
 
-export default Pagina
+export default MissieDetail

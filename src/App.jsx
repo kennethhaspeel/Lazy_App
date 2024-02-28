@@ -27,11 +27,11 @@ function App() {
   return (
     <Routes>
       <Route path="/" element={<Layout />}>
-     
+
         <Route element={<PersistLogin />}>
           <Route index element={<Home />} />
           <Route path="Missies">
-              <Route path="MissieOverzicht" element={<MissieOverzicht />}></Route>
+            <Route path="MissieOverzicht" element={<MissieOverzicht />}></Route>
           </Route>
 
           <Route path="financieel">
@@ -46,10 +46,8 @@ function App() {
           </Route>
           <Route path="missie">
             <Route element={<AuthRequired allowedRoles={["gebruiker"]} />}>
-            <Route path="MissieOverzicht" element={<MissieOverzicht />}></Route>
-               <Route path="MissieDetail" element={<MissieDetail />}></Route>
-             {/* <Route path="MissieEtappeToevoegen" element={<EtappeToevoegen />}></Route> */}
-
+              <Route path="MissieOverzicht" element={<MissieOverzicht />}></Route>
+              <Route path="MissieDetail" element={<MissieDetail />}></Route>
             </Route>
           </Route>
           <Route path="identity">

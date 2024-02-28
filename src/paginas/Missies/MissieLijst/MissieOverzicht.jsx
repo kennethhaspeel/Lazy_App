@@ -1,6 +1,7 @@
 
 import useSWR from "swr"
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate"
+import { useNavigate } from "react-router-dom"
 import { axiosUrls } from "../../../api/axios"
 import { Suspense } from "react"
 import SuspenseParagraaf from "../../../components/SuspenseParagraaf"
@@ -13,7 +14,7 @@ import ErrorFallback from "../../../components/ErrorFallback"
 const MissieOverzicht = () => {
 
     const axiosPrivate = useAxiosPrivate();
-
+const navigate = useNavigate()
     const { data: missions, isLoading, isValidating } =
         useSWR('GetMissions', async () => { const response = await axiosPrivate(axiosUrls('GetOverzichtMissies')); return response.data }, {
             onSuccess(data, key, config) {
@@ -51,7 +52,7 @@ const MissieOverzicht = () => {
                                                     <ListGroup.Item>Startdatum: {DateToDDMMYYYY(mission.startDatum)}</ListGroup.Item>
                                                     <ListGroup.Item> Einddatum: {DateToDDMMYYYY(mission.eindDatum)}</ListGroup.Item>
                                                     <ListGroup.Item>Deelnemer: {mission.isDeelnemer ? <span className="text-success "><FaThumbsUp /></span> : <span className="text-danger"><FaThumbsDown /></span>}</ListGroup.Item>
-                                                    <ListGroup.Item>Organisatyor: {mission.isOrganisator ? <span className="text-success "><FaThumbsUp /></span> : <span className="text-danger"><FaThumbsDown /></span>}</ListGroup.Item>
+                                                    <ListGroup.Item>Organisator: {mission.isOrganisator ? <span className="text-success "><FaThumbsUp /></span> : <span className="text-danger"><FaThumbsDown /></span>}</ListGroup.Item>
                                                 </ListGroup>
                                             </Card.Body>
                                             <Card.Footer>

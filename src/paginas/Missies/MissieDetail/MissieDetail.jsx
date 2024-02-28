@@ -1,7 +1,7 @@
 import useSWR from "swr"
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate"
 import { axiosUrls } from "../../../api/axios"
-import { Suspense } from "react"
+import { useState } from "react"
 import SuspenseParagraaf from "../../../components/SuspenseParagraaf"
 import { useSearchParams } from "react-router-dom"
 import useAuth from "../../../hooks/useAuth"
@@ -13,11 +13,16 @@ const MissieDetail = () => {
     const [queryParam] = useSearchParams()
     const missieid = queryParam.get("missieid")
 
-    const {auth} = useAuth();
+    const { auth } = useAuth();
     const currentUser = auth?.user
+    const [isOrganisator, setIsOrganisator] = useState(false)
+    const [isDeelnemer, setIsDeelnemer] = useState(false)
+    const [users, setUsers] = useState([])
+    const [etappes, setEtappes] = useState([])
 
-    const { data: missions, isLoading, error, isValidating } =
-        useSWR(`GetMissieDetail_${missieid}`, async () => { const response = await axiosPrivate(`${axiosUrls('MissieDetails')}/${missieid}`) ; return response.data }, {
+    const { data: missiedetail, isLoading, error, isValidating } =
+        useSWR(`GetMissieDetail_${missieid}`, async () => { const response = await axiosPrivate(`${axiosUrls('MissieDetails')}/${missieid}`); return response.data }, {
+            revalidateOnFocus: false,
             onSuccess(data, key, config) {
                 console.log(data)
             },
@@ -27,14 +32,19 @@ const MissieDetail = () => {
                 revalidate({ retryCount })
             }
         })
-  return (
-    <>
-    <Alert variant='primary'>
+    return (
+        <>
+            <Alert variant='info'>
+                <Alert.Heading>
+                    Missie {missiedetail?.titel}
+                </Alert.Heading>
+            </Alert>
+            <Alert variant='primary'>
                 Deelnemers
             </Alert>
-    <Deelnemers missieid={missieid}/>
-    </>
-  )
+            <Deelnemers missieid={missieid} setUsers={setUsers} isOrganisator={isOrganisator} setIsOrganisator={setIsOrganisator} setIsDeelnemer={setIsDeelnemer} currentUser={currentUser}/>
+        </>
+    )
 }
 
 export default MissieDetail

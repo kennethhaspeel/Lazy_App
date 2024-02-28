@@ -17,6 +17,7 @@ const MissieOverzicht = () => {
 const navigate = useNavigate()
     const { data: missions, isLoading, isValidating } =
         useSWR('GetMissions', async () => { const response = await axiosPrivate(axiosUrls('GetOverzichtMissies')); return response.data }, {
+            revalidateOnFocus: false,
             onSuccess(data, key, config) {
                 console.log(data)
             },
@@ -33,7 +34,7 @@ const navigate = useNavigate()
     return (
         isLoading || isValidating ? (<SuspenseParagraaf />) :
             (
-                <Suspense fallback={<div>Loading...</div>}>
+
                     <main>
                         <h2>Mission List</h2>
 
@@ -65,8 +66,6 @@ const navigate = useNavigate()
                         </CardGroup>
 
                     </main>
-                </Suspense>
-
             )
 
     )

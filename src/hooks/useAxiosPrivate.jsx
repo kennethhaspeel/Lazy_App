@@ -2,6 +2,7 @@ import { axiosPrivate } from "../api/axios";
 import { useEffect } from "react";
 import useRefreshToken from "./useRefreshToken";
 import useAuth from "./useAuth";
+import isJwtTokenExpired from "jwt-check-expiry";
 
 const useAxiosPrivate = () => {
     const refresh = useRefreshToken();
@@ -9,8 +10,13 @@ const useAxiosPrivate = () => {
 
     useEffect(() => {
         const requestIntercept = axiosPrivate.interceptors.request.use(
-            config => {
+            async config => {
                 if (!config.headers['Authorization']) {
+                    console.log(`Token ongeldig? : ${isJwtTokenExpired(auth?.accessToken)}`)
+                    if(isJwtTokenExpired(auth?.accessToken)){
+                        const newAccessToken = await refresh()
+                        console.log(`Nieuw accesstoken: ${newAccessToken}`)
+                    }
                     config.headers['Authorization'] = `Bearer ${auth?.accessToken}`;
                 }
                 

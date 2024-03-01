@@ -15,8 +15,8 @@ const Deelnemers = ({ setUsers, isOrganisator, setIsOrganisator, setIsDeelnemer,
     const [showModalSelectDeelnemer, setShowModalSelectDeelnemer] = useState(false)
     const [showModalSelectOrganisator, setShowModalSelectOrganisator] = useState(false)
 
-    const { data: users, isLoading, isValidating } =
-        useSWR(`MissieDeelnemers_${missieid}`, async () => { const response = await axiosPrivate(`${axiosUrls('MissieDeelnemers')}/${missieid}`); return response.data }, {
+    const { data: users, isLoading, isValidating,mutate } =
+        useSWR(`MissieDeelnemers_${missieid}`, async () => { const response = await axiosPrivate.get(`${axiosUrls('MissieDeelnemers')}/${missieid}`); return response.data }, {
             revalidateOnFocus: false,
             onSuccess(data, key, config) {
                 console.log(data)
@@ -32,14 +32,14 @@ const Deelnemers = ({ setUsers, isOrganisator, setIsOrganisator, setIsDeelnemer,
         users?.length && CheckCurrentUser(users, currentUser, setIsOrganisator, setIsDeelnemer)
     }, [users])
 
-    const ToggleOrganisator = (userid) => {
+    const ToggleOrganisator = async (userid) => {
         const list = users.map(obj => {
             if (obj.id === userid) {
                 return { ...obj, isOrganisator: !obj.isOrganisator }
             }
             return obj
         })
-        setUsers(list)
+        mutate(list)
         setSaveEdits(true)
     }
 
@@ -50,7 +50,8 @@ const Deelnemers = ({ setUsers, isOrganisator, setIsOrganisator, setIsDeelnemer,
             }
             return obj
         })
-        setUsers(list)
+        mutate(list)
+        console.log(list)
         setSaveEdits(true)
     }
 
@@ -121,7 +122,7 @@ const Deelnemers = ({ setUsers, isOrganisator, setIsOrganisator, setIsDeelnemer,
         </Modal.Header>
         <Modal.Body>
           {
-            users.length && users.map(user => (
+            users?.length && users.map(user => (
               !user.isDeelnemer ?
                 (
                   <Row key={user.id}>
@@ -148,7 +149,7 @@ const Deelnemers = ({ setUsers, isOrganisator, setIsOrganisator, setIsDeelnemer,
         </Modal.Header>
         <Modal.Body>
           {
-            users.length && users.map(user => (
+            users?.length && users.map(user => (
               (!user.isOrganisator && user.isDeelnemer) ?
                 (
                   <Row key={user.id}>

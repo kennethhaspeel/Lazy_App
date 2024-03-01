@@ -11,14 +11,13 @@ const useAxiosPrivate = () => {
     useEffect(() => {
         const requestIntercept = axiosPrivate.interceptors.request.use(
             async config => {
-                if (!config.headers['Authorization']) {
+
                     console.log(`Token ongeldig? : ${isJwtTokenExpired(auth?.accessToken)}`)
                     if(isJwtTokenExpired(auth?.accessToken)){
                         const newAccessToken = await refresh()
                         console.log(`Nieuw accesstoken: ${newAccessToken}`)
                     }
                     config.headers['Authorization'] = `Bearer ${auth?.accessToken}`;
-                }
                 
                 return config;
             }, (error) => Promise.reject(error)

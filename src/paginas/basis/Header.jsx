@@ -16,12 +16,10 @@ const Header = ({ huidige_gebruiker }) => {
     <>
       <Navbar collapseOnSelect  expand="lg" className="bg-body-tertiary">
         <Container>
-          <Navbar.Brand href="/"><Image src={logo} fluid /></Navbar.Brand>
+          <Navbar.Brand onClick={()=>{navigate('')}}><Image src={logo} fluid /></Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="me-auto">
-              <Nav.Link href="/">Home</Nav.Link>
-              {/* <Nav.Link href="#link">Link</Nav.Link> */}
               {
                 rollen?.find(role => ["gebruiker"].includes(role))
                   ? <NavDropdown title="Financieel" id="basic-nav-dropdown">

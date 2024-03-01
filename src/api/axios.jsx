@@ -4,7 +4,7 @@ import useAuth from '../hooks/useAuth';
 
 export const axiosUrls = (url) => {
     const overzicht = {
-        base_url: 'http://localhost:5115',
+        base_url: 'https://api.lazy-company.be',
         login: '/Auth/login',
         loguit: 'Auth/loguit',
         registratie: 'Auth/registreer',

@@ -60,6 +60,7 @@ const Login = () => {
             }
             console.log(user)
             setAuth({ user, rollen, accessToken });
+            sessionStorage.setItem('at',response.data.accessToken)
             setUsername('');
             setPaswoord('');
             setLoading(false)

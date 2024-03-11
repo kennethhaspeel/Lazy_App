@@ -33,13 +33,13 @@ const Deelnemers = ({ setUsers, isOrganisator, setIsOrganisator, setIsDeelnemer,
     }, [users])
 
     const ToggleOrganisator = async (userid) => {
+      
         const list = users.map(obj => {
             if (obj.id === userid) {
                 return { ...obj, isOrganisator: !obj.isOrganisator }
             }
             return obj
         })
-        mutate(list)
         setSaveEdits(true)
     }
 

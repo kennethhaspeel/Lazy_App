@@ -1,4 +1,6 @@
 import { Route, Routes } from "react-router-dom";
+import { QueryClient,QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 import AuthRequired from "./components/AuthRequired";
 import PersistLogin from "./components/PersistLogin";
@@ -22,9 +24,11 @@ import TransactieToevoegen from "./paginas/financieel/TransactieToevoegen";
 import MissieOverzicht from "./paginas/Missies/MissieLijst/MissieOverzicht";
 import MissieDetail from "./paginas/Missies/MissieDetail/MissieDetail";
 
+const queryClient = new QueryClient()
 
 function App() {
   return (
+    <QueryClientProvider client={queryClient}>
     <Routes>
       <Route path="/" element={<Layout />}>
 
@@ -64,6 +68,8 @@ function App() {
         <Route path="*" element={<NietGevonden />}></Route>
       </Route>
     </Routes>
+    <ReactQueryDevtools/>
+    </QueryClientProvider>
   );
 }
 

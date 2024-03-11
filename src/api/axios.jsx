@@ -36,5 +36,23 @@ export const axiosPrivate = axios.create({
 
 
 
+export const axiosSecure = axios.create({
+    baseURL: axiosUrls('base_url'),
+    headers: { 'Content-Type': 'application/json' },
+    withCredentials: true
+});
 
+axiosSecure.interceptors.response.use(
+    response=>response,
+    async (error) => {
+        const prevRequest = error?.config;
+        if ((error?.response?.status === 401 )&& !prevRequest?.sent) {
+            prevRequest.sent = true;
+            const newAccessToken = await refresh();
+            prevRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
+            return axiosPrivate(prevRequest);
+        }
+        return Promise.reject(error);
+    }
+)
 

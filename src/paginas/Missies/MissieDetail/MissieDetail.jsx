@@ -7,18 +7,16 @@ import { useSearchParams } from "react-router-dom"
 import useAuth from "../../../hooks/useAuth"
 import Deelnemers from "./Deelnemers"
 import { Alert } from "react-bootstrap"
+//import { GetMissie } from "./GetMissie"
 
-const MissieDetail = () => {
+const MissieDetail = async () => {
     const axiosPrivate = useAxiosPrivate()
     const [queryParam] = useSearchParams()
     const missieid = queryParam.get("missieid")
-
     const { auth } = useAuth();
     const currentUser = auth?.user
     const [isOrganisator, setIsOrganisator] = useState(false)
     const [isDeelnemer, setIsDeelnemer] = useState(false)
-    const [users, setUsers] = useState([])
-    const [etappes, setEtappes] = useState([])
 
     const { data: missiedetail, isLoading, error, isValidating } =
         useSWR(`GetMissieDetail_${missieid}`, async () => { const response = await axiosPrivate(`${axiosUrls('MissieDetails')}/${missieid}`); return response.data }, {
@@ -42,7 +40,7 @@ const MissieDetail = () => {
             <Alert variant='primary'>
                 Deelnemers
             </Alert>
-            <Deelnemers missieid={missieid} setUsers={setUsers} isOrganisator={isOrganisator} setIsOrganisator={setIsOrganisator} setIsDeelnemer={setIsDeelnemer} currentUser={currentUser}/>
+            {/* <Deelnemers missieid={missieid} setUsers={setUsers} isOrganisator={isOrganisator} setIsOrganisator={setIsOrganisator} setIsDeelnemer={setIsDeelnemer} currentUser={currentUser}/> */}
         </>
     )
 }

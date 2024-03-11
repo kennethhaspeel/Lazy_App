@@ -8,36 +8,36 @@ import SuspenseParagraaf from "../../../components/SuspenseParagraaf"
 import { Button, Card, Row, Col, CardGroup, Image, ListGroup } from "react-bootstrap"
 import { DateToDDMMYYYY } from "../../../components/DatumFuncties"
 import { FaThumbsUp, FaThumbsDown } from "react-icons/fa6"
+import { useQuery,useMutation, useQueryClient } from "@tanstack/react-query"
 import { ErrorBoundary } from "react-error-boundary"
 import ErrorFallback from "../../../components/ErrorFallback"
 
 const MissieOverzicht = () => {
-
+    const queryClient = useQueryClient();
     const axiosPrivate = useAxiosPrivate();
     const navigate = useNavigate()
+const {data: missions,isLoading} = useQuery({
+    queryFn: async ()=>{
+        const response = await axiosPrivate.get(axiosUrls('GetOverzichtMissies')); return response.data 
+    },
+    queryKey: ["MissieLijst"],
+})
 
-    const { data: missions, isLoading, isValidating } =
-        useSWR('GetMissions', async () => { const response = await axiosPrivate.get(axiosUrls('GetOverzichtMissies')); return response.data }, {
-            revalidateOnFocus: false,
-            onSuccess(data, key, config) {
-                console.log(data)
-            },
-            onErrorRetry: (error, key, config, revalidate, { retryCount }) => {
-                if (error.status === 404) return
-                if (retryCount >= 3) return
-                revalidate({ retryCount })
-            }
-
-
-        })
-
+const {mutateAsync: addMissie, isLoading: LoadUpdate} = useMutation({
+    mutationFn: async ()=>{
+console.log("gelukt")
+    },
+    onSuccess:()=>{
+        queryClient.invalidateQueries(["MissieLijst"])
+    }
+})
 
     return (
-        isLoading ? (<SuspenseParagraaf />) :
+        isLoading || LoadUpdate ? (<SuspenseParagraaf />) :
             (
                 <main>
                     <h2>Mission List</h2>
-
+<button onClick={addMissie}>Klik</button>
                     <CardGroup>
                         {
                             missions?.map((mission) => {

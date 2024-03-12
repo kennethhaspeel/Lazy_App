@@ -3,9 +3,6 @@ import Footer from "./Footer";
 import { Outlet } from "react-router-dom";
 import useAuth from "../../hooks/useAuth"
 
-import { ThreeCircles } from "react-loader-spinner";
-import { LoaderContainer, loader } from "react-global-loader";
-
 const Layout = () => {
   const { auth } = useAuth();
   return (

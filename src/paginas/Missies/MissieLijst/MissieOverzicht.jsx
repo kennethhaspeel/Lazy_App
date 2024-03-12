@@ -2,18 +2,29 @@ import useAxiosPrivate from "../../../hooks/useAxiosPrivate"
 import { useNavigate } from "react-router-dom"
 import { axiosUrls } from "../../../api/axios"
 import SuspenseParagraaf from "../../../components/SuspenseParagraaf"
-import { Button, Card, Row, Col, CardGroup, Image, ListGroup ,Modal} from "react-bootstrap"
-import { DateToDDMMYYYY } from "../../../components/DatumFuncties"
+import { Button, Card, Row, Col, CardGroup, Image, ListGroup ,Modal, Form, FloatingLabel} from "react-bootstrap"
+import { DateToDDMMYYYY, DateToYYYYMMDD } from "../../../components/DatumFuncties"
 import { FaThumbsUp, FaThumbsDown } from "react-icons/fa6"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 
 const MissieOverzicht = () => {
     const queryClient = useQueryClient();
     const axiosPrivate = useAxiosPrivate();
     const navigate = useNavigate()
-    const { toonModaal, setToonModaal } = useState(false)
+    const [ toonModaal, setToonModaal ] = useState(true)
+    const [nieuweMissie,setNieuweMissie]=useState({
+        titel:'',
+        omschrijving:'',
+        startdatum:new Date(),
+        einddatum: new Date(),
+        locatie: ''
+    })
+
+    useEffect(()=>{
+        console.log(nieuweMissie)
+    },[nieuweMissie])
 
     const { data: missions, isLoading } = useQuery({
         queryFn: async () => {
@@ -30,14 +41,25 @@ const MissieOverzicht = () => {
             queryClient.invalidateQueries(["MissieLijst"])
         }
     })
-    const handleClose = () => setToonModaal(false);
-    const handleShow = () => setToonModaal(true);
+    const AnnuleerNieuweMissie = ()=>{
+        console.log('nieuwe missie geannuleerd')
+        setToonModaal(false)
+    }
+    const BewaarNieuweMissie = (e)=>{
+        e.preventDefault
+        const form = e.currentTarget;
+        if (form.checkValidity() === false) {
+            e.stopPropagation();
+          }
+        console.log('nieuwe missie bewaren')
+        setToonModaal(false)
+    }
     return (
         isLoading || LoadUpdate ? (<SuspenseParagraaf />) :
             (
                 <>
                     <main>
-                        <h2>Mission List <Button variant="info" onClick={handleShow}>Nieuw Missie</Button> </h2>
+                        <h2>Mission List <Button variant="info" onClick={()=>{setToonModaal(true)}}>Nieuw Missie</Button> </h2>
                         <CardGroup>
                             {
                                 missions?.map((mission) => {
@@ -66,19 +88,81 @@ const MissieOverzicht = () => {
                         </CardGroup>
 
                     </main>
-                    <Modal show={toonModaal} onHide={handleClose}>
+                    <Modal show={toonModaal} onHide={()=>{setToonModaal(false)}}>
                         <Modal.Header closeButton>
-                            <Modal.Title>Modal heading</Modal.Title>
+                            <Modal.Title>Nieuwe missie aanmaken</Modal.Title>
                         </Modal.Header>
-                        <Modal.Body>Woohoo, you are reading this text in a modal!</Modal.Body>
-                        <Modal.Footer>
-                            <Button variant="secondary" onClick={handleClose}>
-                                Close
+                        <Modal.Body>
+                            <Form className="pt-1" onSubmit={BewaarNieuweMissie} name="FormNieuweMissie">
+                                <Form.Group className="mb-3">
+                                    <Form.Label>Titel</Form.Label>
+                                    <Form.Control 
+                                    type="text"
+                                    id="titel"
+                                    autoComplete="off"
+                                    value={nieuweMissie.titel}
+                                    placeholder="Geef een titel"
+                                    onChange={(e)=>setNieuweMissie({...nieuweMissie,titel: e.target.value})}
+                                    required
+                                    >
+                                    </Form.Control>
+                                </Form.Group>
+                                <Form.Group className="mb-3">
+                                    <Form.Label>Omschrijving</Form.Label>
+                                    <Form.Control 
+                                    type="text"
+                                    id="omschrijving"
+                                    autoComplete="off"
+                                    value={nieuweMissie.omschrijving}
+                                    placeholder="Geef een korte omschrijving"
+                                    onChange={(e)=>setNieuweMissie({...nieuweMissie,omschrijving: e.target.value})}
+                                    >
+                                    </Form.Control>
+                                </Form.Group>
+                                <Form.Group className="mb-3">
+                                    <Form.Label>Locatie</Form.Label>
+                                    <Form.Control 
+                                    type="text"
+                                    id="locatie"
+                                    autoComplete="off"
+                                    value={nieuweMissie.locatie}
+                                    placeholder="Wat is de algemene locatie"
+                                    onChange={(e)=>setNieuweMissie({...nieuweMissie,locatie: e.target.value})}
+                                    >
+
+                                    </Form.Control>
+                                </Form.Group>
+                                <Form.Group className="mb-3">
+                                    <Form.Label>Startdatum</Form.Label>
+                                    <Form.Control 
+                                    type="date"
+                                    id="startdatum"
+                                    autoComplete="off"
+                                    value={DateToYYYYMMDD(nieuweMissie.startdatum)}
+                                    onChange={(e)=>setNieuweMissie({...nieuweMissie,startdatum: e.target.value,einddatum: e.target.value})}
+                                    required
+                                    >
+
+                                    </Form.Control>
+                                </Form.Group>
+                                <Form.Group className="mb-3">
+                                    <Form.Label>Einddatum</Form.Label>
+                                    <Form.Control 
+                                    type="date"
+                                    id="einddatum"
+                                    autoComplete="off"
+                                    value={DateToYYYYMMDD(nieuweMissie.einddatum)}
+                                    onChange={(e)=>setNieuweMissie({...nieuweMissie,einddatum: e.target.value})}
+                                    required
+                                    >
+                                    </Form.Control>
+                                </Form.Group>
+<hr/>
+                            <Button variant="primary" type="submit">
+                                Bewaar
                             </Button>
-                            <Button variant="primary" onClick={handleClose}>
-                                Save Changes
-                            </Button>
-                        </Modal.Footer>
+                            </Form>
+                        </Modal.Body>
                     </Modal>
                 </>
             )

@@ -59,7 +59,7 @@ const MissieOverzicht = () => {
             (
                 <>
                     <main>
-                        <h2>Mission List <Button variant="info" onClick={()=>{setToonModaal(true)}}>Nieuw Missie</Button> </h2>
+                        <h2>Mission List <Button variant="info" onClick={handleShow}>Nieuw Missie</Button> </h2>
                         <CardGroup>
                             {
                                 missions?.map((mission) => {

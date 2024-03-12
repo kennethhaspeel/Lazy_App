@@ -1,7 +1,6 @@
 import { axiosUrls } from '../../../api/axios'
 import useAxiosPrivate from '../../../hooks/useAxiosPrivate'
 import { Modal } from 'react-bootstrap'
-import useSWR from "swr"
 import { Row, Col, Button } from 'react-bootstrap'
 import { FaTrash, FaPlus, FaFloppyDisk,FaRegSquarePlus  } from 'react-icons/fa6'
 import SuspenseParagraaf from '../../../components/SuspenseParagraaf'
@@ -14,19 +13,19 @@ const Deelnemers = ({ setUsers, isOrganisator, setIsOrganisator, setIsDeelnemer,
     const [saveEdits, setSaveEdits] = useState(false)
     const [showModalSelectDeelnemer, setShowModalSelectDeelnemer] = useState(false)
     const [showModalSelectOrganisator, setShowModalSelectOrganisator] = useState(false)
-
-    const { data: users, isLoading, isValidating,mutate } =
-        useSWR(`MissieDeelnemers_${missieid}`, async () => { const response = await axiosPrivate.get(`${axiosUrls('MissieDeelnemers')}/${missieid}`); return response.data }, {
-            revalidateOnFocus: false,
-            onSuccess(data, key, config) {
-                console.log(data)
-            },
-            onErrorRetry: (error, key, config, revalidate, { retryCount }) => {
-                if (error.status === 404) return
-                if (retryCount >= 3) return
-                revalidate({ retryCount })
-            }
-        })
+const users = []
+    // const { data: users, isLoading, isValidating,mutate } =
+    //     useSWR(`MissieDeelnemers_${missieid}`, async () => { const response = await axiosPrivate.get(`${axiosUrls('MissieDeelnemers')}/${missieid}`); return response.data }, {
+    //         revalidateOnFocus: false,
+    //         onSuccess(data, key, config) {
+    //             console.log(data)
+    //         },
+    //         onErrorRetry: (error, key, config, revalidate, { retryCount }) => {
+    //             if (error.status === 404) return
+    //             if (retryCount >= 3) return
+    //             revalidate({ retryCount })
+    //         }
+    //     })
 
     useEffect(() => {
         users?.length && CheckCurrentUser(users, currentUser, setIsOrganisator, setIsDeelnemer)

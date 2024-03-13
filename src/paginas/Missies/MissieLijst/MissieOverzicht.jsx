@@ -36,10 +36,10 @@ const MissieOverzicht = () => {
             return axiosPrivate.post(axiosUrls('NieuweMissie'),nieuwemissie);
         },
         onSuccess: nieuw => {
-            //queryClient.setQueryData(["missie",nieuw.id],nieuw)
+            queryClient.setQueryData(["missie",nieuw.id],nieuw)
             console.log(nieuw)
             setToonModaal(false)
-            queryClient.invalidateQueries(["MissieLijst"])
+            queryClient.invalidateQueries(["MissieLijst"], {exact: true})
         }
     })
     const AnnuleerNieuweMissie = () => {

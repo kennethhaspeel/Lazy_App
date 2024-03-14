@@ -22,6 +22,7 @@ export const GetMissieDagen = (startDatum, eindDatum) => {
 }
 
 export const DateToYYYYMMDD = (datum) => {
+    console.log(datum)
     return format(datum, "yyyy-MM-dd")
 }
 

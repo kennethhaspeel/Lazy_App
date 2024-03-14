@@ -17,14 +17,14 @@ const MissieOverzicht = () => {
     const [nieuweMissie, setNieuweMissie] = useState({
         titel: '',
         omschrijving: '',
-        startdatum: new Date(),
-        einddatum: new Date(),
+        startdatum: DateToYYYYMMDD(new Date()),
+        einddatum: DateToYYYYMMDD(new Date()),
         locatie: ''
     })
 
     const { data: missions, isLoading } = useQuery({
         queryFn: async () => {
-            const response = await axiosPrivate.get(axiosUrls('GetOverzichtMissies')); 
+            const response = await axiosPrivate.get(axiosUrls('GetOverzichtMissies'));
             console.log(response.data)
             return response.data
         },
@@ -33,13 +33,14 @@ const MissieOverzicht = () => {
 
     const { mutate: addMissie, isLoading: LoadUpdate } = useMutation({
         mutationFn: async (nieuwemissie) => {
-            return axiosPrivate.post(axiosUrls('NieuweMissie'),nieuwemissie);
+            return axiosPrivate.post(axiosUrls('NieuweMissie'), nieuwemissie);
         },
         onSuccess: nieuw => {
-            queryClient.setQueryData(["missie",nieuw.id],nieuw)
+            console.log(nieuw)
+            queryClient.setQueryData(["missie", nieuw.id], nieuw)
             console.log(nieuw)
             setToonModaal(false)
-            queryClient.invalidateQueries(["MissieLijst"], {exact: true})
+            queryClient.invalidateQueries(["MissieLijst"], { exact: true })
         }
     })
     const AnnuleerNieuweMissie = () => {
@@ -54,7 +55,7 @@ const MissieOverzicht = () => {
         }
         console.log('nieuwe missie bewaren')
         addMissie(nieuweMissie)
-        
+
     }
     return (
         isLoading || LoadUpdate ? (<SuspenseParagraaf />) :
@@ -62,33 +63,35 @@ const MissieOverzicht = () => {
                 <>
                     <main>
                         <h2>Mission List <Button variant="info" onClick={() => { setToonModaal(true) }}>Nieuw Missie</Button> </h2>
-                        <CardGroup>
+                        <Row xs={1} md={2} xl={3}>
                             {
                                 missions?.map((mission) => {
                                     return (
-                                        <Card className="m-3" key={mission.id}>
-                                            <Card.Header className="text-center">
-                                                <Image src="https://placehold.co/150x150" thumbnail />
-                                            </Card.Header>
-                                            <Card.Body>
-                                                <Card.Title>{mission.titel}</Card.Title>
+                                        <Col key={mission.id}>
+                                            <Card className="m-3" key={mission.id}>
+                                                <Card.Header className="text-center">
+                                                    <Image src="https://placehold.co/150x150" thumbnail />
+                                                </Card.Header>
+                                                <Card.Body>
+                                                    <Card.Title>{mission.titel}</Card.Title>
 
-                                                <ListGroup variant="flush">
-                                                    <ListGroup.Item>Startdatum: {DateToDDMMYYYY(mission.startDatum)}</ListGroup.Item>
-                                                    <ListGroup.Item> Einddatum: {DateToDDMMYYYY(mission.eindDatum)}</ListGroup.Item>
-                                                    <ListGroup.Item>Deelnemer: {mission.isDeelnemer ? <span className="text-success "><FaThumbsUp /></span> : <span className="text-danger"><FaThumbsDown /></span>}</ListGroup.Item>
-                                                    <ListGroup.Item>Organisator: {mission.isOrganisator ? <span className="text-success "><FaThumbsUp /></span> : <span className="text-danger"><FaThumbsDown /></span>}</ListGroup.Item>
-                                                </ListGroup>
-                                            </Card.Body>
-                                            <Card.Footer>
-                                                {mission.isOrganisator ? <Button variant='info' onClick={() => { navigate({ pathname: '/missie/missiedetail', search: `?missieid=${mission.id}` }) }}>Details</Button> : <Button variant='info' disabled>Details</Button>}
-                                            </Card.Footer>
-                                        </Card>
+                                                    <ListGroup variant="flush">
+                                                        <ListGroup.Item>Startdatum: {DateToDDMMYYYY(mission.startDatum)}</ListGroup.Item>
+                                                        <ListGroup.Item> Einddatum: {DateToDDMMYYYY(mission.eindDatum)}</ListGroup.Item>
+                                                        <ListGroup.Item>Deelnemer: {mission.isDeelnemer ? <span className="text-success "><FaThumbsUp /></span> : <span className="text-danger"><FaThumbsDown /></span>}</ListGroup.Item>
+                                                        <ListGroup.Item>Organisator: {mission.isOrganisator ? <span className="text-success "><FaThumbsUp /></span> : <span className="text-danger"><FaThumbsDown /></span>}</ListGroup.Item>
+                                                    </ListGroup>
+                                                </Card.Body>
+                                                <Card.Footer>
+                                                    {mission.isOrganisator ? <Button variant='info' onClick={() => { navigate({ pathname: '/missie/missiedetail', search: `?missieid=${mission.id}` }) }}>Details</Button> : <Button variant='info' disabled>Details</Button>}
+                                                </Card.Footer>
+                                            </Card>
+                                        </Col>
                                     )
                                 })
                             }
-                        </CardGroup>
 
+                        </Row>
                     </main>
                     <Modal show={toonModaal} onHide={() => { setToonModaal(false) }}>
                         <Modal.Header closeButton>
@@ -140,7 +143,7 @@ const MissieOverzicht = () => {
                                         type="date"
                                         id="startdatum"
                                         autoComplete="off"
-                                        value={DateToYYYYMMDD(nieuweMissie.startdatum)}
+                                        value={nieuweMissie.startdatum}
                                         onChange={(e) => setNieuweMissie({ ...nieuweMissie, startdatum: e.target.value, einddatum: e.target.value })}
                                         required
                                     >
@@ -153,7 +156,7 @@ const MissieOverzicht = () => {
                                         type="date"
                                         id="einddatum"
                                         autoComplete="off"
-                                        value={DateToYYYYMMDD(nieuweMissie.einddatum)}
+                                        value={nieuweMissie.einddatum}
                                         onChange={(e) => setNieuweMissie({ ...nieuweMissie, einddatum: e.target.value })}
                                         required
                                     >

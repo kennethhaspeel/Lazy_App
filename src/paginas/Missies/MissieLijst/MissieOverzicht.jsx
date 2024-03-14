@@ -35,12 +35,18 @@ const MissieOverzicht = () => {
         mutationFn: async (nieuwemissie) => {
             return axiosPrivate.post(axiosUrls('NieuweMissie'), nieuwemissie);
         },
+        onError: (err, nieuwemissie,context)=>{
+            queryClient.setQueryData(["MissieLijst",context.vorigeMissies])
+        },
+        onSettled: ()=>{
+            queryClient.invalidateQueries(["MissieLijst"])
+        },
         onSuccess: nieuw => {
-            console.log(nieuw)
-            queryClient.setQueryData(["missie", nieuw.id], nieuw)
-            console.log(nieuw)
+
+            queryClient.setQueryData(["missie", nieuw.data.id], nieuw.data)
+
             setToonModaal(false)
-            queryClient.invalidateQueries(["MissieLijst"], { exact: true })
+            //queryClient.invalidateQueries(["MissieLijst"], { exact: true })
         }
     })
     const AnnuleerNieuweMissie = () => {
@@ -49,7 +55,7 @@ const MissieOverzicht = () => {
     }
     const BewaarNieuweMissie = (e) => {
         e.preventDefault
-        const form = e.currentTarget;
+        const form = document.getElementById('formNieuweMissie');
         if (form.checkValidity() === false) {
             e.stopPropagation();
         }
@@ -98,7 +104,7 @@ const MissieOverzicht = () => {
                             <Modal.Title>Nieuwe missie aanmaken</Modal.Title>
                         </Modal.Header>
                         <Modal.Body>
-                            <Form className="pt-1" onSubmit={BewaarNieuweMissie} name="FormNieuweMissie">
+                            <Form className="pt-1" id="formNieuweMissie">
                                 <Form.Group className="mb-3">
                                     <Form.Label>Titel</Form.Label>
                                     <Form.Control
@@ -163,7 +169,7 @@ const MissieOverzicht = () => {
                                     </Form.Control>
                                 </Form.Group>
                                 <hr />
-                                <Button variant="primary" type="submit">
+                                <Button variant="primary" type="button" onClick={BewaarNieuweMissie}>
                                     Bewaar
                                 </Button>
                             </Form>

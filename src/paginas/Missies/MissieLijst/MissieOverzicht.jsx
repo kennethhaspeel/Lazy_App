@@ -6,10 +6,12 @@ import { Button, Card, Row, Col, CardGroup, Image, ListGroup, Modal, Form, Float
 import { DateToDDMMYYYY, DateToYYYYMMDD } from "../../../components/DatumFuncties"
 import { FaThumbsUp, FaThumbsDown } from "react-icons/fa6"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
-import { useEffect, useState } from "react"
+import {  useState } from "react"
+
 
 
 const MissieOverzicht = () => {
+
     const queryClient = useQueryClient();
     const axiosPrivate = useAxiosPrivate();
     const navigate = useNavigate()
@@ -40,12 +42,14 @@ const MissieOverzicht = () => {
         },
         onSettled: ()=>{
             queryClient.invalidateQueries(["MissieLijst"])
+            
         },
         onSuccess: nieuw => {
 
             queryClient.setQueryData(["missie", nieuw.data.id], nieuw.data)
-
-            setToonModaal(false)
+            queryClient.invalidateQueries(["MissieLijst"])
+            navigate({ pathname: ('/Missie/MissieDetail'), search: `missieid=${nieuw.data.id}` })
+            //setToonModaal(false)
             //queryClient.invalidateQueries(["MissieLijst"], { exact: true })
         }
     })

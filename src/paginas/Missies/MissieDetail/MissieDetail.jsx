@@ -4,43 +4,45 @@ import { useState } from "react"
 import SuspenseParagraaf from "../../../components/SuspenseParagraaf"
 import { useSearchParams } from "react-router-dom"
 import useAuth from "../../../hooks/useAuth"
-import Deelnemers from "./Deelnemers"
+//import Deelnemers from "./Deelnemers"
 import { Alert } from "react-bootstrap"
+import { useQuery } from "@tanstack/react-query"
 //import { GetMissie } from "./GetMissie"
 
-const MissieDetail = async () => {
-    const axiosPrivate = useAxiosPrivate()
+const MissieDetail = () => {
+     const axiosPrivate = useAxiosPrivate()
     const [queryParam] = useSearchParams()
     const missieid = queryParam.get("missieid")
     const { auth } = useAuth();
     const currentUser = auth?.user
     const [isOrganisator, setIsOrganisator] = useState(false)
     const [isDeelnemer, setIsDeelnemer] = useState(false)
-const missiedetail = []
-    // const { data: missiedetail, isLoading, error, isValidating } =
-    //     useSWR(`GetMissieDetail_${missieid}`, async () => { const response = await axiosPrivate(`${axiosUrls('MissieDetails')}/${missieid}`); return response.data }, {
-    //         revalidateOnFocus: false,
-    //         onSuccess(data, key, config) {
-    //             console.log(data)
-    //         },
-    //         onErrorRetry: (error, key, config, revalidate, { retryCount }) => {
-    //             if (error.status === 404) return
-    //             if (retryCount >= 3) return
-    //             revalidate({ retryCount })
+
+    // const missieQuery = useQuery({
+    //     queryKey: ["MissieLijst",missieid],
+    //     queryFn: async()=>{
+    //         const params = {
+    //             id: missieid
     //         }
-    //     })
+    //         const response = await axiosPrivate.get(axiosUrls("MissieDetails"),{params})
+    //         console.log(response.data)
+    //         return response.data
+    //     }
+    // })
+// const missiedetail = []
+
+
     return (
         <>
             <Alert variant='info'>
                 <Alert.Heading>
-                    Missie {missiedetail?.titel}
+                    Missie 
                 </Alert.Heading>
             </Alert>
             <Alert variant='primary'>
                 Deelnemers
             </Alert>
-            {/* <Deelnemers missieid={missieid} setUsers={setUsers} isOrganisator={isOrganisator} setIsOrganisator={setIsOrganisator} setIsDeelnemer={setIsDeelnemer} currentUser={currentUser}/> */}
-        </>
+            </>
     )
 }
 

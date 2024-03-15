@@ -8,6 +8,8 @@ import useAuth from "../../../hooks/useAuth"
 import { Alert } from "react-bootstrap"
 import { useQuery } from "@tanstack/react-query"
 //import { GetMissie } from "./GetMissie"
+import Details from "./Details"
+import Deelnemers from "./Deelnemers"
 
 const MissieDetail = () => {
      const axiosPrivate = useAxiosPrivate()
@@ -18,17 +20,17 @@ const MissieDetail = () => {
     const [isOrganisator, setIsOrganisator] = useState(false)
     const [isDeelnemer, setIsDeelnemer] = useState(false)
 
-    // const missieQuery = useQuery({
-    //     queryKey: ["MissieLijst",missieid],
-    //     queryFn: async()=>{
-    //         const params = {
-    //             id: missieid
-    //         }
-    //         const response = await axiosPrivate.get(axiosUrls("MissieDetails"),{params})
-    //         console.log(response.data)
-    //         return response.data
-    //     }
-    // })
+    const {data:missie,isLoading: DetailsLoading,isError:DetailsError} = useQuery({
+        queryKey: ["missiedetail",missieid],
+        queryFn: async()=>{
+            const url = `${axiosUrls("MissieDetails")}/${missieid}`
+            const response = await axiosPrivate.get(url)
+            console.log(response.data)
+            return response.data
+        }
+    })
+
+
 // const missiedetail = []
 
 
@@ -36,12 +38,15 @@ const MissieDetail = () => {
         <>
             <Alert variant='info'>
                 <Alert.Heading>
-                    Missie 
+                    Missie {missie?.titel}
                 </Alert.Heading>
             </Alert>
+            <Details details={missie}/>
             <Alert variant='primary'>
                 Deelnemers
             </Alert>
+            <Deelnemers missieid={missieid} currentUser={currentUser} isOrganisator={isOrganisator} setIsOrganisator={setIsOrganisator}
+            isDeelnemer={isDeelnemer} setIsDeelnemer={setIsDeelnemer}/>
             </>
     )
 }

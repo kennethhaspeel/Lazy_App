@@ -1,174 +1,118 @@
-import { axiosUrls } from '../../../api/axios'
 import useAxiosPrivate from '../../../hooks/useAxiosPrivate'
-import { Modal } from 'react-bootstrap'
-import { Row, Col, Button } from 'react-bootstrap'
-import { FaTrash, FaPlus, FaFloppyDisk,FaRegSquarePlus  } from 'react-icons/fa6'
+import { axiosUrls } from '../../../api/axios'
+import { useQuery } from '@tanstack/react-query'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faFloppyDisk, faTrashCan, faPlus, faSquarePlus } from '@fortawesome/free-solid-svg-icons'
 import SuspenseParagraaf from '../../../components/SuspenseParagraaf'
-import { CheckCurrentUser } from '../__MissieDetail/functies'
-import { useEffect, useState } from 'react'
+import { Row, Col, Button } from 'react-bootstrap'
 
-const Deelnemers = ({ setUsers, isOrganisator, setIsOrganisator, setIsDeelnemer, missieid, currentUser }) => {
 
-    const axiosPrivate = useAxiosPrivate();
-    const [saveEdits, setSaveEdits] = useState(false)
-    const [showModalSelectDeelnemer, setShowModalSelectDeelnemer] = useState(false)
-    const [showModalSelectOrganisator, setShowModalSelectOrganisator] = useState(false)
-const users = []
-    // const { data: users, isLoading, isValidating,mutate } =
-    //     useSWR(`MissieDeelnemers_${missieid}`, async () => { const response = await axiosPrivate.get(`${axiosUrls('MissieDeelnemers')}/${missieid}`); return response.data }, {
-    //         revalidateOnFocus: false,
-    //         onSuccess(data, key, config) {
-    //             console.log(data)
-    //         },
-    //         onErrorRetry: (error, key, config, revalidate, { retryCount }) => {
-    //             if (error.status === 404) return
-    //             if (retryCount >= 3) return
-    //             revalidate({ retryCount })
-    //         }
-    //     })
+const Deelnemers = ({ missieid, currentUser, isOrganisator, setIsOrganisator, isDeelnemer, setIsDeelnemer }) => {
+    const axiosPrivate = useAxiosPrivate()
+    console.log(missieid)
+    const { data: missiedeelnemers, isLoading: DeelnemersLoading, isError: DeelnemersError } = useQuery({
+        queryKey: ["missiedeelnemers", missieid],
+        queryFn: async () => {
+            const url = `${axiosUrls("MissieDeelnemers")}/${missieid}`
+            const response = await axiosPrivate.get(url)
+            console.log(response.data)
+            checkOrganisator(response.data)
+            return response.data
+        }
+    })
 
-    useEffect(() => {
-        users?.length && CheckCurrentUser(users, currentUser, setIsOrganisator, setIsDeelnemer)
-    }, [users])
-
-    const ToggleOrganisator = async (userid) => {
-      
-        const list = users.map(obj => {
-            if (obj.id === userid) {
-                return { ...obj, isOrganisator: !obj.isOrganisator }
+    const checkOrganisator = (users) => {
+        users.forEach(u => {
+            if (currentUser.id === u.id) {
+                setIsOrganisator(u.isOrganisator)
+                setIsDeelnemer(u.isDeelnemer)
+                return
             }
-            return obj
+            return
         })
-        setSaveEdits(true)
     }
-
-    const ToggleDeelnemer = (userid) => {
-        const list = users.map(obj => {
-            if (obj.id === userid) {
-                return { ...obj, isDeelnemer: !obj.isDeelnemer }
-            }
-            return obj
-        })
-        mutate(list)
-        console.log(list)
-        setSaveEdits(true)
-    }
-
-    const handleCloseSelectDeelnemer = () => {
-        setShowModalSelectDeelnemer(false)
-    }
-    const handleCloseSelectOrganisator = () => {
-        setShowModalSelectOrganisator(false)
-    }
-
-    const handleSubmit = (e) => {
-        e.preventDefault()
-    }
+    if (DeelnemersError) return <h1>{JSON.stringify(DeelnemersError)}</h1>
+    if (DeelnemersLoading) return <SuspenseParagraaf />
     return (
         <>
             {
-                isLoading || isValidating ? (<SuspenseParagraaf />) :
-                    (
-                        users?.length ? (
-                            <>
-                                <Row className="mb-3">
-                                    <Col md={2} sm={12} >Organisatoren <Button variant="info" onClick={() => { setShowModalSelectOrganisator(true) }} ><FaPlus /></Button></Col>
-                                    <Col md={8} sm={12}>
-                                        {
-                                            users.filter((u) => { if (u.isOrganisator) { return true } else { return false } }).map((u) => (
-                                                <Button key={u.id} variant="danger" className='me-2 mb-2' onClick={() => { ToggleOrganisator(u.id); setSaveEdits(true) }}>
-                                                    <FaTrash /> {u.volledigeNaam}
+                missiedeelnemers?.length ? (
+                    <>
+                        <Row className="mb-3">
+                            <Col md={2} sm={12} >Organisatoren
+                                {isOrganisator ? (<Button variant="info"><FontAwesomeIcon icon={faPlus} /></Button>) : ''}
+                            </Col>
+                            <Col md={8} sm={12}>
+                                {
+                                    missiedeelnemers.filter((u) => { if (u.isOrganisator) { return true } else { return false } }).map((u) => (
+                                        isOrganisator ? (
+                                            <Button key={u.id} variant="info" className='me-2 mb-2'>
+                                                <FontAwesomeIcon icon={faTrashCan} /> {u.volledigeNaam}
+                                            </Button>
+                                        ) : (
+                                            <Button key={u.id} variant="info" className='me-2 mb-2' disabled>
+                                                {u.volledigeNaam}
+                                            </Button>
+                                        )
+
+                                    ))
+                                }
+                            </Col>
+                        </Row>
+                        <Row className="mb-3">
+                            <Col md={10} sm={12} >
+                                Deelnemers
+                                {isOrganisator ? (<Button variant="info"><FontAwesomeIcon icon={faPlus} /></Button>) : ''}
+                            </Col>
+                            <Col md={10} sm={12}>
+                                {
+
+                                    missiedeelnemers.filter((u) => { if (!u.isOrganisator && u.isDeelnemer) { return true } else { return false } })
+                                        .map((u) => (
+                                            !isOrganisator ? (
+                                                <Button
+                                                    key={u.id}
+                                                    variant="info"
+                                                    className='me-2 mb-2'
+                                                //onClick={() => { ToggleDeelnemer(u.id); setSaveEdits(true) }}
+                                                >
+                                                    <FontAwesomeIcon icon={faTrashCan} /> {u.volledigeNaam}
                                                 </Button>
-                                            ))
-                                        }
-                                    </Col>
-                                </Row>
-                                <Row className="mb-3">
-                                    <Col md={2} sm={12} >
-                                        Deelnemers
-                                        <Button variant="info" onClick={() => setShowModalSelectDeelnemer(true)} ><FaPlus /></Button>
-                                    </Col>
-                                    <Col md={8} sm={12}>
-                                        {
+                                            ) : (
+                                                <Button
+                                                    key={u.id}
+                                                    variant="info"
+                                                    className='me-2 mb-2'
+                                                    disabled
+                                                //onClick={() => { ToggleDeelnemer(u.id); setSaveEdits(true) }}
+                                                >
+                                                    {u.volledigeNaam}
+                                                </Button>
+                                            )
 
-                                            users.filter((u) => { if (!u.isOrganisator && u.isDeelnemer) { return true } else { return false } })
-                                                .map((u) => (
 
-                                                    <Button
-                                                        key={u.id}
-                                                        variant="info"
-                                                        className='me-2 mb-2'
-                                                        onClick={() => { ToggleDeelnemer(u.id); setSaveEdits(true) }}
-                                                    >
-                                                        <FaTrash /> {u.volledigeNaam}
-                                                    </Button>
-
-                                                ))
-                                        }
+                                        ))
+                                }
+                            </Col>
+                        </Row>
+                        {
+                            !isDeelnemer ? (
+                                <Row>
+                                    <Col md={{ span: 8, offset: 2 }} sm={12}>
+                                        <Button variant="success">Ik doe mee</Button>
                                     </Col>
                                 </Row>
 
-  
-                                <hr />
-                            </>
-                        ) : ('')
+                            ) : ('')
+                        }
+                        <hr />
+                    </>
+                )
+                    : (
+                        <p>'Geen deelnemers'</p>
                     )
-            }
 
-<Modal show={showModalSelectDeelnemer} onHide={handleCloseSelectDeelnemer}>
-        <Modal.Header closeButton>
-          <Modal.Title>Deelnemer toevoegen</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          {
-            users?.length && users.map(user => (
-              !user.isDeelnemer ?
-                (
-                  <Row key={user.id}>
-                    <Col className="d-grid gap-2 pb-2">
-                      <Button variant="success" onClick={() => { ToggleDeelnemer(user.id) }}>
-                      <FaRegSquarePlus/>  {user.volledigeNaam}
-                      </Button>
-                    </Col>
-                  </Row>
-                )
-                : ('')
-            ))
-          }
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleCloseSelectDeelnemer}>
-            Sluit
-          </Button>
-        </Modal.Footer>
-      </Modal>
-      <Modal show={showModalSelectOrganisator} onHide={handleCloseSelectOrganisator}>
-        <Modal.Header closeButton>
-          <Modal.Title>Deelnemer toevoegen</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          {
-            users?.length && users.map(user => (
-              (!user.isOrganisator && user.isDeelnemer) ?
-                (
-                  <Row key={user.id}>
-                    <Col className="d-grid gap-2 pb-2">
-                      <Button variant="success" onClick={() => { ToggleOrganisator(user.id) }}>
-                        <FaRegSquarePlus/> {user.volledigeNaam}
-                      </Button>
-                    </Col>
-                  </Row>
-                )
-                : ('')
-            ))
-          }
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleCloseSelectOrganisator}>
-            Sluit
-          </Button>
-        </Modal.Footer>
-      </Modal>
+            }
         </>
     )
 }

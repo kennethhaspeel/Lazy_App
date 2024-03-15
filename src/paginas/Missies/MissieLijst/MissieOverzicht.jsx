@@ -46,7 +46,7 @@ const MissieOverzicht = () => {
         },
         onSuccess: nieuw => {
 
-            queryClient.setQueryData(["missie", nieuw.data.id], nieuw.data)
+            queryClient.setQueryData(["missiedetail", nieuw.data.id], nieuw.data)
             queryClient.invalidateQueries(["MissieLijst"])
             navigate({ pathname: ('/Missie/MissieDetail'), search: `missieid=${nieuw.data.id}` })
             //setToonModaal(false)

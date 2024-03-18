@@ -31,7 +31,7 @@ const Deelnemers = ({
   } = useQuery({
     queryKey: ["missiedeelnemers", missieid],
     queryFn: async () => {
-      const url = `${axiosUrls("MissieDeelnemers")}/${missieid}`;
+      const url = `${axiosUrls("GetMissieDeelnemers")}/${missieid}`;
       const response = await axiosPrivate.get(url);
       // console.log(response.data)
       return response.data;
@@ -42,7 +42,7 @@ const Deelnemers = ({
     useMutation({
       mutationFn: async (deelnemer) => {
         return axiosPrivate.post(
-          axiosUrls("UpdateMissieDeelnemers"),
+          axiosUrls("UpdateMissieDeelnemer"),
           deelnemer
         );
       },
@@ -65,13 +65,13 @@ const Deelnemers = ({
   }, [missiedeelnemers]);
 
   const switchDeelnemer = (userId, naarDeelnemers, naarOrganisatoren) => {
-    console.log(naarDeelnemers, userId);
     const user = missiedeelnemers.filter((el) => {
-      return el.id === userId;
-    })[0];
-    user.isDeelnemer = naarDeelnemers;
-    user.isOrganisator = naarOrganisatoren;
-    console.log(user);
+      return el.id === userId
+    })[0]
+    user.isDeelnemer = naarDeelnemers
+    user.isOrganisator = naarOrganisatoren
+    user.MissieId = missieid
+    setMissieDeelnemer(user);
   };
   const handleCloseSelectDeelnemer = () => {
     setShowModalSelectDeelnemer(false);
@@ -125,8 +125,8 @@ const Deelnemers = ({
                       key={u.id}
                       variant="info"
                       className="me-2 mb-2"
-                      onclick={() => {
-                        switchOrganisator(u.id, false);
+                      onClick={() => {
+                        switchDeelnemer(u.id,true, false);
                       }}
                     >
                       <FontAwesomeIcon icon={faTrashCan} /> {u.volledigeNaam}
@@ -145,7 +145,7 @@ const Deelnemers = ({
             </Col>
           </Row>
           <Row className="mb-3">
-            <Col md={10} sm={12}>
+            <Col md={2} sm={12}>
               Deelnemers
               {isOrganisator ? (
                 <Button
@@ -171,13 +171,13 @@ const Deelnemers = ({
                   }
                 })
                 .map((u) =>
-                  !isOrganisator ? (
+                  isOrganisator ? (
                     <Button
                       key={u.id}
                       variant="info"
                       className="me-2 mb-2"
                       onClick={() => {
-                        switchDeelnemer(u.id, false);
+                        switchDeelnemer(u.id, false,false);
                       }}
                     >
                       <FontAwesomeIcon icon={faTrashCan} /> {u.volledigeNaam}
@@ -202,7 +202,7 @@ const Deelnemers = ({
                   <Button
                     variant="danger"
                     onClick={() => {
-                      switchDeelnemer(currentUser.id, false);
+                      switchDeelnemer(currentUser.id, false,false);
                     }}
                   >
                     Trek junder plan, ik doe nie mee

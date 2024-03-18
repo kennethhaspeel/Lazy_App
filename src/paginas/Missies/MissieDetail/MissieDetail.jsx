@@ -6,13 +6,12 @@ import { useSearchParams } from "react-router-dom"
 import useAuth from "../../../hooks/useAuth"
 //import Deelnemers from "./Deelnemers"
 import { Alert } from "react-bootstrap"
-import { useQuery } from "@tanstack/react-query"
+
 //import { GetMissie } from "./GetMissie"
 import Details from "./Details"
 import Deelnemers from "./Deelnemers"
 
 const MissieDetail = () => {
-     const axiosPrivate = useAxiosPrivate()
     const [queryParam] = useSearchParams()
     const missieid = queryParam.get("missieid")
     const { auth } = useAuth();
@@ -20,15 +19,7 @@ const MissieDetail = () => {
     const [isOrganisator, setIsOrganisator] = useState(false)
     const [isDeelnemer, setIsDeelnemer] = useState(false)
 
-    const {data:missie,isLoading: DetailsLoading,isError:DetailsError} = useQuery({
-        queryKey: ["missiedetail",missieid],
-        queryFn: async()=>{
-            const url = `${axiosUrls("MissieDetails")}/${missieid}`
-            const response = await axiosPrivate.get(url)
-            console.log(response.data)
-            return response.data
-        }
-    })
+
 
 
 // const missiedetail = []
@@ -36,17 +27,17 @@ const MissieDetail = () => {
 
     return (
         <>
-            <Alert variant='info'>
-                <Alert.Heading>
-                    Missie {missie?.titel}
-                </Alert.Heading>
-            </Alert>
-            <Details details={missie}/>
+
+<Alert variant='info'>
+        Details
+      </Alert>
+            <Details missieid={missieid}/>
+
             <Alert variant='primary'>
                 Deelnemers
             </Alert>
-            <Deelnemers missieid={missieid} currentUser={currentUser} isOrganisator={isOrganisator} setIsOrganisator={setIsOrganisator}
-            isDeelnemer={isDeelnemer} setIsDeelnemer={setIsDeelnemer}/>
+            {/* <Deelnemers missieid={missieid} currentUser={currentUser} isOrganisator={isOrganisator} setIsOrganisator={setIsOrganisator}
+            isDeelnemer={isDeelnemer} setIsDeelnemer={setIsDeelnemer}/> */}
             </>
     )
 }

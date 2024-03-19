@@ -18,7 +18,8 @@ const MissieDetail = () => {
     const currentUser = auth?.user
     const [isOrganisator, setIsOrganisator] = useState(false)
     const [isDeelnemer, setIsDeelnemer] = useState(false)
-
+    const [startdatum, setStartdatum] = useState()
+    const [einddatum, setEinddatum] = useState()
 
 
 
@@ -28,11 +29,10 @@ const MissieDetail = () => {
     return (
         <>
 
-<Alert variant='info'>
+<Alert variant='primary'>
         Details
       </Alert>
-            <Details missieid={missieid}/>
-
+            <Details missieid={missieid} setStartdatum={setStartdatum} setEinddatum={setEinddatum} isOrganisator={isOrganisator}/>
             <Alert variant='primary'>
                 Deelnemers
             </Alert>

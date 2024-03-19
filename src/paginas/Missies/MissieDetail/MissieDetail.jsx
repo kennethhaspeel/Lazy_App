@@ -36,8 +36,8 @@ const MissieDetail = () => {
             <Alert variant='primary'>
                 Deelnemers
             </Alert>
-            {/* <Deelnemers missieid={missieid} currentUser={currentUser} isOrganisator={isOrganisator} setIsOrganisator={setIsOrganisator}
-            isDeelnemer={isDeelnemer} setIsDeelnemer={setIsDeelnemer}/> */}
+            <Deelnemers missieid={missieid} currentUser={currentUser} isOrganisator={isOrganisator} setIsOrganisator={setIsOrganisator}
+            isDeelnemer={isDeelnemer} setIsDeelnemer={setIsDeelnemer}/>
             </>
     )
 }

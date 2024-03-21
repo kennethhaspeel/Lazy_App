@@ -1,6 +1,6 @@
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import { axiosUrls } from "../../../api/axios";
-import { QueryClient, useMutation, useQuery,useQueryClient } from "@tanstack/react-query";
+import { QueryClient, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faFloppyDisk,
@@ -22,8 +22,8 @@ const Deelnemers = ({
 }) => {
   const axiosPrivate = useAxiosPrivate();
   const queryClient = useQueryClient();
-  const [showModalSelectDeelnemer, setShowModalSelectDeelnemer] =    useState(false);
-  const [showModalSelectOrganisator, setShowModalSelectOrganisator] =    useState(false);
+  const [showModalSelectDeelnemer, setShowModalSelectDeelnemer] = useState(false);
+  const [showModalSelectOrganisator, setShowModalSelectOrganisator] = useState(false);
   const {
     data: missiedeelnemers,
     isLoading: DeelnemersLoading,
@@ -114,19 +114,19 @@ const Deelnemers = ({
                 })
                 .map((u) =>
                   isOrganisator &&
-                  missiedeelnemers.filter((u) => {
-                    if (u.isOrganisator) {
-                      return true;
-                    } else {
-                      return false;
-                    }
-                  }).length > 1 ? (
+                    missiedeelnemers.filter((u) => {
+                      if (u.isOrganisator) {
+                        return true;
+                      } else {
+                        return false;
+                      }
+                    }).length > 1 ? (
                     <Button
                       key={u.id}
                       variant="info"
                       className="me-2 mb-2"
                       onClick={() => {
-                        switchDeelnemer(u.id,true, false);
+                        switchDeelnemer(u.id, true, false);
                       }}
                     >
                       <FontAwesomeIcon icon={faTrashCan} /> {u.volledigeNaam}
@@ -177,7 +177,7 @@ const Deelnemers = ({
                       variant="info"
                       className="me-2 mb-2"
                       onClick={() => {
-                        switchDeelnemer(u.id, false,false);
+                        switchDeelnemer(u.id, false, false);
                       }}
                     >
                       <FontAwesomeIcon icon={faTrashCan} /> {u.volledigeNaam}
@@ -202,7 +202,7 @@ const Deelnemers = ({
                   <Button
                     variant="danger"
                     onClick={() => {
-                      switchDeelnemer(currentUser.id, false,false);
+                      switchDeelnemer(currentUser.id, false, false);
                     }}
                   >
                     Trek junder plan, ik doe nie mee
@@ -247,7 +247,7 @@ const Deelnemers = ({
                     <Button
                       variant="success"
                       onClick={() => {
-                        switchDeelnemer(user.id, true,false);
+                        switchDeelnemer(user.id, true, false);
                       }}
                     >
                       <FontAwesomeIcon icon={faSquarePlus} />{" "}
@@ -282,7 +282,7 @@ const Deelnemers = ({
                     <Button
                       variant="success"
                       onClick={() => {
-                        switchDeelnemer(user.id, true,true);
+                        switchDeelnemer(user.id, true, true);
                       }}
                     >
                       <FontAwesomeIcon icon={faSquarePlus} />{" "}

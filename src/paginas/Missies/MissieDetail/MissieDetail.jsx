@@ -10,6 +10,7 @@ import { Alert } from "react-bootstrap"
 //import { GetMissie } from "./GetMissie"
 import Details from "./Details"
 import Deelnemers from "./Deelnemers"
+import EtappeOverzicht from "./EtappeOverzicht"
 
 const MissieDetail = () => {
     const [queryParam] = useSearchParams()
@@ -23,22 +24,33 @@ const MissieDetail = () => {
 
 
 
-// const missiedetail = []
+    // const missiedetail = []
 
 
     return (
         <>
-
-<Alert variant='primary'>
-        Details
-      </Alert>
-            <Details missieid={missieid} setStartdatum={setStartdatum} setEinddatum={setEinddatum} isOrganisator={isOrganisator}/>
+            <Alert variant='primary'>
+                Etappes
+            </Alert>
+            {
+                startdatum != null && einddatum != null ? (
+                    <EtappeOverzicht missieId={missieid} startDatum={startdatum} eindDatum={einddatum} />
+                ) : (
+                    <SuspenseParagraaf />
+                )
+            }
+            <Alert variant='primary'>
+                Details
+            </Alert>
+            <Details missieid={missieid} setStartdatum={setStartdatum} setEinddatum={setEinddatum} isOrganisator={isOrganisator} />
             <Alert variant='primary'>
                 Deelnemers
             </Alert>
             <Deelnemers missieid={missieid} currentUser={currentUser} isOrganisator={isOrganisator} setIsOrganisator={setIsOrganisator}
-            isDeelnemer={isDeelnemer} setIsDeelnemer={setIsDeelnemer}/>
-            </>
+                isDeelnemer={isDeelnemer} setIsDeelnemer={setIsDeelnemer} />
+
+
+        </>
     )
 }
 

@@ -21,7 +21,7 @@ export const axiosUrls = (url) => {
         GetMissieDeelnemers: 'MissieDeelnemer/GetMissieDeelnemers',
         UpdateMissieDeelnemer: 'MissieDeelnemer/UpdateMissieDeelnemer',
 
-        GetMissieEtappes: 'MissieEtappe/GetMissieEtappes',
+        GetMissieEtappes: '/MissieEtappe/GetMissieEtappes',
         PostMissieEtappe: 'MissieEtappe/NieuweEtappe'
     }
 

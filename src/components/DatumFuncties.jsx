@@ -1,4 +1,4 @@
-import { format, parse,isEqual, isValid, parseISO, setHours, setMinutes } from 'date-fns'
+import { format, parse,getHours,getMinutes, isEqual, isValid, parseISO, setHours, setMinutes } from 'date-fns'
 
 
 Date.prototype.addDay = function (days) {
@@ -42,6 +42,11 @@ export const HHMM_To_date = (datum, tijd) => {
     date.setHours(times[0])
     date.setMinutes(times[1])
     return date
+}
+
+export const GetTijdFromDate = (datum)=>{
+    const date = new Date(datum)
+    return `${("0" + date.getHours()).slice(-2)}:${("0" + date.getMinutes()).slice(-2)}`
 }
 export const CompareDates = (date1,date2)=>{
     let datum1 = format(new Date(date1),'ddMMyyyy')

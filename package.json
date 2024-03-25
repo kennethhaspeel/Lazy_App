@@ -2,11 +2,11 @@
   "name": "lazy-app-js",
   "private": true,
   "version": "0.0.0",
-  "homepage":"https://kennethhaspeel.github.io/lazy_app",
+  "homepage":"https://app.lazy-company.be/",
   "type": "module",
   "scripts": {
     "predeploy":"npm run build",
-    "deploy":"gh-pages -d dist",
+    "deploy":"gh-pages -d dist --cname app.lazy-company.be",
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",

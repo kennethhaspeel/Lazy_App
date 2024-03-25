@@ -11,8 +11,10 @@ export default defineConfig(
   //   }
 
   // },
+  base:"/",
   plugins: [react()],
   build:{
-    sourcemap: true,
+    sourcemap: true
+    
   }
 })

@@ -23,6 +23,7 @@ const useRefreshToken = () => {
             }
         });
         sessionStorage.setItem('at',response.data.accessToken)
+        localStorage.setItem('rt', response?.data?.refreshtoken)
         return response.data.accessToken;
     }
     return refresh;

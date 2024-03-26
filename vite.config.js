@@ -14,9 +14,7 @@ export default defineConfig(
   base:"/",
   plugins: [react()],
   build:{
-    sourcemap: true,
-    outDir: '../build',
-    emptyOutDir: false
+    sourcemap: true
     
   }
 })

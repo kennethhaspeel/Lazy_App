@@ -1,6 +1,9 @@
 {
   "name": "lazy-app-js",
   "private": true,
+  "engines": {
+    "node": ">=20.0.0"
+  },
   "version": "0.0.0",
   "homepage":"https://app.lazy-company.be/",
   "type": "module",

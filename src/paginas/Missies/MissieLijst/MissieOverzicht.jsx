@@ -58,7 +58,7 @@ const MissieOverzicht = () => {
         setToonModaal(false)
     }
     const BewaarNieuweMissie = (e) => {
-        e.preventDefault
+        e.preventDefault()
         const form = document.getElementById('formNieuweMissie');
         if (form.checkValidity() === false) {
             e.stopPropagation();

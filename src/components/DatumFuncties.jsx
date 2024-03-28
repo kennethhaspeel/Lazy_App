@@ -37,7 +37,6 @@ export const DatumVoorbij = (datum)=>{
 
 export const HHMM_To_date = (datum, tijd) => {
     let date = parse(datum, "dd/MM/yyyy",new Date())
-    console.log(date)
     let times = tijd.split(':')
     date.setHours(times[0])
     date.setMinutes(times[1])

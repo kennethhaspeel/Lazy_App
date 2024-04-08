@@ -4,8 +4,10 @@ import { ErrorBoundary } from "react-error-boundary";
 import ErrorFallback from "../../../components/ErrorFallback";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import { axiosUrls } from "../../../api/axios";
-import { Alert, ListGroup, ListGroupItem, Button, Modal, Form } from "react-bootstrap"
+import { Alert, ListGroup, ListGroupItem, Button, Modal, Form, Row, Col,Accordion } from "react-bootstrap"
 import { useState } from "react";
+import { Link } from "react-router-dom";
+import { FaMagnifyingGlass } from "react-icons/fa6";
 
 const EtappeOverzicht = ({ missieId, startDatum, eindDatum }) => {
   const [nieuweEtappe, setNieuweEtappe] = useState({
@@ -42,7 +44,6 @@ console.log(response.data)
     },
     onSuccess: nieuw => {
         queryClient.invalidateQueries(['missieetappes', missieId])
-        //navigate({ pathname: ('/Missie/MissieDetail'), search: `missieid=${nieuw.data.id}` })
         setShowModalNieuweEtappe(false)
         //queryClient.invalidateQueries(["MissieLijst"], { exact: true })
     }
@@ -100,13 +101,25 @@ console.log(response.data)
                       {DateToDDMMYYYY(dag)} <Button className="ms-2" onClick={() => { EtappeToevoegen(dag) }}>Toevoegen</Button>
                     </Alert>
                     <div className="ms-3">
-                      <ListGroup key={dag.toString()}>
+
                         {
                           etappes.filter((etappe) => { return CompareDates(dag, etappe.startDatum) }).map((et) => {
-                            return <ListGroupItem key={et.id}>{et.titel} | {GetTijdFromDate(et.startDatum)}| {GetTijdFromDate(et.eindDatum)}</ListGroupItem>
+                            return <>
+                                      <Row key={et.id} className="pt-2">
+                                        <Col sm={6} lg={4}>{et.titel}  </Col>
+                                        <Col sm={2} lg={2}> {GetTijdFromDate(et.startDatum)}</Col>
+                                        <Col sm={2} lg={2}> {GetTijdFromDate(et.eindDatum)}</Col>
+                                        <Col sm={2} lg={2}> Bedrag</Col>
+                                        <Col sm={1} lg={2}>
+                                          <Button variant="outline-secondary">
+                                          <FaMagnifyingGlass />
+                                            </Button>
+                                        </Col>
+                                      </Row>
+                            </>
                           })
                         }
-                      </ListGroup>
+
                     </div>
 
                   </div>

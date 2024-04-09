@@ -41,6 +41,7 @@ const EtappeOverzicht = ({ missieId, startDatum, eindDatum }) => {
     eindUur: null,
   });
   const [showModalNieuweEtappe, setShowModalNieuweEtappe] = useState(false);
+  const [queryUitvoeren, setQueryUitvoeren] = useState(false)
   const axiosPrivate = useAxiosPrivate();
   const queryClient = useQueryClient();
   const missiedagen = GetMissieDagen(startDatum, eindDatum);
@@ -50,7 +51,8 @@ const EtappeOverzicht = ({ missieId, startDatum, eindDatum }) => {
     isLoadingKosten,
     isErrorKosten,
   } = useQuery({
-    queryKey: ["missieetappes", missieId],
+    queryKey: ["missieetappekosten", missieId],
+
     queryFn: async () => {
       const response = await axiosPrivate.get(
         `${axiosUrls("GetMissieEtappeKosten")}?missieid=${missieId}`
@@ -58,7 +60,9 @@ const EtappeOverzicht = ({ missieId, startDatum, eindDatum }) => {
       console.log(response.data);
       return response.data;
     },
+    enabled: queryUitvoeren
   });
+
   const {
     data: etappes,
     isLoading,
@@ -69,7 +73,8 @@ const EtappeOverzicht = ({ missieId, startDatum, eindDatum }) => {
       const response = await axiosPrivate.get(
         `${axiosUrls("GetMissieEtappes")}?missieid=${missieId}`
       );
-      console.log(response.data);
+      //console.log(response.data);
+      setQueryUitvoeren(true)
       return response.data;
     },
   });
@@ -140,6 +145,15 @@ const EtappeOverzicht = ({ missieId, startDatum, eindDatum }) => {
     };
     addEtappe(postData);
   };
+  const BerekenKostPerEtappe = (etappeId)=>{  
+    let bedrag = 0
+    etappekosten.map((e)=>{
+      if(e.etappeId == etappeId){
+        bedrag += e.bedrag
+      }
+    })
+    return bedrag.toFixed(2)
+  }
 
   return (
     <ErrorBoundary FallbackComponent={ErrorFallback}>
@@ -159,7 +173,7 @@ const EtappeOverzicht = ({ missieId, startDatum, eindDatum }) => {
                     Toevoegen
                   </Button>
                 </Alert>
-                <div className="ms-3">
+                <div className="ms-3" key={dag.toString()}>
                   {etappes
                     .filter((etappe) => {
                       return CompareDates(dag, etappe.startDatum);
@@ -169,19 +183,20 @@ const EtappeOverzicht = ({ missieId, startDatum, eindDatum }) => {
                         <>
                           <Row key={et.id} className="pt-2">
                             <Col sm={6} lg={4}>
-                              {et.titel}{" "}
+                              {et.titel}
                             </Col>
                             <Col sm={2} lg={2}>
-                              {" "}
+
                               {GetTijdFromDate(et.startDatum)}
                             </Col>
                             <Col sm={2} lg={2}>
-                              {" "}
+
                               {GetTijdFromDate(et.eindDatum)}
                             </Col>
-                            <Col sm={2} lg={2}>
-                              {" "}
-                              Bedrag
+                            <Col sm={2} lg={2} className="text-end">
+                              {etappekosten?.length ? (
+                                <p>{BerekenKostPerEtappe(et.id)}</p>
+                              ) : <p>geen kosten</p>}
                             </Col>
                             <Col sm={1} lg={2}>
                               <Button variant="outline-secondary">

@@ -1,10 +1,4 @@
-import {
-  CompareDates,
-  DateToDDMMYYYY,
-  GetMissieDagen,
-  GetTijdFromDate,
-  HHMM_To_date,
-} from "../../../components/DatumFuncties";
+import {  CompareDates,  DateToDDMMYYYY,  GetMissieDagen,  GetTijdFromDate,  HHMM_To_date} from "../../../components/DatumFuncties";
 import {
   QueryClient,
   useMutation,
@@ -16,6 +10,7 @@ import ErrorFallback from "../../../components/ErrorFallback";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import { axiosUrls } from "../../../api/axios";
 import {
+  Badge,
   Alert,
   ListGroup,
   ListGroupItem,
@@ -41,6 +36,12 @@ const EtappeOverzicht = ({ missieId, startDatum, eindDatum }) => {
     eindUur: null,
   });
   const [showModalNieuweEtappe, setShowModalNieuweEtappe] = useState(false);
+  const [showModalEtappeKosten, setShowModalEtappeKosten] = useState(false);
+  const [showModalEtappeKostToevoegen, setShowModalEtappeKostToevoegen] = useState(false);
+  const [etappeKostenFiltered, setEtappeKostenFiltered] = useState([])
+  const [etappeKostenFilteredTitel,setEtappeKostenFilteredTitel]=useState('')
+  const [etappeKostenFilteredId,setEtappeKostenFilteredId]=useState(0)
+  const[etappeKostNieuw, setEtappeKostNieuw]= useState({etappeid: 0,titel:'',bedrag:0})
   const [queryUitvoeren, setQueryUitvoeren] = useState(false)
   const axiosPrivate = useAxiosPrivate();
   const queryClient = useQueryClient();
@@ -155,13 +156,38 @@ const EtappeOverzicht = ({ missieId, startDatum, eindDatum }) => {
     return bedrag.toFixed(2)
   }
 
+  const ToonKostPerEtappe = (etappeid,titel)=>{
+    setEtappeKostenFilteredTitel(titel)
+    setEtappeKostenFilteredId(etappeid)
+    let kostenlijst = []
+    etappekosten.map((e)=>{
+      if(e.etappeId == etappeid){
+        kostenlijst.push(e)
+      }
+    })
+    console.log(kostenlijst)
+    setEtappeKostenFiltered(kostenlijst)
+    setShowModalEtappeKosten(true)
+  }
+
+  const BewaarEtappeKostNieuw=(e)=>{
+    console.log(etappeKostNieuw)
+    e.preventDefault()
+    const form = document.getElementById('formNieuweEtappeKost');
+    if (form.checkValidity() === false) {
+        e.stopPropagation();
+    }
+    
+  }
+
+
   return (
     <ErrorBoundary FallbackComponent={ErrorFallback}>
       {etappes?.length ? (
         missiedagen.length ? (
           missiedagen.map((dag) => {
             return (
-              <div className="ms-3 pb-3" key={dag.toString()}>
+              <div className="ms-3 pb-3" key={crypto.randomUUID()}>
                 <Alert variant="success">
                   {DateToDDMMYYYY(dag)}{" "}
                   <Button
@@ -173,7 +199,7 @@ const EtappeOverzicht = ({ missieId, startDatum, eindDatum }) => {
                     Toevoegen
                   </Button>
                 </Alert>
-                <div className="ms-3" key={dag.toString()}>
+                <div className="ms-3" key={crypto.randomUUID()}>
                   {etappes
                     .filter((etappe) => {
                       return CompareDates(dag, etappe.startDatum);
@@ -182,24 +208,26 @@ const EtappeOverzicht = ({ missieId, startDatum, eindDatum }) => {
                       return (
                         <>
                           <Row key={et.id} className="pt-2">
-                            <Col sm={6} lg={4}>
+                            <Col sm={6} lg={4} key={crypto.randomUUID()}>
                               {et.titel}
                             </Col>
-                            <Col sm={2} lg={2}>
+                            <Col sm={2} lg={2} key={crypto.randomUUID()}>
 
                               {GetTijdFromDate(et.startDatum)}
                             </Col>
-                            <Col sm={2} lg={2}>
+                            <Col sm={2} lg={2} key={crypto.randomUUID()}>
 
                               {GetTijdFromDate(et.eindDatum)}
                             </Col>
-                            <Col sm={2} lg={2} className="text-end">
+                            <Col sm={2} lg={2} className="text-end d-grid" key={crypto.randomUUID()}>
                               {etappekosten?.length ? (
-                                <p>{BerekenKostPerEtappe(et.id)}</p>
+                                <div className="text-right pe-4"  key={crypto.randomUUID()}>
+                                  {BerekenKostPerEtappe(et.id)}
+                                  </div>
                               ) : <p>geen kosten</p>}
                             </Col>
-                            <Col sm={1} lg={2}>
-                              <Button variant="outline-secondary">
+                            <Col sm={1} lg={2} key={crypto.randomUUID()}>
+                              <Button variant="outline-secondary"  onClick={()=>{ToonKostPerEtappe(et.id, et.titel)}}  key={crypto.randomUUID()}>
                                 <FaMagnifyingGlass />
                               </Button>
                             </Col>
@@ -219,7 +247,7 @@ const EtappeOverzicht = ({ missieId, startDatum, eindDatum }) => {
       )}
       <Modal show={showModalNieuweEtappe} onHide={handleCloseModalNieuweEtappe}>
         <Modal.Header closeButton>
-          <Modal.Title>Modal heading</Modal.Title>
+          <Modal.Title>Etappe Toevoegen</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form
@@ -288,6 +316,95 @@ const EtappeOverzicht = ({ missieId, startDatum, eindDatum }) => {
             <Button variant="primary" type="submit">
               Bewaar
             </Button>
+          </Form>
+        </Modal.Body>
+      </Modal>
+ 
+ 
+      <Modal show={showModalEtappeKosten} onHide={()=>{setShowModalEtappeKosten(false)}}>
+        <Modal.Header closeButton>
+          <Modal.Title>{etappeKostenFilteredTitel}</Modal.Title>
+        </Modal.Header>
+
+        <Modal.Body>
+          {etappeKostenFiltered.length > 0 ? (
+            
+              etappeKostenFiltered.map((kost)=>{
+                return <ListGroup>
+                  <ListGroup.Item as="li" className="d-flex justify-content-between align-items-start" >
+                  <div className="ms-2 me-auto">
+                  {kost.titel}
+                  </div>
+                  <div className="text-end">
+                    {kost.bedrag.toFixed(2)}
+                  </div>
+                  </ListGroup.Item>
+                  </ListGroup>
+              })
+            
+          ):(
+            <p>Geen kosten gevonden</p>
+          )}
+        </Modal.Body>
+
+        <Modal.Footer>
+          <Button variant="success" onClick={()=>{
+            setShowModalEtappeKosten(false)
+            setEtappeKostNieuw({ ...etappeKostNieuw, etappeid: etappeKostenFilteredId })
+            setShowModalEtappeKostToevoegen(true)
+            }}>Kost Toevoegen</Button>
+          <Button variant="secondary" onClick={()=>{setShowModalEtappeKosten(false)}}>Sluit</Button>
+        </Modal.Footer>
+      </Modal>
+
+      <Modal show={showModalEtappeKostToevoegen} onHide={() => setShowModalEtappeKostToevoegen(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Kost toevoegen: {etappeKostenFilteredTitel}</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form className="pt-1" id="formNieuweEtappeKost" onSubmit={BewaarEtappeKostNieuw}>
+            <Form.Group className="mb-3">
+              <Form.Label>Titel</Form.Label>
+              <Form.Control
+                type="text"
+                id="titel"
+                autoComplete="off"
+                value={etappeKostNieuw.titel}
+                placeholder="Geef een titel"
+                onChange={(e) => setEtappeKostNieuw({ ...etappeKostNieuw, titel: e.target.value })}
+                required
+              >
+              </Form.Control>
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Titel</Form.Label>
+              <Form.Control
+                type="number"
+                step="0.01"
+                id="titel"
+                autoComplete="off"
+                value={etappeKostNieuw.bedrag}
+                onChange={(e) => setEtappeKostNieuw({ ...etappeKostNieuw, bedrag: e.target.value })}
+                min='0.01'
+                required
+              >
+              </Form.Control>
+            </Form.Group>
+            <hr/>
+            <Row>
+              <Col className="d-grid">
+            <Button variant="secondary" onClick={() => setShowModalEtappeKostToevoegen(false)}>
+            Annuleer
+          </Button>                
+              </Col>
+              <Col className="d-grid">
+          <Button type="submit" variant="primary" >
+            Bewaar
+          </Button>
+              </Col>
+            </Row>
+
+
           </Form>
         </Modal.Body>
       </Modal>

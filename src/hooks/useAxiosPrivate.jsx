@@ -12,7 +12,7 @@ const useAxiosPrivate = () => {
         const requestIntercept = axiosPrivate.interceptors.request.use(
             async config => {
 
-                    console.log(`Token ongeldig? : ${isJwtTokenExpired(auth?.accessToken)}`)
+                    //console.log(`Token ongeldig? : ${isJwtTokenExpired(auth?.accessToken)}`)
                     if(isJwtTokenExpired(auth?.accessToken)){
                         const newAccessToken = await refresh()
                         console.log(`Nieuw accesstoken: ${newAccessToken}`)

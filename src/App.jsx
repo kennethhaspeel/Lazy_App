@@ -24,6 +24,7 @@ import TransactieToevoegen from "./paginas/financieel/TransactieToevoegen";
 // missie
 import MissieOverzicht from "./paginas/Missies/MissieLijst/MissieOverzicht";
 import MissieDetail from "./paginas/Missies/MissieDetail/MissieDetail";
+import KostToevoegen from "./paginas/Missies/MissieEtappeKost/KostToevoegen";
 
 const queryClient = new QueryClient()
 
@@ -53,6 +54,7 @@ function App() {
             <Route element={<AuthRequired allowedRoles={["gebruiker"]} />}>
               <Route path="MissieOverzicht" element={<MissieOverzicht />}></Route>
               <Route path="MissieDetail" element={<MissieDetail />}></Route>
+              <Route path="MissieEtappeKost" element={<KostToevoegen />}></Route>
             </Route>
           </Route>
           <Route path="identity">

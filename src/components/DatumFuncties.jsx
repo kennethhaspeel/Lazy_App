@@ -44,7 +44,7 @@ export const HHMM_To_date = (datum, tijd) => {
 }
 
 export const GetTijdFromDate = (datum)=>{
-    const date = new Date(datum)
+    const date = datum.length > 0 ? new Date(datum) : new Date()
     return `${("0" + date.getHours()).slice(-2)}:${("0" + date.getMinutes()).slice(-2)}`
 }
 export const CompareDates = (date1,date2)=>{

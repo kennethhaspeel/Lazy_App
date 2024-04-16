@@ -1,31 +1,18 @@
-import {  CompareDates,  DateToDDMMYYYY,  GetMissieDagen,  GetTijdFromDate,  HHMM_To_date} from "../../../components/DatumFuncties";
-import {
-  QueryClient,
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from "@tanstack/react-query";
+import { CompareDates, DateToDDMMYYYY, GetMissieDagen, GetTijdFromDate, HHMM_To_date } from "../../../components/DatumFuncties";
+import {  QueryClient,  useMutation,  useQuery,  useQueryClient,} from "@tanstack/react-query";
 import { ErrorBoundary } from "react-error-boundary";
 import ErrorFallback from "../../../components/ErrorFallback";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import { axiosUrls } from "../../../api/axios";
-import {
-  Badge,
-  Alert,
-  ListGroup,
-  ListGroupItem,
-  Button,
-  Modal,
-  Form,
-  Row,
-  Col,
-  Accordion,
-} from "react-bootstrap";
+import { Badge, Alert, ListGroup, ListGroupItem, Button, Modal, Form, Row, Col, Accordion } from "react-bootstrap";
 import { useState } from "react";
-import { Link } from "react-router-dom";
 import { FaMagnifyingGlass } from "react-icons/fa6";
+import { Link, useNavigate, useLocation, createSearchParams } from 'react-router-dom';
 
 const EtappeOverzicht = ({ missieId, startDatum, eindDatum }) => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from?.pathname || "/";
   const [nieuweEtappe, setNieuweEtappe] = useState({
     missieid: missieId,
     bedrag: 0,
@@ -39,9 +26,9 @@ const EtappeOverzicht = ({ missieId, startDatum, eindDatum }) => {
   const [showModalEtappeKosten, setShowModalEtappeKosten] = useState(false);
   const [showModalEtappeKostToevoegen, setShowModalEtappeKostToevoegen] = useState(false);
   const [etappeKostenFiltered, setEtappeKostenFiltered] = useState([])
-  const [etappeKostenFilteredTitel,setEtappeKostenFilteredTitel]=useState('')
-  const [etappeKostenFilteredId,setEtappeKostenFilteredId]=useState(0)
-  const[etappeKostNieuw, setEtappeKostNieuw]= useState({etappeid: 0,titel:'',bedrag:0})
+  const [etappeKostenFilteredTitel, setEtappeKostenFilteredTitel] = useState('')
+  const [etappeKostenFilteredId, setEtappeKostenFilteredId] = useState(0)
+  const [etappeKostNieuw, setEtappeKostNieuw] = useState({ etappeid: 0, titel: '', bedrag: 0 })
   const [queryUitvoeren, setQueryUitvoeren] = useState(false)
   const axiosPrivate = useAxiosPrivate();
   const queryClient = useQueryClient();
@@ -146,22 +133,22 @@ const EtappeOverzicht = ({ missieId, startDatum, eindDatum }) => {
     };
     addEtappe(postData);
   };
-  const BerekenKostPerEtappe = (etappeId)=>{  
+  const BerekenKostPerEtappe = (etappeId) => {
     let bedrag = 0
-    etappekosten.map((e)=>{
-      if(e.etappeId == etappeId){
+    etappekosten.map((e) => {
+      if (e.etappeId == etappeId) {
         bedrag += e.bedrag
       }
     })
     return bedrag.toFixed(2)
   }
 
-  const ToonKostPerEtappe = (etappeid,titel)=>{
+  const ToonKostPerEtappe = (etappeid, titel) => {
     setEtappeKostenFilteredTitel(titel)
     setEtappeKostenFilteredId(etappeid)
     let kostenlijst = []
-    etappekosten.map((e)=>{
-      if(e.etappeId == etappeid){
+    etappekosten.map((e) => {
+      if (e.etappeId == etappeid) {
         kostenlijst.push(e)
       }
     })
@@ -170,14 +157,14 @@ const EtappeOverzicht = ({ missieId, startDatum, eindDatum }) => {
     setShowModalEtappeKosten(true)
   }
 
-  const BewaarEtappeKostNieuw=(e)=>{
+  const BewaarEtappeKostNieuw = (e) => {
     console.log(etappeKostNieuw)
     e.preventDefault()
     const form = document.getElementById('formNieuweEtappeKost');
     if (form.checkValidity() === false) {
-        e.stopPropagation();
+      e.stopPropagation();
     }
-    
+
   }
 
 
@@ -188,7 +175,7 @@ const EtappeOverzicht = ({ missieId, startDatum, eindDatum }) => {
           missiedagen.map((dag) => {
             return (
               <div className="ms-3 pb-3" key={crypto.randomUUID()}>
-                <Alert variant="success">
+                <Alert variant="success"  key={crypto.randomUUID()}>
                   {DateToDDMMYYYY(dag)}{" "}
                   <Button
                     className="ms-2"
@@ -199,7 +186,7 @@ const EtappeOverzicht = ({ missieId, startDatum, eindDatum }) => {
                     Toevoegen
                   </Button>
                 </Alert>
-                <div className="ms-3" key={crypto.randomUUID()}>
+                <div className="ms-3" key={DateToDDMMYYYY(dag)}>
                   {etappes
                     .filter((etappe) => {
                       return CompareDates(dag, etappe.startDatum);
@@ -221,13 +208,13 @@ const EtappeOverzicht = ({ missieId, startDatum, eindDatum }) => {
                             </Col>
                             <Col sm={2} lg={2} className="text-end d-grid" key={crypto.randomUUID()}>
                               {etappekosten?.length ? (
-                                <div className="text-right pe-4"  key={crypto.randomUUID()}>
+                                <div className="text-right pe-4" key={crypto.randomUUID()}>
                                   {BerekenKostPerEtappe(et.id)}
-                                  </div>
+                                </div>
                               ) : <p>geen kosten</p>}
                             </Col>
                             <Col sm={1} lg={2} key={crypto.randomUUID()}>
-                              <Button variant="outline-secondary"  onClick={()=>{ToonKostPerEtappe(et.id, et.titel)}}  key={crypto.randomUUID()}>
+                              <Button variant="outline-secondary" onClick={() => { ToonKostPerEtappe(et.id, et.titel) }} key={crypto.randomUUID()}>
                                 <FaMagnifyingGlass />
                               </Button>
                             </Col>
@@ -319,95 +306,52 @@ const EtappeOverzicht = ({ missieId, startDatum, eindDatum }) => {
           </Form>
         </Modal.Body>
       </Modal>
- 
- 
-      <Modal show={showModalEtappeKosten} onHide={()=>{setShowModalEtappeKosten(false)}}>
+
+
+      <Modal show={showModalEtappeKosten} onHide={() => { setShowModalEtappeKosten(false) }}>
         <Modal.Header closeButton>
           <Modal.Title>{etappeKostenFilteredTitel}</Modal.Title>
         </Modal.Header>
 
         <Modal.Body>
           {etappeKostenFiltered.length > 0 ? (
-            
-              etappeKostenFiltered.map((kost)=>{
-                return <ListGroup>
-                  <ListGroup.Item as="li" className="d-flex justify-content-between align-items-start" >
+
+            etappeKostenFiltered.map((kost) => {
+              return <ListGroup>
+                <ListGroup.Item as="li" className="d-flex justify-content-between align-items-start" >
                   <div className="ms-2 me-auto">
-                  {kost.titel}
+                    {kost.titel}
                   </div>
                   <div className="text-end">
                     {kost.bedrag.toFixed(2)}
                   </div>
-                  </ListGroup.Item>
-                  </ListGroup>
-              })
-            
-          ):(
+                </ListGroup.Item>
+              </ListGroup>
+            })
+
+          ) : (
             <p>Geen kosten gevonden</p>
           )}
         </Modal.Body>
 
         <Modal.Footer>
-          <Button variant="success" onClick={()=>{
-            setShowModalEtappeKosten(false)
-            setEtappeKostNieuw({ ...etappeKostNieuw, etappeid: etappeKostenFilteredId })
-            setShowModalEtappeKostToevoegen(true)
-            }}>Kost Toevoegen</Button>
-          <Button variant="secondary" onClick={()=>{setShowModalEtappeKosten(false)}}>Sluit</Button>
+          <Button variant="success" onClick={() => {
+            const path = {
+              pathname: '/missie/MissieEtappeKost',
+              search: createSearchParams({
+                missieid: missieId,
+                etappeid: etappeKostenFilteredId
+              }).toString()
+            }
+            navigate(path)
+          }}>
+            Kost Toevoegen
+          </Button>
+          <Button variant="secondary" onClick={() => { setShowModalEtappeKosten(false) }}>Sluit</Button>
         </Modal.Footer>
       </Modal>
 
-      <Modal show={showModalEtappeKostToevoegen} onHide={() => setShowModalEtappeKostToevoegen(false)}>
-        <Modal.Header closeButton>
-          <Modal.Title>Kost toevoegen: {etappeKostenFilteredTitel}</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Form className="pt-1" id="formNieuweEtappeKost" onSubmit={BewaarEtappeKostNieuw}>
-            <Form.Group className="mb-3">
-              <Form.Label>Titel</Form.Label>
-              <Form.Control
-                type="text"
-                id="titel"
-                autoComplete="off"
-                value={etappeKostNieuw.titel}
-                placeholder="Geef een titel"
-                onChange={(e) => setEtappeKostNieuw({ ...etappeKostNieuw, titel: e.target.value })}
-                required
-              >
-              </Form.Control>
-            </Form.Group>
-            <Form.Group className="mb-3">
-              <Form.Label>Titel</Form.Label>
-              <Form.Control
-                type="number"
-                step="0.01"
-                id="titel"
-                autoComplete="off"
-                value={etappeKostNieuw.bedrag}
-                onChange={(e) => setEtappeKostNieuw({ ...etappeKostNieuw, bedrag: e.target.value })}
-                min='0.01'
-                required
-              >
-              </Form.Control>
-            </Form.Group>
-            <hr/>
-            <Row>
-              <Col className="d-grid">
-            <Button variant="secondary" onClick={() => setShowModalEtappeKostToevoegen(false)}>
-            Annuleer
-          </Button>                
-              </Col>
-              <Col className="d-grid">
-          <Button type="submit" variant="primary" >
-            Bewaar
-          </Button>
-              </Col>
-            </Row>
 
-
-          </Form>
-        </Modal.Body>
-      </Modal>
     </ErrorBoundary>
   );
 };

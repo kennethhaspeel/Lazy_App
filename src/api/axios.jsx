@@ -24,6 +24,7 @@ export const axiosUrls = (url) => {
         GetMissieEtappes: '/MissieEtappe/GetMissieEtappes',
         PostMissieEtappe: 'MissieEtappe/NieuweEtappe',
         GetMissieEtappeKosten: '/MissieEtappeKost/GetMissieEtappeKosten',
+        PostMissieEtappeKost: '/MissieEtappeKost/PostMissieEtappeKost',
     }
 
     return overzicht[url]

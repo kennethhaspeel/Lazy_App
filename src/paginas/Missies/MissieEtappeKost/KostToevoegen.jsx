@@ -1,36 +1,69 @@
 import { useSearchParams } from "react-router-dom"
-import { useQueryClient } from "@tanstack/react-query"
-import { Modal, Form,Button } from "react-bootstrap"
+import { Modal, Form, Button } from "react-bootstrap"
 import { useState } from "react"
 import { GetTijdFromDate } from "../../../components/DatumFuncties"
-const KostToevoegen = () => {
+import { useMutation,useQueryClient, useQuery } from "@tanstack/react-query"
+import { useNavigate, useLocation } from 'react-router-dom';
+import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
+import { axiosUrls } from "../../../api/axios";
 
+const KostToevoegen = () => {
+  const axiosPrivate = useAxiosPrivate();
+  const navigate = useNavigate();
   const queryClient = useQueryClient()
   const [queryParam] = useSearchParams()
   const etappeId = queryParam.get("etappeid")
   const missieId = queryParam.get("missieid")
-  const data = queryClient.getQueryData(["missiedeelnemers", missieId])
-const [verschuldigdDoor, setVerschuldigdDoor]=useState(false)
+
+  const [verschuldigdDoor, setVerschuldigdDoor] = useState(false)
   const [nieuweKost, setNieuweKost] = useState({
     etappeId: etappeId,
+    missieId: missieId,
     bedrag: 0,
     titel: "",
     locatie: "",
-    startUur: GetTijdFromDate(''),
-    eindUur: GetTijdFromDate(''),
-    betaaldDoor:'',
-    verschuldigdDoor: Array.from(data, (x)=> x.id)
+    betaaldDoor: 'a4bb6cd3-f8ad-468f-bc18-37ca7b93c4f1',
+    verschuldigdDoor: []
+  });
+  const {
+    data: missiedeelnemers,
+    isLoading: DeelnemersLoading,
+    isError: DeelnemersError,
+  } = useQuery({
+    queryKey: ["missiedeelnemers", missieId],
+    queryFn: async () => {
+      const url = `${axiosUrls("GetMissieDeelnemers")}/${missieId}`;
+      const response = await axiosPrivate.get(url);
+      // console.log(response.data)
+      let arr = Array.from(response?.data.filter((deel)=>deel.isDeelnemer || deel.isOrganisator),(x)=>x.id)
+      setNieuweKost({...nieuweKost, verschuldigdDoor: arr})
+      return response.data;
+    },
   });
 
+  const { mutate, isLoading } = useMutation({
+    mutationFn: async (kost) => {
+      console.log(kost)
+      return axiosPrivate.post(axiosUrls("PostMissieEtappeKost"), kost);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(["missieetappekost", missieId]);
+      navigate(`/missie/missiedetail?missieid=${missieId}`, { replace: true });
+    },
+  });
+
+
   const BewaarEtappeKostNieuw = (e) => {
-    console.log(nieuweKost)
+   
     e.preventDefault()
+
     const form = document.getElementById('formNieuweKost');
+     console.log(form.checkValidity() )
     if (form.checkValidity() === false) {
       e.stopPropagation();
 
     }
-
+    mutate(nieuweKost)
   }
 
   const handleVerschuldChange = (e) => {
@@ -44,8 +77,11 @@ const [verschuldigdDoor, setVerschuldigdDoor]=useState(false)
     setNieuweKost({ ...nieuweKost, verschuldigdDoor: arr })
   }
 
-  const buttonClick = ()=>{
+  const buttonClick = () => {
     console.log(nieuweKost.verschuldigdDoor)
+  }
+  if (isLoading) {
+    return <p>Gegevens worden bewaard ...</p>
   }
 
   return (
@@ -77,11 +113,12 @@ const [verschuldigdDoor, setVerschuldigdDoor]=useState(false)
               setNieuweKost({ ...nieuweKost, bedrag: e.target.value })
             }
             min="0.01"
+            step="0.01"
             required
           ></Form.Control>
         </Form.Group>
-        <Form.Group className="mb-3">
-          <Form.Label>Startdatum</Form.Label>
+        {/* <Form.Group className="mb-3">
+          <Form.Label>Starttijd</Form.Label>
           <Form.Control
             type="time"
             id="startdatum"
@@ -98,7 +135,7 @@ const [verschuldigdDoor, setVerschuldigdDoor]=useState(false)
           ></Form.Control>
         </Form.Group>
         <Form.Group className="mb-3">
-          <Form.Label>Einddatum</Form.Label>
+          <Form.Label>Eindtijd</Form.Label>
           <Form.Control
             type="time"
             id="einddatum"
@@ -107,19 +144,19 @@ const [verschuldigdDoor, setVerschuldigdDoor]=useState(false)
             onChange={(e) =>
               setNieuweKost({ ...nieuweKost, eindUur: e.target.value })
             }
-            required
+
           ></Form.Control>
-        </Form.Group>
-        <hr/>
+        </Form.Group> */}
+        <hr />
         <Form.Group className="mb-3">
           <Form.Label>Betaald door</Form.Label>
           <Form.Select>
             <option value="a4bb6cd3-f8ad-468f-bc18-37ca7b93c4f1" key="a4bb6cd3-f8ad-468f-bc18-37ca7b93c4f1">Rekening</option>
             {
-              data?.map((deel) => {
+              missiedeelnemers?.filter((deel)=>deel.isDeelnemer || deel.isOrganisator).map((deel) => {
                 return (
                   <option
-                  key={deel.id}
+                    key={deel.id}
                     value={deel.id}
                     onChange={() => {
                       setNieuweKost({ ...nieuweKost, betaaldDoor: e.target.value })
@@ -136,27 +173,27 @@ const [verschuldigdDoor, setVerschuldigdDoor]=useState(false)
         </Form.Group>
         <Form.Group className="mb-3">
           <Form.Label>Verschuldigd door</Form.Label>
-            {
-              data?.map((deel) => {
-                return (
-                <Form.Check 
-                type='checkbox' 
-                value={deel.id} 
-                key={deel.id} 
-                label={deel.volledigeNaam} 
-                isInvalid={verschuldigdDoor}
-                onChange={handleVerschuldChange} 
-defaultChecked={true}
+          {
+            missiedeelnemers?.filter((deel)=>deel.isDeelnemer || deel.isOrganisator).map((deel) => {
+              return (
+                <Form.Check
+                  type='checkbox'
+                  value={deel.id}
+                  key={deel.id}
+                  label={deel.volledigeNaam}
+                  isInvalid={verschuldigdDoor}
+                  onChange={handleVerschuldChange}
+                  defaultChecked={true}
                 />
               )
-              })
-            }
+            })
+          }
 
         </Form.Group>
         <hr />
-            <Button variant="primary" type="button" onClick={buttonClick} >
-              Bewaar
-            </Button>
+        <Button variant="primary" type="submit" >
+          Bewaar
+        </Button>
       </Form>
     </>
   )

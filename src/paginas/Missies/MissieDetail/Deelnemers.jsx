@@ -33,7 +33,7 @@ const Deelnemers = ({
     queryFn: async () => {
       const url = `${axiosUrls("GetMissieDeelnemers")}/${missieid}`;
       const response = await axiosPrivate.get(url);
-      // console.log(response.data)
+      console.log(response.data)
       return response.data;
     },
   });

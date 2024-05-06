@@ -117,36 +117,6 @@ const KostToevoegen = () => {
             required
           ></Form.Control>
         </Form.Group>
-        {/* <Form.Group className="mb-3">
-          <Form.Label>Starttijd</Form.Label>
-          <Form.Control
-            type="time"
-            id="startdatum"
-            autoComplete="off"
-            value={nieuweKost.startUur}
-            onChange={(e) =>
-              setNieuweKost({
-                ...nieuweKost,
-                startUur: e.target.value,
-                eindUur: e.target.value,
-              })
-            }
-            required
-          ></Form.Control>
-        </Form.Group>
-        <Form.Group className="mb-3">
-          <Form.Label>Eindtijd</Form.Label>
-          <Form.Control
-            type="time"
-            id="einddatum"
-            autoComplete="off"
-            value={nieuweKost.eindUur}
-            onChange={(e) =>
-              setNieuweKost({ ...nieuweKost, eindUur: e.target.value })
-            }
-
-          ></Form.Control>
-        </Form.Group> */}
         <hr />
         <Form.Group className="mb-3">
           <Form.Label>Betaald door</Form.Label>

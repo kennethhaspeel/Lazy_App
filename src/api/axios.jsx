@@ -4,8 +4,8 @@ import useAuth from '../hooks/useAuth';
 
 export const axiosUrls = (url) => {
     const overzicht = {
-         //base_url: 'https://lazy-api.azurewebsites.net',
-       base_url: 'https://localhost:7023',
+       //base_url: 'https://lazy-api.azurewebsites.net',
+         base_url: 'https://localhost:7023',
         login: '/Auth/login',
         loguit: 'Auth/loguit',
         registratie: 'Auth/registreer',
@@ -22,7 +22,7 @@ export const axiosUrls = (url) => {
         UpdateMissieDeelnemer: 'MissieDeelnemer/UpdateMissieDeelnemer',
 
         GetMissieEtappes: '/MissieEtappe/GetMissieEtappes',
-        PostMissieEtappe: 'MissieEtappe/NieuweEtappe',
+        PostMissieEtappe: 'MissieEtappe/PostNieuweEtappe',
         GetMissieEtappeKosten: '/MissieEtappeKost/GetMissieEtappeKosten',
         PostMissieEtappeKost: '/MissieEtappeKost/PostMissieEtappeKost',
     }

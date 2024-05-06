@@ -21,15 +21,20 @@ const MissieDetail = () => {
     const [isDeelnemer, setIsDeelnemer] = useState(false)
     const [startdatum, setStartdatum] = useState()
     const [einddatum, setEinddatum] = useState()
-
-
-
-    // const missiedetail = []
-
+    const [totaalKost,setTotaalKost]= useState(0)
 
     return (
         <>
-
+            <Alert variant='primary'>
+                Etappes (Totaalkost: &euro; {totaalKost})
+            </Alert>
+            {
+                startdatum != null && einddatum != null ? (
+                    <EtappeOverzicht missieId={missieid} startDatum={startdatum} eindDatum={einddatum} totaalKost={totaalKost} setTotaalKost={setTotaalKost} />
+                ) : (
+                    <SuspenseParagraaf />
+                )
+            }
             <Alert variant='primary'>
                 Details
             </Alert>
@@ -39,16 +44,7 @@ const MissieDetail = () => {
             </Alert>
             <Deelnemers missieid={missieid} currentUser={currentUser} isOrganisator={isOrganisator} setIsOrganisator={setIsOrganisator}
                 isDeelnemer={isDeelnemer} setIsDeelnemer={setIsDeelnemer} />
-            <Alert variant='primary'>
-                Etappes
-            </Alert>
-            {
-                startdatum != null && einddatum != null ? (
-                    <EtappeOverzicht missieId={missieid} startDatum={startdatum} eindDatum={einddatum} />
-                ) : (
-                    <SuspenseParagraaf />
-                )
-            }
+
 
         </>
     )

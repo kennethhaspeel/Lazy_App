@@ -16,6 +16,7 @@ const MissieOverzicht = () => {
     const axiosPrivate = useAxiosPrivate();
     const navigate = useNavigate()
     const [toonModaal, setToonModaal] = useState(false)
+
     const [nieuweMissie, setNieuweMissie] = useState({
         titel: '',
         omschrijving: '',
@@ -40,17 +41,10 @@ const MissieOverzicht = () => {
         onError: (err, nieuwemissie,context)=>{
             queryClient.setQueryData(["MissieLijst",context.vorigeMissies])
         },
-        onSettled: ()=>{
-            queryClient.invalidateQueries(["MissieLijst"])
-            
-        },
         onSuccess: nieuw => {
-
             queryClient.setQueryData(["missiedetail", nieuw.data.id], nieuw.data)
             queryClient.invalidateQueries(["MissieLijst"])
             navigate({ pathname: ('/Missie/MissieDetail'), search: `missieid=${nieuw.data.id}` })
-            //setToonModaal(false)
-            //queryClient.invalidateQueries(["MissieLijst"], { exact: true })
         }
     })
     const AnnuleerNieuweMissie = () => {

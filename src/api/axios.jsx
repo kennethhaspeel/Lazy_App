@@ -4,7 +4,7 @@ import useAuth from '../hooks/useAuth';
 
 export const axiosUrls = (url) => {
     const overzicht = {
-      //  base_url: 'https://lazy-api.azurewebsites.net',
+        //base_url: 'https://lazy-api.azurewebsites.net',
         base_url: 'https://localhost:7023',
         login: '/Auth/login',
         loguit: 'Auth/loguit',

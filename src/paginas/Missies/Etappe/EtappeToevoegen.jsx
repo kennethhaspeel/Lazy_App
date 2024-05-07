@@ -154,18 +154,24 @@ const EtappeToevoegen = () => {
                 <hr />
                 <Form.Group className="mb-3">
                     <Form.Label>Betaald door</Form.Label>
-                    <Form.Select>
-                        <option value="a4bb6cd3-f8ad-468f-bc18-37ca7b93c4f1" key="a4bb6cd3-f8ad-468f-bc18-37ca7b93c4f1">Rekening</option>
+                    <Form.Select
+                    onChange={(e) => {
+                            setNieuweEtappe({ ...nieuweEtappe, betaaldDoor: e.target.value })
+                            console.log(e.target.value)
+                        }
+                        }
+                    >
+                        <option 
+                        value="a4bb6cd3-f8ad-468f-bc18-37ca7b93c4f1" 
+                        key="a4bb6cd3-f8ad-468f-bc18-37ca7b93c4f1"
+                        
+                        >Rekening</option>
                         {
                             missiedeelnemers?.filter((deel) => deel.isDeelnemer || deel.isOrganisator).map((deel) => {
                                 return (
                                     <option
                                         key={deel.id}
                                         value={deel.id}
-                                        onChange={() => {
-                                            set({ ...nieuweEtappe, betaaldDoor: e.target.value })
-                                        }
-                                        }
                                     >
                                         {deel.volledigeNaam}
 

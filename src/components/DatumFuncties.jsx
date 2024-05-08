@@ -52,7 +52,12 @@ export const GetTijdFromDate = (datum) => {
 }
 export const CompareDates = (date1, date2) => {
     const custTime = '18:00:00.000'
+
+    console.log(parseISO(date2))
     let datum1 = format(new Date(date1), 'ddMMyyyy')
-    let datum2 = format(new Date(date2), 'ddMMyyyy')
+    let datum2 = format(parseISO(date2), 'ddMMyyyy')
+    console.log(`${datum1}: ${typeof datum1}`)
+    console.log(`${datum2}: ${typeof datum2}`)
+
     return datum1 === datum2 ? true : false
 }

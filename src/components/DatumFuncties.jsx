@@ -35,7 +35,7 @@ export const DateToDDMMYYYY = (datum) => {
 export const DatumVoorbij = (datum) => {
     let dat = new Date(datum)
     let vandaag = new Date()
-    return dat < vandaag
+    return dat < vandaag ? true:false
 }
 
 export const HHMM_To_date = (datum, tijd) => {
@@ -51,11 +51,7 @@ export const GetTijdFromDate = (datum) => {
     return `${("0" + date.getHours()).slice(-2)}:${("0" + date.getMinutes()).slice(-2)}`
 }
 export const CompareDates = (date1, date2) => {
-    console.log(parseISO(date2))
     let datum1 = format(new Date(date1), 'ddMMyyyy')
     let datum2 = format(parseISO(date2), 'ddMMyyyy')
-    console.log(`${datum1}: ${typeof datum1}`)
-    console.log(`${datum2}: ${typeof datum2}`)
-
     return datum1 === datum2 ? true : false
 }

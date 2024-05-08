@@ -12,14 +12,7 @@ import SuspenseParagraaf from "../../../components/SuspenseParagraaf";
 import { Row, Col, Button, Modal } from "react-bootstrap";
 import { useEffect, useState } from "react";
 
-const Deelnemers = ({
-  missieid,
-  currentUser,
-  isOrganisator,
-  setIsOrganisator,
-  isDeelnemer,
-  setIsDeelnemer,
-}) => {
+const Deelnemers = ({ missieid,  currentUser,  isOrganisator,  setIsOrganisator,  isDeelnemer,  setIsDeelnemer,missieAfgesloten}) => {
   const axiosPrivate = useAxiosPrivate();
   const queryClient = useQueryClient();
   const [showModalSelectDeelnemer, setShowModalSelectDeelnemer] = useState(false);
@@ -89,7 +82,7 @@ const Deelnemers = ({
           <Row className="mb-3">
             <Col md={2} sm={12}>
               Organisatoren
-              {isOrganisator ? (
+              {isOrganisator && !missieAfgesloten ? (
                 <Button
                   variant="info"
                   onClick={() => {
@@ -128,6 +121,7 @@ const Deelnemers = ({
                       onClick={() => {
                         switchDeelnemer(u.id, true, false);
                       }}
+                      disabled={missieAfgesloten}
                     >
                       <FontAwesomeIcon icon={faTrashCan} /> {u.volledigeNaam}
                     </Button>
@@ -147,7 +141,7 @@ const Deelnemers = ({
           <Row className="mb-3">
             <Col md={2} sm={12}>
               Deelnemers
-              {isOrganisator ? (
+              {isOrganisator && !missieAfgesloten ? (
                 <Button
                   variant="info"
                   onClick={() => {
@@ -179,6 +173,7 @@ const Deelnemers = ({
                       onClick={() => {
                         switchDeelnemer(u.id, false, false);
                       }}
+                      disabled={missieAfgesloten}
                     >
                       <FontAwesomeIcon icon={faTrashCan} /> {u.volledigeNaam}
                     </Button>

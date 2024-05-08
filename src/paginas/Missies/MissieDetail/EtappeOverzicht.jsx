@@ -10,7 +10,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFile, faImages, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from 'react-router-dom';
 
-const EtappeOverzicht = ({ missieId, startDatum, eindDatum, totaalKost, setTotaalKost }) => {
+const EtappeOverzicht = ({ missieId, startDatum, eindDatum, totaalKost, setTotaalKost,missieAfgesloten }) => {
     const navigate = useNavigate()
     const axiosPrivate = useAxiosPrivate();
     const [missiedata, setMissiedata] = useState([])
@@ -45,9 +45,12 @@ const EtappeOverzicht = ({ missieId, startDatum, eindDatum, totaalKost, setTotaa
                                 <div key={DateToDDMMYYYY(dag).toString()}>
                                     <ListGroup as="ul" className='pt-2 ps-4' key={`listgroup_${DateToDDMMYYYY(dag).toString()}`}>
                                         <ListGroup.Item as="li" variant='dark' key={'listgroupitem_0'}>
-                                            {index == 0 ? 'Algemeen' : DateToDDMMYYYY(dag)}<Button variant="info" className='ms-3' onClick={() => {
-                                                navigate({ pathname: ('/Missie/EtappeToevoegen'), search: `missieid=${missieId}&etappedatum=${DateToYYYYMMDDstring(dag)}` })
-                                            }}>Toevoegen</Button>
+                                            {index == 0 ? 'Algemeen' : DateToDDMMYYYY(dag)}
+                                            {!missieAfgesloten ? (
+                                                <Button variant="info" className='ms-3' disabled={missieAfgesloten} onClick={() => {navigate({ pathname: ('/Missie/EtappeToevoegen'), search: `missieid=${missieId}&etappedatum=${DateToYYYYMMDDstring(dag)}` })}}>
+                                                    Toevoegen
+                                                </Button>
+                                            ):('')}
                                         </ListGroup.Item>
                                         <ListGroup.Item key={'listgroupitem_01'} variant='secondary'>
                                             <Row>

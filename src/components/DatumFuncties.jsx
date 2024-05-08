@@ -51,6 +51,7 @@ export const GetTijdFromDate = (datum) => {
     return `${("0" + date.getHours()).slice(-2)}:${("0" + date.getMinutes()).slice(-2)}`
 }
 export const CompareDates = (date1, date2) => {
+    const custTime = '18:00:00.000'
     let datum1 = format(new Date(date1), 'ddMMyyyy')
     let datum2 = format(new Date(date2), 'ddMMyyyy')
     return datum1 === datum2 ? true : false

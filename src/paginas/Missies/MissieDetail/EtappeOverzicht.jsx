@@ -22,6 +22,7 @@ const EtappeOverzicht = ({ missieId, startDatum, eindDatum, totaalKost, setTotaa
             const response = await axiosPrivate.get(
                 `${axiosUrls("GetMissieEtappes")}?missieid=${missieId}`
             );
+            console.log(response.data)
             setMissiedata(GetMissieDagen(startDatum, eindDatum))
             return response.data;
         },
@@ -64,13 +65,9 @@ const EtappeOverzicht = ({ missieId, startDatum, eindDatum, totaalKost, setTotaa
                                         </ListGroup.Item>
                                          {
                                             etappes
-                                                .filter((etappe) => {
-                                                    return CompareDates(dag, etappe.datumTijd);
-                                                }).length > 0 ? (
+                                                .filter((etappe) =>  CompareDates(dag, etappe.datumTijd)).length > 0 ? (
                                                 etappes
-                                                    .filter((etappe) => {
-                                                        return CompareDates(dag, etappe.datumTijd);
-                                                    })
+                                                    .filter((etappe) => CompareDates(dag, etappe.datumTijd))
                                                     .map((et) => {
                                                         return (
                                                             <>

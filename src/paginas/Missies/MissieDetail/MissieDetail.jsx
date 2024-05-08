@@ -25,6 +25,16 @@ const MissieDetail = () => {
 
     return (
         <>
+
+            <Alert variant='primary'>
+                Details
+            </Alert>
+            <Details missieid={missieid} setStartdatum={setStartdatum} setEinddatum={setEinddatum} isOrganisator={isOrganisator} />
+            <Alert variant='primary'>
+                Deelnemers
+            </Alert>
+            <Deelnemers missieid={missieid} currentUser={currentUser} isOrganisator={isOrganisator} setIsOrganisator={setIsOrganisator}
+                isDeelnemer={isDeelnemer} setIsDeelnemer={setIsDeelnemer} />
             <Alert variant='primary'>
                 Etappes (Totaalkost: &euro; {totaalKost})
             </Alert>
@@ -35,16 +45,6 @@ const MissieDetail = () => {
                     <SuspenseParagraaf />
                 )
             }
-            <Alert variant='primary'>
-                Details
-            </Alert>
-            <Details missieid={missieid} setStartdatum={setStartdatum} setEinddatum={setEinddatum} isOrganisator={isOrganisator} />
-            <Alert variant='primary'>
-                Deelnemers
-            </Alert>
-            <Deelnemers missieid={missieid} currentUser={currentUser} isOrganisator={isOrganisator} setIsOrganisator={setIsOrganisator}
-                isDeelnemer={isDeelnemer} setIsDeelnemer={setIsDeelnemer} />
-
 
         </>
     )

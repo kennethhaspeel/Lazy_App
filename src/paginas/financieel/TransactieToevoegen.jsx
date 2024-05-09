@@ -1,203 +1,230 @@
-import { useState, useEffect } from 'react'
-import { axiosUrls } from '../../api/axios'
-import useAxiosPrivate from '../../hooks/useAxiosPrivate'
-import Button from 'react-bootstrap/Button'
-import Form from 'react-bootstrap/Form'
-import { Alert, Col, Row, Spinner } from 'react-bootstrap'
-import { format } from 'date-fns'
+import { Link, useNavigate, useLocation, useSearchParams } from 'react-router-dom';
+import useAxiosPrivate from '../../hooks/useAxiosPrivate';
+import { axiosUrls } from '../../api/axios';
+import { Form, Button, Col, Row, Alert } from 'react-bootstrap';
+import { useEffect, useState } from 'react';
+import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query"
+import { DateToYYYYMMDD, DatumVoorbij } from '../../components/DatumFuncties';
 
 const TransactieToevoegen = () => {
     const axiosPrivate = useAxiosPrivate();
-    const [isLoading, setIsLoading] = useState(true)
-    const [users, setUsers] = useState([])
-    const [selectedUser, setSelectedUser] = useState('')
-    const [bedrag, setBedrag] = useState(0)
-    const [datum, setDatum] = useState(format(new Date(), 'yyyy-MM-dd'))
-    const [mededeling, setMededeling] = useState('')
-    const [werkingkost, setWerkingkost] = useState(false)
-    const [allesInOrde, setAllesInOrde] = useState(true)
+    const queryClient = useQueryClient()
+    const [toonFoutmelding, setToonFoutmelding] = useState(false)
     const [foutmelding, setFoutmelding] = useState([])
-    const [allesBewaard, setAllesBewaard] = useState(false)
-    useEffect(() => {
-        const controller = new AbortController();
-        const getUsers = async () => {
-            try {
-                const response = await axiosPrivate.get(`${axiosUrls('GetAllUsers')}`, {
-                    signal: controller.signal
-                });
-                console.log(response.data)
-                setUsers(response.data);
-                setIsLoading(false);
-            } catch (err) {
-                console.error(err);
-                setIsLoading(false);
-            }
-        }
-        getUsers();
-        return () => {
-            controller.abort();
-        }
-    }, [])
+    const [nieuweTransactie, setNieuweTransactie] = useState({
+        datum: DateToYYYYMMDD(new Date()),
+        bedrag: 0,
+        mededeling: '',
+        deelnemer: true,
+        werkingskost: false,
+        missieUitgave: false,
+        appUserId: '0'
+    })
 
+    const {
+        data: allUsers,
+        isLoading: usersLoading,
+        isError: usersError,
+    } = useQuery({
+        queryKey: ["allUsers"],
+        queryFn: async () => {
+            const response = await axiosPrivate.get(axiosUrls("GetAllUsers"));
+            console.log(response.data)
+            return response.data;
+        },
+    });
+    const { mutate, isLoading } = useMutation({
+        mutationFn: async (kost) => {
+            console.log(kost)
+            return axiosPrivate.post(axiosUrls("NieuweTransactie"), kost);
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries(["spaarboekTransacties"]);
+        },
+    });
 
-    const handleSubmit = (e) => {
+    const handleFormSubmit = (e) => {
         e.preventDefault()
-        setAllesInOrde(true);
+        setToonFoutmelding(false)
         setFoutmelding([])
-        console.log(werkingkost, selectedUser)
-        if ((!werkingkost && selectedUser.length == 0) || (werkingkost && selectedUser.length > 0)) {
-            setFoutmelding(foutmelding => [...foutmelding, "Selecteer ofwel een persoon ofwel werkingskost"])
-            setAllesInOrde(false)
+        let allesOK = true;
+        if (!DatumVoorbij(nieuweTransactie.datum)) {
+            setFoutmelding(foutmelding => [...foutmelding, "Een datum in de toekomst is niet mogelijk"])
+            allesOK = false;
         }
-        if (bedrag == 0) {
-            setFoutmelding(foutmelding => [...foutmelding, "Een bedrag van 0 euro zou beetje belachelijk zijn"])
-            setAllesInOrde(false)
+        if (nieuweTransactie.deelnemer && nieuweTransactie.appUserId == '0') {
+            allesOK = false;
+            setFoutmelding(foutmelding => [...foutmelding, "U moet iemand selecteren"])
         }
 
-        if (allesInOrde) {
-            setIsLoading(true)
-            let data = JSON.stringify({ AppUserId: selectedUser, bedrag, datum, werkingkost, mededeling, voldaan: true })
-            const controller = new AbortController();
-            const bewaarTransactie = async () => {
-                try {
-                    const response = await axiosPrivate.post(`${axiosUrls('NieuweTransactie')}`, data, {
-                        signal: controller.signal
-                    });
-                    console.log(response.data)
-                    setAllesBewaard(true)
-                    setIsLoading(false);
-                } catch (err) {
-                    console.error(err);
-                    setIsLoading(false);
-                }
-
-            }
-            bewaarTransactie();
-            return () => {
-      
-                controller.abort();
-              }
+        if (allesOK) {
+            console.log(nieuweTransactie)
         }
+
     }
+
     useEffect(() => {
-        setSelectedUser('');
-        setBedrag(0)
-        setDatum(format(new Date(), 'yyyy-MM-dd'))
-        setWerkingkost(false)
-        setMededeling('')
-    }, [allesBewaard])
+        if (foutmelding.length > 0) {
+            setToonFoutmelding(true)
+        }
+    }, [foutmelding])
 
-    const toggleWerkingkost = () => {
-        setWerkingkost(prev => !prev);
-    }
+
     return (
         <>
-            <span>
-                {
-                    isLoading ?
-                        (
-                            <Alert variant='light'>
-                                Even geduld ... <Spinner animation="border" variant="primary" />
-                            </Alert>
-                        )
-                        :
-                        ('')
-                }
-            </span>
-            <span>
-                {allesBewaard ?
-                    (
-                        <Alert variant='success'>
-                            <p>Deze tranactie werd bewaard...</p>
-                        </Alert>
-                    )
-                    :
-                    ('')
-                }
-            </span>
-            <span>
-                {
-                    !allesInOrde ? (
-                        <Alert variant='danger'>
-                            <ul>
-                                {
-                                    foutmelding.map((m, i) => (
-                                        <li key={i}>{m}</li>
-                                    ))
-                                }
-                            </ul>
-                        </Alert>
-                    )
-                        : ('')
-                }
-            </span>
+            <h4>Transactie toevoegen</h4>
+            <Alert key='dangerAlert' variant='danger' hidden={!toonFoutmelding}>
+                <ul>
+                    {
+                        foutmelding.map((m, i) => (
+                            <li key={i}>{m}</li>
+                        ))
+                    }
+                </ul>
+            </Alert>
             <Row>
-                <Col xs={12} md={6}>
-                    <h2>Transactie Toevoegen</h2>
-                    <form onSubmit={handleSubmit}>
-
-                        <Form.Group className="mb-3">
-                            <Form.Label>Selecteer</Form.Label>
-                            <Form.Select aria-label="Selecteer persoon"
-                                onChange={(e) => setSelectedUser(e.target.value)}
-                                value={selectedUser}
-                            >
-                                <option>Selecteer</option>
-                                {
-                                    users.map((user) => (
-                                        <option key={user.id} value={user.id}>{user.volledigeNaam}</option>
-                                    ))
-                                }
-                            </Form.Select>
-                        </Form.Group>
-                        <Form.Group className="mb-3">
-                            <Form.Label>Bedrag</Form.Label>
-                            <Form.Control
-                                id="formBedrag"
-                                type="number"
-                                onChange={(e) => setBedrag(e.target.value)}
-                                value={bedrag}
-                            />
-                        </Form.Group>
+                <Col xs={12} lg={8}>
+                    <Form onSubmit={handleFormSubmit} id="formNieuweTransactie" className='pt-1'>
                         <Form.Group className="mb-3">
                             <Form.Label>Datum</Form.Label>
                             <Form.Control
-                                id="formDatum"
                                 type="date"
-                                onChange={(e) => setDatum(e.target.value)}
-                                value={datum}
-                            />
+                                id="startdatum"
+                                autoComplete="off"
+                                value={nieuweTransactie.datum}
+                                onChange={(e) => {
+                                    setNieuweTransactie({
+                                        ...nieuweTransactie,
+                                        datum: e.target.value
+                                    });
+                                    setToonFoutmelding(false)
+                                }
+                                }
+                                required
+                            ></Form.Control>
                         </Form.Group>
-
-                        <Form.Group className="mb-3">
-                            <Form.Check
-                                id="formWerking"
-                                type="checkbox"
-                                label="Werkingskost"
-                                onChange={toggleWerkingkost}
-                                checked={werkingkost}
-
-                            />
-                        </Form.Group>
-                        <Form.Group className="mb-3">
-                            <Form.Label>Mededeling</Form.Label>
-                            <Form.Control as="textarea"
-                                id="formMededeling"
-                                rows={3}
-                                onChange={(e) => setMededeling(e.target.value)}
-                                value={mededeling}
-                            />
-                        </Form.Group>
-
                         <hr />
+                        <Form.Group className="mb-3">
+                            <Row>
+                                <Col xs={1} lg={1}>
+                                    <Form.Check
+                                        id="radioDeelnemer"
+                                        type="radio"
+                                        aria-label="deelnemer"
+                                        onChange={() => {
+                                            setNieuweTransactie({ ...nieuweTransactie, deelnemer: !nieuweTransactie.deelnemer, werkingskost: false, missieUitgave: false })
+                                            setToonFoutmelding(false)
+                                        }}
+                                        checked={nieuweTransactie.deelnemer}
+                                        name='typeKost'
+
+                                    />
+                                </Col>
+                                <Col>
+                                    <Form.Select aria-label="Selecteer persoon"
+                                        onChange={(e) => {
+                                            setNieuweTransactie({ ...nieuweTransactie, appUserId: e.target.value, })
+                                            setToonFoutmelding(false)
+                                        }
+                                        }
+                                        value={nieuweTransactie.appUserId}
+                                        disabled={!nieuweTransactie.deelnemer}
+                                    >
+                                        <option value="0" key="00">Selecteer</option>
+                                        {
+                                            allUsers?.map((user) => (
+                                                <option key={user.id} value={user.id}>{user.volledigeNaam}</option>
+                                            ))
+                                        }
+                                    </Form.Select>
+                                </Col>
+                            </Row>
+
+
+                        </Form.Group>
+                        <Form.Group className="mb-3">
+                            <Row>
+                                <Col xs={1} lg={1}>
+                                    <Form.Check
+                                        id="radioWerking"
+                                        type="radio"
+                                        aria-label="Werkingskost"
+                                        onChange={() => {
+                                            setNieuweTransactie({ ...nieuweTransactie, werkingskost: !nieuweTransactie.werkingskost, deelnemer: false, missieUitgave: false })
+                                            setToonFoutmelding(false)
+                                        }}
+                                        checked={nieuweTransactie.werkingskost}
+                                        name='typeKost'
+
+                                    />
+                                </Col>
+                                <Col>
+                                    Werkingskost
+                                </Col>
+                            </Row>
+                        </Form.Group>
+                        <Form.Group className="mb-3">
+                            <Row>
+                                <Col xs={1} lg={1}>
+                                    <Form.Check
+                                        id="radioUitgave"
+                                        type="radio"
+                                        aria-label="Missie Uitgave"
+                                        onChange={() => {
+                                            setNieuweTransactie({ ...nieuweTransactie, missieUitgave: !nieuweTransactie.missieUitgave, werkingskost: false, deelnemer: false })
+                                            setToonFoutmelding(false)
+                                        }}
+                                        checked={nieuweTransactie.missieUitgave}
+                                        name='typeKost'
+                                    />
+                                </Col>
+                                <Col>
+                                    Missie Uitgave
+                                </Col>
+                            </Row>
+                        </Form.Group>
+                        <hr />
+                        <Form.Group className="mb-3">
+
+                            <Form.Label>Bedrag</Form.Label>
+                            <Form.Control
+                                type="number"
+                                id="bedrag"
+                                autoComplete="off"
+                                value={nieuweTransactie.bedrag}
+                                onChange={(e) => {
+                                    setNieuweTransactie({ ...nieuweTransactie, bedrag: e.target.value })
+                                    setToonFoutmelding(false)
+                                }}
+                                min="0.01"
+                                step="0.01"
+                                required
+                            ></Form.Control>
+                        </Form.Group>
+                        <hr />
+                        <Form.Group className="mb-3">
+                            <Form.Label>Titel</Form.Label>
+                            <Form.Control
+                                type="text"
+                                id="titel"
+                                autoComplete="off"
+                                value={nieuweTransactie.mededeling}
+                                placeholder="mededeling"
+                                onChange={(e) => {
+                                    setNieuweTransactie({ ...nieuweTransactie, mededeling: e.target.value })
+                                    setToonFoutmelding(false)
+                                }}
+
+                            ></Form.Control>
+                        </Form.Group>
                         <Button variant="primary" type="submit">
-                            Verstuur
+                            Bewaar
                         </Button>
-                    </form>
+                    </Form>
                 </Col>
             </Row>
-        </>
 
+        </>
     )
 }
 

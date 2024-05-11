@@ -71,6 +71,7 @@ const MissieDetail = () => {
           &nbsp;Alles werd bewaard
         </Alert>
       </div>
+
       <Alert variant="primary">Details</Alert>
       <Details
         missieid={missieid}

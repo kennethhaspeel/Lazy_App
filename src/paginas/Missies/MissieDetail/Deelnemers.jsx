@@ -123,7 +123,7 @@ const Deelnemers = ({ missieid,  currentUser,  isOrganisator,  setIsOrganisator,
                       }}
                       disabled={missieAfgesloten}
                     >
-                      <FontAwesomeIcon icon={faTrashCan} /> {u.volledigeNaam}
+                      {!missieAfgesloten ? <FontAwesomeIcon icon={faTrashCan} /> : ''}  {u.volledigeNaam}
                     </Button>
                   ) : (
                     <Button
@@ -175,7 +175,7 @@ const Deelnemers = ({ missieid,  currentUser,  isOrganisator,  setIsOrganisator,
                       }}
                       disabled={missieAfgesloten}
                     >
-                      <FontAwesomeIcon icon={faTrashCan} /> {u.volledigeNaam}
+                     {!missieAfgesloten ? <FontAwesomeIcon icon={faTrashCan} /> : ''}  {u.volledigeNaam}
                     </Button>
                   ) : (
                     <Button

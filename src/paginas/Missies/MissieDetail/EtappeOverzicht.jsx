@@ -31,18 +31,16 @@ const EtappeOverzicht = ({ missieId, startDatum, eindDatum, totaalKost, setTotaa
     })
 
     useEffect(() => {
-        etappes?.map((e) => {
-            return totaleKost += e.kost
-        })
+        etappes?.map(e =>  totaleKost += e.kost)
         setTotaalKost(totaleKost.toFixed(2))
     }, [etappes])
 
     return (
         <ErrorBoundary FallbackComponent={ErrorFallback}>
-            {isMobile ? (
+            {!isMobile ? (
                 missiedata?.length ? (
-                    missiedata?.map((dag, index) => {
-                        return (
+                    missiedata?.map((dag, index) =>
+                         
                             <div key={DateToDDMMYYYY(dag).toString()}>
                                 <ListGroup as="ul" className='pb-2' key={`listgroup_${DateToDDMMYYYY(dag).toString()}`}>
                                     <ListGroup.Item as="li" variant='dark' key={'listgroupitem_0'}>
@@ -60,8 +58,7 @@ const EtappeOverzicht = ({ missieId, startDatum, eindDatum, totaalKost, setTotaa
                                             .filter((etappe) => CompareDates(dag, etappe.datumTijd)).length > 0 ? (
                                             etappes
                                                 .filter((etappe) => CompareDates(dag, etappe.datumTijd))
-                                                .map((et, indexEt) => {
-                                                    return (
+                                                .map((et, indexEt) => 
                                                         <>
                                                             <Accordion.Item eventKey={indexEt} className='pb-1 pt-1 border-1 border-dark'>
                                                                 <Accordion.Header>
@@ -108,7 +105,7 @@ const EtappeOverzicht = ({ missieId, startDatum, eindDatum, totaalKost, setTotaa
                                                             </Accordion.Item>
                                                         </>
                                                     )
-                                                })
+                                                
                                         ) : (
                                             <Row>
                                                 <Col>Nog geen etappes</Col>
@@ -119,15 +116,14 @@ const EtappeOverzicht = ({ missieId, startDatum, eindDatum, totaalKost, setTotaa
                                     
                                 
                             </div>
-                        )
-                    })
+                        
+                    )
                 ) : <SuspenseParagraaf />
             ) : (
                 <div className='mb-3'>
                     {
                         missiedata?.length ? (
-                            missiedata?.map((dag, index) => {
-                                return (
+                            missiedata?.map((dag, index) => 
                                     <div key={DateToDDMMYYYY(dag).toString()}>
                                         <ListGroup as="ul" className='pt-2 ps-4' key={`listgroup_${DateToDDMMYYYY(dag).toString()}`}>
                                             <ListGroup.Item as="li" variant='dark' key={'listgroupitem_0'}>
@@ -157,8 +153,7 @@ const EtappeOverzicht = ({ missieId, startDatum, eindDatum, totaalKost, setTotaa
                                                     .filter((etappe) => CompareDates(dag, etappe.datumTijd)).length > 0 ? (
                                                     etappes
                                                         .filter((etappe) => CompareDates(dag, etappe.datumTijd))
-                                                        .map((et) => {
-                                                            return (
+                                                        .map((et) => 
                                                                 <>
                                                                     <ListGroup.Item key={`listgroupitem_${et.id.toString()}`}>
                                                                         <Row>
@@ -191,7 +186,7 @@ const EtappeOverzicht = ({ missieId, startDatum, eindDatum, totaalKost, setTotaa
                                                                     </ListGroup.Item>
                                                                 </>
                                                             )
-                                                        })
+                                                        
                                                 ) : (
                                                     <ListGroup.Item>
                                                         <Row>
@@ -205,7 +200,7 @@ const EtappeOverzicht = ({ missieId, startDatum, eindDatum, totaalKost, setTotaa
                                         </ListGroup>
                                     </div>
                                 )
-                            })
+                            
 
                         ) : (
                             <p>geen data gevonden</p>

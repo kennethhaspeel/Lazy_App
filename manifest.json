@@ -1,0 +1,18 @@
+{
+	"name": "Lazy Company Virtual HQ",
+	"short_name": "Lazy Company",
+	"description": "Ons Band-of-Brothers achtig archief",
+	"icons": [
+		{
+			"src": "/pwa/android-chrome-192x192.png",
+			"sizes": "192x192"
+		},
+		{
+			"src": "/pwa/android-chrome-512x512.png",
+			"sizes": "512x512"
+		}
+	],
+	"display": "standalone",
+	"start_url": "/",
+	"scope": "/"
+}

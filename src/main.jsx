@@ -18,3 +18,4 @@ ReactDOM.createRoot(document.getElementById('root')).render(
 
   //qlgk4fzvy4lu2ih2qmhsboanfm5c2olwokras7rckv4l426fs72a
 )
+//serviceWorker.register();

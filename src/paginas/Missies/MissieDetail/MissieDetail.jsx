@@ -72,7 +72,7 @@ const MissieDetail = () => {
         </Alert>
       </div>
 
-      <Alert variant="primary">Details</Alert>
+      <Alert variant="primary" key={"missiedetail"}>Details</Alert>
       <Details
         missieid={missieid}
         setStartdatum={setStartdatum}
@@ -81,7 +81,7 @@ const MissieDetail = () => {
         missieAfgesloten={missieAfgesloten}
         setMissieAfgesloten={setMissieAfgesloten}
       />
-      <Alert variant="primary">Deelnemers</Alert>
+      <Alert variant="primary" key={"missiedeelnemers"}>Deelnemers</Alert>
       <Deelnemers
         missieid={missieid}
         currentUser={currentUser}
@@ -92,7 +92,7 @@ const MissieDetail = () => {
         missieAfgesloten={missieAfgesloten}
         setMissieAfgesloten={setMissieAfgesloten}
       />
-      <Alert variant="primary">Etappes (Totaalkost: &euro; {totaalKost})</Alert>
+      <Alert variant="primary"  key={"missieetappes"}>Etappes (Totaalkost: &euro; {totaalKost})</Alert>
       {startdatum != null && einddatum != null ? (
         <EtappeOverzicht
           missieId={missieid}

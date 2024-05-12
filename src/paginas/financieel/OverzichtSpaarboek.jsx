@@ -10,6 +10,7 @@ const OverzichtSpaarboek = () => {
   const axiosPrivate = useAxiosPrivate();
   const [isLoading, setIsLoading] = useState(true)
   const [transacties, setTransacties] = useState([])
+  const [saldo, setSaldo]= useState(0)
 
   useEffect(() => {
     const controller = new AbortController();
@@ -33,6 +34,14 @@ const OverzichtSpaarboek = () => {
       controller.abort();
     }
   }, [])
+  useEffect(()=>{
+    let totaal = 0
+    if(transacties.length > 0){
+      transacties.map(t=>totaal += t.bedrag)
+    }
+    setSaldo(totaal)
+
+  },[transacties])
 
   return (
     <>
@@ -44,6 +53,10 @@ const OverzichtSpaarboek = () => {
           <>
             <Table striped bordered hover>
               <thead>
+                <tr>
+                  <th>Uw saldo:</th>
+                  <th colSpan={2}>&euro;&nbsp;{saldo}</th>
+                </tr>
                 <tr>
                   <th className='text-center col-lg-3'>Datum</th>
                   <th className='text-end pe-5 col-lg-3'>Bedrag</th>

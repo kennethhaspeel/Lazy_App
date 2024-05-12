@@ -60,7 +60,7 @@ const TransactieToevoegen = () => {
         if (allesOK) {
             console.log(nieuweTransactie)
         }
-
+mutate(nieuweTransactie)
     }
 
     useEffect(() => {

@@ -4,13 +4,14 @@ import useAuth from '../hooks/useAuth';
 
 export const axiosUrls = (url) => {
     const overzicht = {
-     //   base_url: 'https://lazy-api.azurewebsites.net',
-        base_url: 'https://localhost:7023',
+        base_url: 'https://lazy-api.azurewebsites.net',
+      //  base_url: 'https://localhost:7023',
         login: '/Auth/login',
         loguit: 'Auth/loguit',
         registratie: 'Auth/registreer',
         bevestigRegistratie: 'Auth/BevestigRegistratie',
         paswoordvergeten: 'Auth/PaswoordVergeten',
+        paswoordinstellen: 'Auth/PaswoordInstellen',
         GetOverzichtTransacties: 'Financieel/GetOverzichtTransacties',
         NieuweTransactie: 'Financieel/NieuweTransactie',
         GetAllUsers: 'user/GetAllUsers',

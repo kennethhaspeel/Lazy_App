@@ -40,6 +40,8 @@ const PaswoordVergeten = () => {
 
   return (
     <section>
+      <h2>Paswoord vergeten</h2>
+      <p>Geef het emailadres in waarmee u geregistreerd hebt. Binnen enkele minuten ontvangt u een mail met een link waarmee u uw paswoord opnieuw kunt instellen</p>
       {loading ? <Alert variant="info">Even geduld... </Alert> : ""}
       <Alert variant="danger" hidden={!hasError}>
         <p>{errMsg}</p>

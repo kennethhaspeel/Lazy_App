@@ -131,7 +131,8 @@ const Login = () => {
                                 </div>
                                 <button type="submit" className="btn btn-info mt-3">Inloggen</button>
                             </form>
-                            <p>Nog niet geregistreerd? Registreer <Link to='/registreer'>HIER</Link></p>
+                            <p>Nog niet geregistreerd? Registreer <Link to='/identity/registreer'>HIER</Link></p>
+                            <p>Paswoord vergeten? <Link to='/identity/paswoordvergeten'>Klik hier</Link> </p>
                         </section>
 
                     )

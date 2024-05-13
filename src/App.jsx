@@ -15,6 +15,7 @@ import Registreer from "./paginas/identity/Registreer";
 import RegistreerIngediend from "./paginas/identity/RegistreerIngediend";
 import Loguit from "./paginas/identity/Loguit";
 import PaswoordVergeten from "./paginas/identity/PaswoordVergeten";
+import PaswoordInstellen from "./paginas/identity/PaswoordInstellen";
 
 // financieel
 import Uitleg from "./paginas/financieel/Uitleg";
@@ -69,6 +70,7 @@ function App() {
           <Route path="registreer" element={<Registreer />}></Route>
           <Route path="loguit" element={<Loguit />}></Route>
           <Route path="paswoordvergeten" element={<PaswoordVergeten />}></Route>
+          <Route path="PaswoordInstellen" element={<PaswoordInstellen />}></Route>
         </Route>
         <Route path="*" element={<NietGevonden />}></Route>
       </Route>

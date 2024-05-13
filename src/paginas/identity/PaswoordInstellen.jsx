@@ -10,8 +10,8 @@ const PaswoordInstellen = () => {
     const UUID = queryParam.get("uuid");
     const Email = queryParam.get("email");
     const Token = queryParam.get("token");
-    const [paswoord, setPaswoord] = useState('8940@Wervik')
-    const [bevestigPaswoord, setBevestigPaswoord] = useState('8940@Wervik')
+    const [paswoord, setPaswoord] = useState('')
+    const [bevestigPaswoord, setBevestigPaswoord] = useState('')
     const [loading, setLoading] = useState(false);
     const [errMsg, setErrMsg] = useState("");
     const [hasError, setHasError] = useState(false);

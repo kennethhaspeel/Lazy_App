@@ -14,6 +14,7 @@ import BevestigRegistratie from "./paginas/identity/BevestigRegistratie";
 import Registreer from "./paginas/identity/Registreer";
 import RegistreerIngediend from "./paginas/identity/RegistreerIngediend";
 import Loguit from "./paginas/identity/Loguit";
+import PaswoordVergeten from "./paginas/identity/PaswoordVergeten";
 
 // financieel
 import Uitleg from "./paginas/financieel/Uitleg";
@@ -59,9 +60,6 @@ function App() {
               <Route path="EtappeToevoegen" element={<EtappeToevoegen />}></Route>
             </Route>
           </Route>
-          <Route path="identity">
-            <Route path="loguit" element={<Loguit />}></Route>
-          </Route>
         </Route>
         <Route path="identity">
           <Route path="login" element={<Login />}></Route>
@@ -69,6 +67,8 @@ function App() {
           <Route path="registreeringediend" element={<RegistreerIngediend />}></Route>
           <Route path="bevestigregistratie" element={<BevestigRegistratie />}></Route>
           <Route path="registreer" element={<Registreer />}></Route>
+          <Route path="loguit" element={<Loguit />}></Route>
+          <Route path="paswoordvergeten" element={<PaswoordVergeten />}></Route>
         </Route>
         <Route path="*" element={<NietGevonden />}></Route>
       </Route>

@@ -48,7 +48,7 @@ const Login = () => {
                     withCredentials: true
                 }
             );
-            console.log(response.data);
+            //console.log(response.data);
             const accessToken = response?.data?.accessToken;
             const rollen = response?.data?.rollen;
             const user = {
@@ -58,7 +58,7 @@ const Login = () => {
                 username: username,
                 id: response?.data?.id
             }
-            console.log(user)
+            //console.log(user)
             setAuth({ user, rollen, accessToken });
             sessionStorage.setItem('at',response.data.accessToken)
             localStorage.setItem('rt', response?.data?.refreshtoken)

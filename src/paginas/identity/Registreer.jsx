@@ -42,7 +42,8 @@ const Registreer = () => {
       busnr,
       postcode,
       gemeente,
-      geheimevraag
+      geheimevraag,
+      origin: window.location.origin
     }
 
     setLoading(true)
@@ -73,7 +74,7 @@ const Registreer = () => {
 
       <h2>Registreer</h2>
       {loading ? (<Alert variant='info'>Even geduld... Uw registratie wordt verwerkt</Alert>):('')}
-      <p ref={errRef} className={errMsg ? "errmsg" : "offscreen"} aria-live="assertive">{errMsg}</p>
+
       <Form className="pt-3" onSubmit={VerwerkRegistratie} name="RegistratieFormulier">
         <Row>
           <Col>

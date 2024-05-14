@@ -37,7 +37,7 @@ const EtappeOverzicht = ({ missieId, startDatum, eindDatum, totaalKost, setTotaa
 
     return (
         <ErrorBoundary FallbackComponent={ErrorFallback}>
-            {!isMobile ? (
+            {isMobile ? (
                 missiedata?.length ? (
                     missiedata?.map((dag, index) =>
                          

@@ -16,7 +16,8 @@ const MissieOverzicht = () => {
     const axiosPrivate = useAxiosPrivate();
     const navigate = useNavigate()
     const [toonModaal, setToonModaal] = useState(false)
-
+const [toonFout,setToonFout] = useState(false)
+const [fout, setFout] = useState('')
     const [nieuweMissie, setNieuweMissie] = useState({
         titel: '',
         omschrijving: '',
@@ -25,7 +26,7 @@ const MissieOverzicht = () => {
         locatie: ''
     })
 
-    const { data: missions, isLoading } = useQuery({
+    const { data: missions, isLoading, error, isError } = useQuery({
         queryFn: async () => {
             const response = await axiosPrivate.get(axiosUrls('GetOverzichtMissies'));
             console.log(response.data)
@@ -38,8 +39,9 @@ const MissieOverzicht = () => {
         mutationFn: async (nieuwemissie) => {
             return axiosPrivate.post(axiosUrls('NieuweMissie'), nieuwemissie);
         },
-        onError: (err, nieuwemissie,context)=>{
-            queryClient.setQueryData(["MissieLijst",context.vorigeMissies])
+        onError: (error)=>{
+            setFout(error.message)
+            setToonFout(true)
         },
         onSuccess: nieuw => {
             queryClient.setQueryData(["missiedetail", nieuw.data.id], nieuw.data)
@@ -67,6 +69,9 @@ const MissieOverzicht = () => {
                 <>
                     <main>
                         <h2>Mission List <Button variant="info" onClick={() => { setToonModaal(true) }}>Nieuw Missie</Button> </h2>
+                        {isError? (
+                            <p>{error.message}</p>
+                        ):('')}
                         <Row xs={1} md={2} xl={3}>
                             {
                                 missions?.map((mission) => {

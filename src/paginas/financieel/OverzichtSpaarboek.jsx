@@ -3,6 +3,7 @@ import { axiosUrls } from '../../api/axios';
 import useAxiosPrivate from '../../hooks/useAxiosPrivate';
 import { Table } from 'react-bootstrap';
 import { format, parseISO } from 'date-fns'
+import SuspenseParagraaf from '../../components/SuspenseParagraaf';
 
 
 const OverzichtSpaarboek = () => {
@@ -45,12 +46,13 @@ const OverzichtSpaarboek = () => {
 
   return (
     <>
-      <h2>{transacties?.length ? (`${transacties.length} transactie(s)`) : "Nog geen transacties"}</h2>
+      
       {
         isLoading ? (
-          <p>Loading...</p>
+          <SuspenseParagraaf/>
         ) : (
           <>
+          <h2>{transacties?.length ? (`${transacties.length} transactie(s)`) : "Nog geen transacties"}</h2>
             <Table striped bordered hover>
               <thead>
                 <tr>

@@ -8,6 +8,7 @@ import Image from 'react-bootstrap/Image';
 import logo from '../../assets/favicon-32x32.png'
 import { Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
+import { isMobile } from 'react-device-detect';
 
 const Header = ({ huidige_gebruiker }) => {
   const rollen = huidige_gebruiker?.rollen
@@ -47,6 +48,7 @@ const Header = ({ huidige_gebruiker }) => {
                   : ''
               }
             </Nav>
+            {isMobile ? (<hr/>):''}
             <Nav>
               {huidige_gebruiker?.rollen !== undefined ? (
                 <>

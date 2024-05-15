@@ -1,360 +1,217 @@
-import { CompareDates, DateToDDMMYYYY, GetMissieDagen, GetTijdFromDate, HHMM_To_date } from "../../../components/DatumFuncties";
-import {  QueryClient,  useMutation,  useQuery,  useQueryClient,} from "@tanstack/react-query";
-import { ErrorBoundary } from "react-error-boundary";
-import ErrorFallback from "../../../components/ErrorFallback";
+import { useQuery, } from '@tanstack/react-query'
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import { axiosUrls } from "../../../api/axios";
-import { Badge, Alert, ListGroup, ListGroupItem, Button, Modal, Form, Row, Col, Accordion } from "react-bootstrap";
-import { useState } from "react";
-import { FaMagnifyingGlass } from "react-icons/fa6";
-import { Link, useNavigate, useLocation, createSearchParams } from 'react-router-dom';
+import { ErrorBoundary } from 'react-error-boundary';
+import ErrorFallback from '../../../components/ErrorFallback';
+import { useState, useEffect } from 'react';
+import { CompareDates, DateToDDMMYYYY, GetMissieDagen, DateToYYYYMMDDstring } from '../../../components/DatumFuncties';
+import { Accordion, Button, ButtonGroup, Col, ListGroup, Row } from 'react-bootstrap';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faFile, faImages, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { useNavigate } from 'react-router-dom';
+import { isMobile } from 'react-device-detect'
+import SuspenseParagraaf from '../../../components/SuspenseParagraaf';
 
-const EtappeOverzicht = ({ missieId, startDatum, eindDatum }) => {
-  const navigate = useNavigate();
-  const location = useLocation();
-  const from = location.state?.from?.pathname || "/";
-  const [nieuweEtappe, setNieuweEtappe] = useState({
-    missieid: missieId,
-    bedrag: 0,
-    titel: "",
-    locatie: "",
-    datum: null,
-    startUur: null,
-    eindUur: null,
-  });
-  const [showModalNieuweEtappe, setShowModalNieuweEtappe] = useState(false);
-  const [showModalEtappeKosten, setShowModalEtappeKosten] = useState(false);
-  const [showModalEtappeKostToevoegen, setShowModalEtappeKostToevoegen] = useState(false);
-  const [etappeKostenFiltered, setEtappeKostenFiltered] = useState([])
-  const [etappeKostenFilteredTitel, setEtappeKostenFilteredTitel] = useState('')
-  const [etappeKostenFilteredId, setEtappeKostenFilteredId] = useState(0)
-  const [etappeKostNieuw, setEtappeKostNieuw] = useState({ etappeid: 0, titel: '', bedrag: 0 })
-  const [queryUitvoeren, setQueryUitvoeren] = useState(false)
-  const axiosPrivate = useAxiosPrivate();
-  const queryClient = useQueryClient();
-  const missiedagen = GetMissieDagen(startDatum, eindDatum);
+const EtappeOverzicht = ({ missieId, startDatum, eindDatum, totaalKost, setTotaalKost, missieAfgesloten }) => {
+    const navigate = useNavigate()
+    const axiosPrivate = useAxiosPrivate();
+    const [missiedata, setMissiedata] = useState([])
 
-  const {
-    data: etappekosten,
-    isLoadingKosten,
-    isErrorKosten,
-  } = useQuery({
-    queryKey: ["missieetappekosten", missieId],
-
-    queryFn: async () => {
-      const response = await axiosPrivate.get(
-        `${axiosUrls("GetMissieEtappeKosten")}?missieid=${missieId}`
-      );
-      console.log(response.data);
-      return response.data;
-    },
-    enabled: queryUitvoeren
-  });
-
-  const {
-    data: etappes,
-    isLoading,
-    isError,
-  } = useQuery({
-    queryKey: ["missieetappes", missieId],
-    queryFn: async () => {
-      const response = await axiosPrivate.get(
-        `${axiosUrls("GetMissieEtappes")}?missieid=${missieId}`
-      );
-      //console.log(response.data);
-      setQueryUitvoeren(true)
-      return response.data;
-    },
-  });
-
-  const { mutate: addEtappe, isLoading: LoadUpdate } = useMutation({
-    mutationFn: async (nieuweEtappe) => {
-      return axiosPrivate.post(axiosUrls("PostMissieEtappe"), nieuweEtappe);
-    },
-    onSettled: () => {
-      queryClient.invalidateQueries(["missieetappes", missieId]);
-    },
-    onSuccess: (nieuw) => {
-      queryClient.invalidateQueries(["missieetappes", missieId]);
-      setShowModalNieuweEtappe(false);
-      //queryClient.invalidateQueries(["MissieLijst"], { exact: true })
-    },
-  });
-
-  const EtappeToevoegen = (datum) => {
-    setShowModalNieuweEtappe(true);
-    setNieuweEtappe({
-      ...nieuweEtappe,
-      datum: datum,
-      startUur: "08:00",
-      eindUur: "08:00",
-    });
-  };
-
-  const handleCloseModalNieuweEtappe = () => {
-    setShowModalNieuweEtappe(false);
-    setNieuweEtappe({
-      missieid: missieId,
-      bedrag: 0,
-      titel: "",
-      locatie: "",
-      datum: new Date(),
-      startUur: null,
-      eindUur: null,
-    });
-  };
-
-  const bewaarNieuweEtappe = (e) => {
-    e.preventDefault();
-    console.log(nieuweEtappe);
-    const form = document.getElementById("formNieuweEtappe");
-    if (form.checkValidity() === false) {
-      e.stopPropagation();
-    }
-    console.log(
-      HHMM_To_date(DateToDDMMYYYY(nieuweEtappe.datum), nieuweEtappe.startUur)
-    );
-    console.log(
-      HHMM_To_date(DateToDDMMYYYY(nieuweEtappe.datum), nieuweEtappe.eindUur)
-    );
-    const postData = {
-      missieId: missieId,
-      titel: nieuweEtappe.titel,
-      locatie: nieuweEtappe.locatie,
-      startDatum: HHMM_To_date(
-        DateToDDMMYYYY(nieuweEtappe.datum),
-        nieuweEtappe.startUur
-      ),
-      eindDatum: HHMM_To_date(
-        DateToDDMMYYYY(nieuweEtappe.datum),
-        nieuweEtappe.eindUur
-      ),
-      bedrag: 0,
-    };
-    addEtappe(postData);
-  };
-  const BerekenKostPerEtappe = (etappeId) => {
-    let bedrag = 0
-    etappekosten.map((e) => {
-      if (e.etappeId == etappeId) {
-        bedrag += e.bedrag
-      }
-    })
-    return bedrag.toFixed(2)
-  }
-
-  const ToonKostPerEtappe = (etappeid, titel) => {
-    setEtappeKostenFilteredTitel(titel)
-    setEtappeKostenFilteredId(etappeid)
-    let kostenlijst = []
-    etappekosten.map((e) => {
-      if (e.etappeId == etappeid) {
-        kostenlijst.push(e)
-      }
-    })
-    console.log(kostenlijst)
-    setEtappeKostenFiltered(kostenlijst)
-    setShowModalEtappeKosten(true)
-  }
-
-  const BewaarEtappeKostNieuw = (e) => {
-    console.log(etappeKostNieuw)
-    e.preventDefault()
-    const form = document.getElementById('formNieuweEtappeKost');
-    if (form.checkValidity() === false) {
-      e.stopPropagation();
-    }
-
-  }
-
-
-  return (
-    <ErrorBoundary FallbackComponent={ErrorFallback}>
-      {etappes?.length ? (
-        missiedagen.length ? (
-          missiedagen.map((dag) => {
-            return (
-              <div className="ms-3 pb-3" key={`div_${DateToDDMMYYYY(dag)}`}>
-                <Alert variant="success"  key={`alert_${DateToDDMMYYYY(dag)}`}>
-                  {DateToDDMMYYYY(dag)}{" "}
-                  <Button
-                    className="ms-2"
-                    key={`btn_${DateToDDMMYYYY(dag)}`}
-                    onClick={() => {
-                      EtappeToevoegen(dag);
-                    }}
-                  >
-                    Toevoegen
-                  </Button>
-                </Alert>
-                <div className="ms-3" key={DateToDDMMYYYY(dag)}>
-                  {etappes
-                    .filter((etappe) => {
-                      return CompareDates(dag, etappe.startDatum);
-                    })
-                    .map((et) => {
-                      return (
-                        <>
-                          <Row key={et.id} className="pt-2">
-                            <Col sm={6} lg={4} key={crypto.randomUUID()}>
-                              {et.titel}
-                            </Col>
-                            <Col sm={2} lg={2} key={crypto.randomUUID()}>
-
-                              {GetTijdFromDate(et.startDatum)}
-                            </Col>
-                            <Col sm={2} lg={2} key={crypto.randomUUID()}>
-
-                              {GetTijdFromDate(et.eindDatum)}
-                            </Col>
-                            <Col sm={2} lg={2} className="text-end d-grid" key={crypto.randomUUID()}>
-                              {etappekosten?.length ? (
-                                <div className="text-right pe-4" key={crypto.randomUUID()}>
-                                  {BerekenKostPerEtappe(et.id)}
-                                </div>
-                              ) : <p>geen kosten</p>}
-                            </Col>
-                            <Col sm={1} lg={2} key={crypto.randomUUID()}>
-                              <Button variant="outline-secondary" onClick={() => { ToonKostPerEtappe(et.id, et.titel) }} key={crypto.randomUUID()}>
-                                <FaMagnifyingGlass />
-                              </Button>
-                            </Col>
-                          </Row>
-                        </>
-                      );
-                    })}
-                </div>
-              </div>
+    let totaleKost = 0
+    const { data: etappes, isLoading, isError } = useQuery({
+        queryKey: ["missieetappes", missieId],
+        queryFn: async () => {
+            const response = await axiosPrivate.get(
+                `${axiosUrls("GetMissieEtappes")}?missieid=${missieId}`
             );
-          })
-        ) : (
-          "Geen missiedagen"
-        )
-      ) : (
-        <p>geen data</p>
-      )}
-      <Modal show={showModalNieuweEtappe} onHide={handleCloseModalNieuweEtappe}>
-        <Modal.Header closeButton>
-          <Modal.Title>Etappe Toevoegen</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Form
-            className="pt-1"
-            id="formNieuweEtappe"
-            onSubmit={bewaarNieuweEtappe}
-          >
-            <Form.Group className="mb-3">
-              <Form.Label>Titel</Form.Label>
-              <Form.Control
-                type="text"
-                id="titel"
-                autoComplete="off"
-                value={nieuweEtappe.titel}
-                placeholder="Geef een titel"
-                onChange={(e) =>
-                  setNieuweEtappe({ ...nieuweEtappe, titel: e.target.value })
-                }
-                required
-              ></Form.Control>
-            </Form.Group>
-            <Form.Group className="mb-3">
-              <Form.Label>Locatie</Form.Label>
-              <Form.Control
-                type="text"
-                id="locatie"
-                autoComplete="off"
-                value={nieuweEtappe.locatie}
-                placeholder="Wat is de algemene locatie"
-                onChange={(e) =>
-                  setNieuweEtappe({ ...nieuweEtappe, locatie: e.target.value })
-                }
-              ></Form.Control>
-            </Form.Group>
-            <Form.Group className="mb-3">
-              <Form.Label>Startdatum</Form.Label>
-              <Form.Control
-                type="time"
-                id="startdatum"
-                autoComplete="off"
-                value={nieuweEtappe.startUur}
-                onChange={(e) =>
-                  setNieuweEtappe({
-                    ...nieuweEtappe,
-                    startUur: e.target.value,
-                    eindUur: e.target.value,
-                  })
-                }
-                required
-              ></Form.Control>
-            </Form.Group>
-            <Form.Group className="mb-3">
-              <Form.Label>Einddatum</Form.Label>
-              <Form.Control
-                type="time"
-                id="einddatum"
-                autoComplete="off"
-                value={nieuweEtappe.eindUur}
-                onChange={(e) =>
-                  setNieuweEtappe({ ...nieuweEtappe, eindUur: e.target.value })
-                }
-                required
-              ></Form.Control>
-            </Form.Group>
-            <hr />
-            <Button variant="primary" type="submit">
-              Bewaar
-            </Button>
-          </Form>
-        </Modal.Body>
-      </Modal>
+            console.log(response.data)
+            setMissiedata(GetMissieDagen(startDatum, eindDatum))
+            return response.data;
+        },
+    })
 
+    useEffect(() => {
+        etappes?.map(e =>  totaleKost += e.kost)
+        setTotaalKost(totaleKost.toFixed(2))
+    }, [etappes])
 
-      <Modal show={showModalEtappeKosten} onHide={() => { setShowModalEtappeKosten(false) }}>
-        <Modal.Header closeButton>
-          <Modal.Title>{etappeKostenFilteredTitel}</Modal.Title>
-        </Modal.Header>
+    return (
+        <ErrorBoundary FallbackComponent={ErrorFallback}>
+             {isMobile ? ( 
+               missiedata?.length ? (
+                    missiedata?.map((dag, index) =>
+                         
+                            <div key={DateToDDMMYYYY(dag).toString()}>
+                                <ListGroup as="ul" className='pb-2' key={`listgroup_${DateToDDMMYYYY(dag).toString()}`}>
+                                    <ListGroup.Item as="li" variant='dark' key={'listgroupitem_0'}>
+                                        {index == 0 ? 'Algemeen' : DateToDDMMYYYY(dag)}
+                                        {!missieAfgesloten ? (
+                                            <Button variant="info" className='ms-3' disabled={missieAfgesloten} onClick={() => { navigate({ pathname: ('/Missie/EtappeToevoegen'), search: `missieid=${missieId}&etappedatum=${DateToYYYYMMDDstring(dag)}` }) }}>
+                                                Toevoegen
+                                            </Button>
+                                        ) : ('')}
+                                    </ListGroup.Item>
+                                    </ListGroup>
+                                    <Accordion className='pb-2' defaultActiveKey="0" border="primary">
+                                    {
+                                        etappes
+                                            .filter((etappe) => CompareDates(dag, etappe.datumTijd)).length > 0 ? (
+                                            etappes
+                                                .filter((etappe) => CompareDates(dag, etappe.datumTijd))
+                                                .map((et, indexEt) => 
+                                                        <>
+                                                            <Accordion.Item eventKey={indexEt} className='pb-1 pt-1 border-1 border-dark'>
+                                                                <Accordion.Header>
+                                                                    <span style={{ width: '65%' }}>
+                                                                        {et.titel}
+                                                                    </span>
 
-        <Modal.Body>
-          {etappeKostenFiltered.length > 0 ? (
+                                                                    <span className='text-end pe-1' style={{ width: '35%' }}>
+                                                                        &euro; {et.kost.toFixed(2)} {() => { setTotaalKost(totaalKost + et.kost) }}
+                                                                    </span>
+                                                                </Accordion.Header>
+                                                                <Accordion.Body className='bg-secondary  bg-opacity-25'>
+                                                                    <Row>
+                                                                        <Col xs={6}>
+                                                                            Foto's
+                                                                        </Col>
+                                                                        <Col xs={6}>
+                                                                            <ButtonGroup style={{width: '100%'}}>
+                                                                                <Button key={`btn_aantalfotos_${et.id.toString()}`} variant={et.aantalEtappeFotos > 0 ? 'success' : 'outline-secondary'}><FontAwesomeIcon icon={faImages} />&nbsp;{et.aantalEtappeFotos}</Button>
+                                                                                <Button key={`btn_bekijkfotos_${et.id.toString()}`} variant='success'><FontAwesomeIcon icon={faPlus} /></Button>
+                                                                            </ButtonGroup>
+                                                                        </Col>
+                                                                    </Row>
+                                                                    <hr/>
+                                                                     <Row>
+                                                                        <Col>
+                                                                            Betaald door&nbsp; <strong>{et.betaaldDoor}</strong> 
+                                                                        </Col>
+                                                                       
+                                                                    </Row>                                                                   
+                                                                    <Row className='pt-1 pb-1'>
+                                                                        <Col xs={6}>
+                                                                            Bewijsstukken
+                                                                        </Col>
+                                                                        <Col xs={6}>
+                                                                            <ButtonGroup  style={{width: '100%'}}>
+                                                                                <Button key={`btn_aantalbewijsstukken_${et.id.toString()}`} variant={et.aantalKostBewijsstukken > 0 ? 'success' : 'outline-secondary'}><FontAwesomeIcon icon={faFile} />&nbsp;{et.aantalKostBewijsstukken}</Button>
+                                                                                <Button key={`btn_toonbewijsstukken_${et.id.toString()}`} variant='success'><FontAwesomeIcon icon={faPlus} /></Button>
+                                                                            </ButtonGroup>
+                                                                        </Col>
+                                                                    </Row>
 
-            etappeKostenFiltered.map((kost) => {
-              return <ListGroup>
-                <ListGroup.Item as="li" className="d-flex justify-content-between align-items-start" >
-                  <div className="ms-2 me-auto">
-                    {kost.titel}
-                  </div>
-                  <div className="text-end">
-                    {kost.bedrag.toFixed(2)}
-                  </div>
-                </ListGroup.Item>
-              </ListGroup>
-            })
+                                                                </Accordion.Body>
+                                                            </Accordion.Item>
+                                                        </>
+                                                    )
+                                                
+                                        ) : (
+                                            <Row>
+                                                <Col>Nog geen etappes</Col>
+                                            </Row>
+                                        )
+                                    }    
+                                    </Accordion>
+                                    
+                                
+                            </div>
+                        
+                    )
+                ) : <SuspenseParagraaf />
+            
+            ) : (
+                <div className='mb-3'>
+                    {
+                        missiedata?.length ? (
+                            missiedata?.map((dag, index) => 
+                                    <div key={DateToDDMMYYYY(dag).toString()}>
+                                        <ListGroup as="ul" className='pt-2 ps-4' key={`listgroup_${DateToDDMMYYYY(dag).toString()}`}>
+                                            <ListGroup.Item as="li" variant='dark' key={'listgroupitem_0'}>
+                                                {index == 0 ? 'Algemeen' : DateToDDMMYYYY(dag)}
+                                                {!missieAfgesloten ? (
+                                                    <Button variant="info" className='ms-3' disabled={missieAfgesloten} onClick={() => { navigate({ pathname: ('/Missie/EtappeToevoegen'), search: `missieid=${missieId}&etappedatum=${DateToYYYYMMDDstring(dag)}` }) }}>
+                                                        Toevoegen
+                                                    </Button>
+                                                ) : ('')}
+                                            </ListGroup.Item>
+                                            <ListGroup.Item key={'listgroupitem_01'} variant='secondary'>
+                                                <Row>
+                                                    <Col xs={6} lg={4} key={`listgroup_titel_${index}`}>Titel</Col>
+                                                    <Col xs={6} lg={2} key={`listgroup_fotos_${index}`} className='text-center'>
+                                                        Foto's
+                                                    </Col>
+                                                    <Col xs={6} lg={3} key={`listgroup_financieel_${index}`} className='text-center'>
+                                                        Financieel
+                                                    </Col>
 
-          ) : (
-            <p>Geen kosten gevonden</p>
-          )}
-        </Modal.Body>
+                                                    <Col xs={6} lg={3} key={`listgroup_betaler_${index}`}>Betaler</Col>
 
-        <Modal.Footer>
-          <Button variant="success" onClick={() => {
-            const path = {
-              pathname: '/missie/MissieEtappeKost',
-              search: createSearchParams({
-                missieid: missieId,
-                etappeid: etappeKostenFilteredId
-              }).toString()
-            }
-            navigate(path)
-          }}>
-            Kost Toevoegen
-          </Button>
-          <Button variant="secondary" onClick={() => { setShowModalEtappeKosten(false) }}>Sluit</Button>
-        </Modal.Footer>
-      </Modal>
+                                                </Row>
+                                            </ListGroup.Item>
+                                            {
+                                                etappes
+                                                    .filter((etappe) => CompareDates(dag, etappe.datumTijd)).length > 0 ? (
+                                                    etappes
+                                                        .filter((etappe) => CompareDates(dag, etappe.datumTijd))
+                                                        .map((et) => 
+                                                                <>
+                                                                    <ListGroup.Item key={`listgroupitem_${et.id.toString()}`}>
+                                                                        <Row>
+                                                                            <Col xs={6} lg={4} key={`col_titel_${et.id.toString()}`}>{et.titel}</Col>
+                                                                            <Col xs={6} lg={2} key={`col_fotos_${et.id.toString()}`} className='text-center'>
+                                                                                <ButtonGroup>
+                                                                                    <Button key={`btn_aantalfotos_${et.id.toString()}`} variant={et.aantalEtappeFotos > 0 ? 'success' : 'outline-secondary'}><FontAwesomeIcon icon={faImages} />&nbsp;{et.aantalEtappeFotos}</Button>
+                                                                                    <Button key={`btn_bekijkfotos_${et.id.toString()}`} variant='success'><FontAwesomeIcon icon={faPlus} /></Button>
+                                                                                </ButtonGroup>
+                                                                            </Col>
+                                                                            <Col xs={6} lg={3} key={`col_kosten_${et.id.toString()}`} className='border-left'>
+                                                                                <Row>
+                                                                                    <Col className='text-end pe-2' key={`col_totalekost_${et.id.toString()}`}>
+                                                                                        &euro; {et.kost.toFixed(2)} {() => { setTotaalKost(totaalKost + et.kost) }}
+                                                                                    </Col>
+                                                                                    <Col key={`col_bewijsstuk_${et.id.toString()}`}>
+                                                                                        <ButtonGroup>
+                                                                                            <Button key={`btn_aantalbewijsstukken_${et.id.toString()}`} variant={et.aantalKostBewijsstukken > 0 ? 'success' : 'outline-secondary'}><FontAwesomeIcon icon={faFile} />&nbsp;{et.aantalKostBewijsstukken}</Button>
+                                                                                            <Button key={`btn_toonbewijsstukken_${et.id.toString()}`} variant='success'><FontAwesomeIcon icon={faPlus} /></Button>
+                                                                                        </ButtonGroup>
 
+                                                                                    </Col>
+                                                                                </Row>
+                                                                            </Col>
 
-    </ErrorBoundary>
-  );
-};
+                                                                            <Col key={`col_betaler_${et.id.toString()}`} xs={6} lg={3}>{et.betaaldDoor}</Col>
 
-//export default EtappeOverzicht;
+                                                                        </Row>
+
+                                                                    </ListGroup.Item>
+                                                                </>
+                                                            )
+                                                        
+                                                ) : (
+                                                    <ListGroup.Item>
+                                                        <Row>
+                                                            <Col>Nog geen etappes</Col>
+                                                        </Row>
+                                                    </ListGroup.Item>
+
+                                                )
+
+                                            }
+                                        </ListGroup>
+                                    </div>
+                                )
+                            
+
+                        ) : (
+                            <p>geen data gevonden</p>
+                        )
+                    }
+                </div>
+            )}
+        </ErrorBoundary>
+
+    )
+}
+
+export default EtappeOverzicht

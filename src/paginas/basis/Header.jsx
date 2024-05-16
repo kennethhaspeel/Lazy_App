@@ -52,12 +52,12 @@ const Header = ({ huidige_gebruiker }) => {
             <Nav>
               {huidige_gebruiker?.rollen !== undefined ? (
                 <>
-                  <Link to="/identity/loguit" className='me-2 mb-2'>Log Uit</Link>
+                  <Link to="/identity/loguit" className='me-2 mb-2 btn btn-outline-info'>Log Uit</Link>
                 </>
               ) : (
                 <>
-                <Link to='identity/registreer' className='me-2 mb-2 btn btn-info'>Registreer</Link>
-                <Link to='identity/login' className='me-2 mb-2 btn btn-info'>Log in</Link>
+                <Link to='identity/registreer' className='me-2 mb-2 btn btn-outline-info'>Registreer</Link>
+                <Link to='identity/login' className='me-2 mb-2 btn btn-outline-info'>Log in</Link>
                 </>
               )}
             </Nav>

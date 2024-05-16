@@ -52,7 +52,7 @@ const Header = ({ huidige_gebruiker }) => {
             <Nav>
               {huidige_gebruiker?.rollen !== undefined ? (
                 <>
-                  <Button href="/identity/loguit" className='me-2 mb-2'>Log Uit</Button>
+                  <Link to="/identity/loguit" className='me-2 mb-2'>Log Uit</Link>
                 </>
               ) : (
                 <>

@@ -32,6 +32,7 @@ const Header = ({ huidige_gebruiker }) => {
                           <NavDropdown.Divider />
                           <NavDropdown.Item onClick={()=>{navigate('financieel/TransactieOverzicht')}}>Alle Verrichtingen</NavDropdown.Item>
                           <NavDropdown.Item onClick={()=>{navigate('financieel/TransactieToevoegen')}}>Transactie Toevoegen</NavDropdown.Item>
+                          <NavDropdown.Item onClick={()=>{navigate('bestanden/bestandopladen')}}>Bestand</NavDropdown.Item>
                         </>
                         : ''
                     }

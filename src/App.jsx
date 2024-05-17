@@ -29,6 +29,8 @@ import MissieDetail from "./paginas/Missies/MissieDetail/MissieDetail";
 import KostToevoegen from "./paginas/Missies/MissieEtappeKost/KostToevoegen";
 import EtappeToevoegen from "./paginas/Missies/Etappe/EtappeToevoegen";
 
+// bestanden
+import BestandOpladen from "./paginas/bestanden/BestandOpladen";
 const queryClient = new QueryClient()
 
 function App() {
@@ -61,6 +63,9 @@ function App() {
               <Route path="EtappeToevoegen" element={<EtappeToevoegen />}></Route>
             </Route>
           </Route>
+        </Route>
+        <Route path="bestanden">
+          <Route path="bestandopladen" element={<BestandOpladen/>}></Route>
         </Route>
         <Route path="identity">
           <Route path="login" element={<Login />}></Route>

@@ -129,6 +129,12 @@ const EtappeOverzicht = ({
                                       ? "success"
                                       : "outline-secondary"
                                   }
+                                  onClick={()=>{
+                                    navigate({
+                                      pathname: "/bestanden/bekijkbestand",
+                                      search: `etappeid=${et.id}&onderwerp=bewijsstuk`,
+                                    });
+                                  }}
                                 >
                                   <FontAwesomeIcon icon={faImages} />
                                   &nbsp;{et.aantalEtappeFotos}
@@ -136,6 +142,12 @@ const EtappeOverzicht = ({
                                 <Button
                                   key={`btn_bekijkfotos_${et.id.toString()}`}
                                   variant="success"
+                                  onClick={()=>{
+                                    navigate({
+                                      pathname: "/bestanden/BestandOpladen",
+                                      search: `etappeid=${et.id}&onderwerp=missieafbeelding`,
+                                    });
+                                  }}
                                 >
                                   <FontAwesomeIcon icon={faPlus} />
                                 </Button>
@@ -160,6 +172,12 @@ const EtappeOverzicht = ({
                                       ? "success"
                                       : "outline-secondary"
                                   }
+                                  onClick={()=>{
+                                    navigate({
+                                      pathname: "/bestanden/bekijkbestand",
+                                      search: `etappeid=${et.id}&onderwerp=bewijsstuk`,
+                                    });
+                                  }}
                                 >
                                   <FontAwesomeIcon icon={faFile} />
                                   &nbsp;{et.aantalKostBewijsstukken}
@@ -167,6 +185,12 @@ const EtappeOverzicht = ({
                                 <Button
                                   key={`btn_toonbewijsstukken_${et.id.toString()}`}
                                   variant="success"
+                                  onClick={()=>{
+                                    navigate({
+                                      pathname: "/bestanden/BestandOpladen",
+                                      search: `etappeid=${et.id}&onderwerp=bewijsstuk`,
+                                    });
+                                  }}
                                 >
                                   <FontAwesomeIcon icon={faPlus} />
                                 </Button>

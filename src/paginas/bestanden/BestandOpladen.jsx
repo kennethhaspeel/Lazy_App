@@ -1,7 +1,13 @@
-import React, { useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import useAxiosPrivateFile from "../../hooks/useAxiosPrivate";
 import { axiosUrls } from "../../api/axios";
 import { Link, useNavigate, useLocation, useSearchParams } from 'react-router-dom';
+import { Col, Row, Button } from "react-bootstrap";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faImage } from "@fortawesome/free-solid-svg-icons";
+import BestandPreview from "./BestandPreview";
+import { Resizer } from 'react-image-file-resizer'
+import { AfbeeldingVerkleinen } from "./AfbeeldingBewerken";
 
 const BestandOpladen = () => {
   const axiosPrivate = useAxiosPrivateFile();
@@ -12,53 +18,82 @@ const BestandOpladen = () => {
   const etappeId = queryParam.get("etappeid")
   const onderwerp = queryParam.get("onderwerp")
 
-  const [file, setFile] = useState(null);
-  const [progress, setProgress] = useState({ started: false, procent: 0 });
+  const [files, setFiles] = useState([]);
+  const [verkleind, setVerkleind] = useState([])
+  const [uploadBlokVerborgen, setUploadBlokVerborgen] = useState(true)
+  const [uploadStarted, setUploadStarted] = useState(false)
+  const [uploadEnded, setUploadEnded] = useState(false)
+  const [aantalUploaded, setAantalUploaded] = useState(0)
+
+  const fileUploadRef = useRef()
+  const handleImageUploadClick = () => {
+    fileUploadRef.current.click()
+  }
+
+  const handleChange = (e) => {
+    const bestanden = Array.prototype.slice.call(e.target.files)
+    setFiles(bestanden)
+    setUploadBlokVerborgen(false)
+    e.target.value = null
+  }
 
   const handleUpload = async () => {
-    if (!file) {
+    if (!files) {
       return;
     }
-    console.log(`Bestandsgrootte: ${file.size}`);
-    setProgress((prevState) => {
-      return { ...prevState, started: true };
-    });
-    const fd = new FormData();
-    fd.append("file", file);
-    fd.append("etappeId",etappeId)
-    fd.append("onderwerp",onderwerp)
-    await axiosPrivate
-      .post(axiosUrls("PostBestand"), fd, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-        onUploadProgress: (ProgressEvent) => {
-          console.log(ProgressEvent.progress * 100);
-          setProgress((prevState) => {
-            return { ...prevState, pc: ProgressEvent.progress * 100 };
-          });
-        },
-      })
-      .then((res) => console.log(res.data))
-      .catch((err) => console.log(err));
+    setUploadBlokVerborgen(true)
+    setUploadStarted(true)
   };
+
+  useEffect(() => {
+    if (aantalUploaded > 0 && aantalUploaded === files?.length) {
+      console.log('gedaan met uploaden')
+      setUploadStarted(false)
+    } else {
+      console.log(`${aantalUploaded} bestanden opgeladen`)
+    }
+  }, [aantalUploaded])
   return (
     <section>
-      <div>Bestand Opladen</div>
+      <h2>Bestand Opladen</h2>
+      <div style={{ backgroundColor: 'rgba(39, 245, 228, 0.1)', outlineStyle: 'dashed' }} className="text-center p-3" onClick={handleImageUploadClick}>
+        <Row>
+          <Col>
+            <FontAwesomeIcon icon={faImage} className="fa-6x" />
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            Klik om een afbeelding te selecteren
+          </Col>
+        </Row>
+      </div>
+      <hr />
+      <Row>
+        {
+          files?.map((bestand, index) =>
+            <BestandPreview file={bestand} setFiles={setFiles} key={index} uploadStarted={uploadStarted} etappeid={etappeId} onderwerp={onderwerp} aantalUploaded={aantalUploaded} setAantalUploaded={setAantalUploaded} />
+          )
+        }
+      </Row>
+      <div hidden={uploadBlokVerborgen}>
+        <hr />
+        <Row className="justify-content-md-center">
+          <Col xs={6} md={4} lg={3} className='d-grid gap-2'>
+            <Button variant="success" onClick={handleUpload}>Start upload</Button>
+          </Col>
+        </Row>
+
+      </div>
+
+
       <input
         type="file"
-        onChange={(e) => {
-            console.log(`Bestandsgrootte: ${e.target.files[0].size}`)
-          setFile(e.target.files[0]);
-        }}
+        onChange={handleChange}
+        hidden
+        multiple={true}
+        ref={fileUploadRef}
       />
-      <button onClick={handleUpload}>Opladen</button>
-      <p>Vooruitgang: {progress.procent} %</p>
-      <p>
-        {progress.started && (
-          <progress max="100" value={progress.procent}></progress>
-        )}
-      </p>
     </section>
   );
 };

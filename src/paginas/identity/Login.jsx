@@ -61,7 +61,7 @@ const Login = () => {
             //console.log(user)
             setAuth({ user, rollen, accessToken });
             sessionStorage.setItem('at',response.data.accessToken)
-            localStorage.setItem('rt', response?.data?.refreshtoken)
+            localStorage.setItem('rt', JSON.stringify(response?.data?.refreshtoken.token))
             setUsername('');
             setPaswoord('');
             setLoading(false)

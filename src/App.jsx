@@ -65,7 +65,9 @@ function App() {
           </Route>
         </Route>
         <Route path="bestanden">
+        <Route element={<AuthRequired allowedRoles={["gebruiker"]} />}>
           <Route path="bestandopladen" element={<BestandOpladen/>}></Route>
+          </Route>
         </Route>
         <Route path="identity">
           <Route path="login" element={<Login />}></Route>

@@ -128,10 +128,11 @@ const EtappeOverzicht = ({
                                       ? "success"
                                       : "outline-secondary"
                                   }
+                                  disabled={et.aantalEtappeFotos > 0? false : true}
                                   onClick={()=>{
                                     navigate({
-                                      pathname: "/bestanden/bekijkbestand",
-                                      search: `etappeid=${et.id}&onderwerp=bewijsstuk&missieid=${missieId}`,
+                                      pathname: "/bestanden/ToonEtappeBestanden",
+                                      search: `etappeid=${et.id}`,
                                     });
                                   }}
                                 >
@@ -140,11 +141,11 @@ const EtappeOverzicht = ({
                                 </Button>
                                 <Button
                                   key={`btn_bekijkfotos_${et.id.toString()}`}
-                                  variant="success"
+                                  variant="outline-success"
                                   onClick={()=>{
                                     navigate({
                                       pathname: "/bestanden/BestandOpladen",
-                                      search: `etappeid=${et.id}&onderwerp=missieafbeelding&missieid=${missieId}`,
+                                      search: `etappeid=${et.id}&onderwerp=1&missieid=${missieId}`,
                                     });
                                   }}
                                 >
@@ -171,10 +172,11 @@ const EtappeOverzicht = ({
                                       ? "success"
                                       : "outline-secondary"
                                   }
+                                  disabled={et.aantalEtappeFotos > 0? false : true}
                                   onClick={()=>{
                                     navigate({
                                       pathname: "/bestanden/bekijkbestand",
-                                      search: `etappeid=${et.id}&onderwerp=bewijsstuk&missieid=${missieId}`,
+                                      search: `etappeid=${et.id}&onderwerp=2&missieid=${missieId}`,
                                     });
                                   }}
                                 >
@@ -183,11 +185,11 @@ const EtappeOverzicht = ({
                                 </Button>
                                 <Button
                                   key={`btn_toonbewijsstukken_${et.id.toString()}`}
-                                  variant="success"
+                                  variant="outline-success"
                                   onClick={()=>{
                                     navigate({
                                       pathname: "/bestanden/BestandOpladen",
-                                      search: `etappeid=${et.id}&onderwerp=bewijsstuk&missieid=${missieId}`,
+                                      search: `etappeid=${et.id}&onderwerp=2&missieid=${missieId}`,
                                     });
                                   }}
                                 >

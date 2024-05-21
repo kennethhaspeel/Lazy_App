@@ -31,6 +31,8 @@ import EtappeToevoegen from "./paginas/Missies/Etappe/EtappeToevoegen";
 
 // bestanden
 import BestandOpladen from "./paginas/bestanden/BestandOpladen";
+import ToonEtappeBestanden
+ from "./paginas/bestanden/ToonEtappeBestanden";
 const queryClient = new QueryClient()
 
 function App() {
@@ -65,8 +67,9 @@ function App() {
           </Route>
         </Route>
         <Route path="bestanden">
-        <Route element={<AuthRequired allowedRoles={["gebruiker"]} />}>
-          <Route path="bestandopladen" element={<BestandOpladen/>}></Route>
+          <Route element={<AuthRequired allowedRoles={["gebruiker"]} />}>
+            <Route path="bestandopladen" element={<BestandOpladen/>}></Route>
+            <Route path="ToonEtappeBestanden" element={<ToonEtappeBestanden/>}></Route>
           </Route>
         </Route>
         <Route path="identity">

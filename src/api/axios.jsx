@@ -31,7 +31,8 @@ export const axiosUrls = (url) => {
         PostMissieAfsluiten:'/Missie/PostMissieAfsluiten',
 
         PostBestand:'/FileManagement/PostBestand',
-    }
+        GetEtappeBestanden:'/FileManagement/GetEtappeBestanden',
+        }
 
     return overzicht[url]
 }

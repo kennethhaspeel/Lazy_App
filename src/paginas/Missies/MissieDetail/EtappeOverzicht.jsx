@@ -93,7 +93,7 @@ const EtappeOverzicht = ({
                 )}
               </ListGroup.Item>
             </ListGroup>
-            <Accordion className="pb-2" defaultActiveKey="0" border="primary">
+            <Accordion className="pb-2" defaultActiveKey="0" border="primary" key={`accordion_${index}`}>
               {etappes.filter((etappe) => CompareDates(dag, etappe.datumTijd))
                 .length > 0 ? (
                 etappes
@@ -103,6 +103,7 @@ const EtappeOverzicht = ({
                       <Accordion.Item
                         eventKey={indexEt}
                         className="pb-1 pt-1 border-1 border-dark"
+                        key={`accordionetappe_${index}`}
                       >
                         <Accordion.Header>
                           <span style={{ width: "65%" }}>{et.titel}</span>
@@ -112,9 +113,7 @@ const EtappeOverzicht = ({
                             style={{ width: "35%" }}
                           >
                             &euro; {et.kost.toFixed(2)}{" "}
-                            {() => {
-                              setTotaalKost(totaalKost + et.kost);
-                            }}
+                            {() =>  setTotaalKost(totaalKost + et.kost)}
                           </span>
                         </Accordion.Header>
                         <Accordion.Body className="bg-secondary  bg-opacity-25">
@@ -132,7 +131,7 @@ const EtappeOverzicht = ({
                                   onClick={()=>{
                                     navigate({
                                       pathname: "/bestanden/bekijkbestand",
-                                      search: `etappeid=${et.id}&onderwerp=bewijsstuk`,
+                                      search: `etappeid=${et.id}&onderwerp=bewijsstuk&missieid=${missieId}`,
                                     });
                                   }}
                                 >
@@ -145,7 +144,7 @@ const EtappeOverzicht = ({
                                   onClick={()=>{
                                     navigate({
                                       pathname: "/bestanden/BestandOpladen",
-                                      search: `etappeid=${et.id}&onderwerp=missieafbeelding`,
+                                      search: `etappeid=${et.id}&onderwerp=missieafbeelding&missieid=${missieId}`,
                                     });
                                   }}
                                 >
@@ -175,7 +174,7 @@ const EtappeOverzicht = ({
                                   onClick={()=>{
                                     navigate({
                                       pathname: "/bestanden/bekijkbestand",
-                                      search: `etappeid=${et.id}&onderwerp=bewijsstuk`,
+                                      search: `etappeid=${et.id}&onderwerp=bewijsstuk&missieid=${missieId}`,
                                     });
                                   }}
                                 >
@@ -188,7 +187,7 @@ const EtappeOverzicht = ({
                                   onClick={()=>{
                                     navigate({
                                       pathname: "/bestanden/BestandOpladen",
-                                      search: `etappeid=${et.id}&onderwerp=bewijsstuk`,
+                                      search: `etappeid=${et.id}&onderwerp=bewijsstuk&missieid=${missieId}`,
                                     });
                                   }}
                                 >

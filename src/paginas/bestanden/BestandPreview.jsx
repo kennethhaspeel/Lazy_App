@@ -57,7 +57,7 @@ const BestandPreview = ({ file, setFiles, uploadStarted, etappeid, onderwerp, aa
                     <Card.Img variant="top" src={image} className='p-2' style={{ objectFit: 'contain', height: 200 }} />
                     <hr />
                     <div className='d-grid gap-2'>
-                        <Button variant="danger" hidden={uploadStarted}>Verwijder</Button>
+                        <Button variant="danger" hidden={uploadStarted || uploadEnded}>Verwijder</Button>
                         <ProgressBar now={progress} animated hidden={!uploadStarted &&!uploadEnded} />
                         <Button variant="success" hidden={!uploadEnded} disabled>Upload Afgewerkt</Button>
                     </div>

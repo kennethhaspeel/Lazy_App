@@ -36,8 +36,8 @@ const ToonEtappeBestanden = () => {
                   <Row>
                       {
                           bestanden?.map((bestand) =>
-                              <Col>
-                                  <Image src={bestand.thumbnail} thumbnail />
+                              <Col xs={6} md={3} lg={4}>
+                                  <Image src={bestand.thumbnail} thumbnail key={bestand.id}/>
                               </Col>
                           )}
                   </Row>

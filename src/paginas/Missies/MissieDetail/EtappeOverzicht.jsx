@@ -132,7 +132,7 @@ const EtappeOverzicht = ({
                                   onClick={()=>{
                                     navigate({
                                       pathname: "/bestanden/ToonEtappeBestanden",
-                                      search: `etappeid=${et.id}`,
+                                      search: `etappeid=${et.id}&missieid=${missieId}&etappetitel=${et.titel}`,
                                     });
                                   }}
                                 >

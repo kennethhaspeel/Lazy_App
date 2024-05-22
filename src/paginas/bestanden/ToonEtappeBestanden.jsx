@@ -5,13 +5,18 @@ import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import { axiosUrls } from "../../api/axios";
 import { ErrorBoundary } from "react-error-boundary";
 import ErrorFallback from "../../components/ErrorFallback";
-import { Row,Col, Image } from "react-bootstrap";
+import { Row,Col, Image, Button } from "react-bootstrap";
+import ImageGallery from 'react-image-gallery'
+import "react-image-gallery/styles/css/image-gallery.css"
 
 const ToonEtappeBestanden = () => {
     const axiosPrivate = useAxiosPrivate();
     const navigate = useNavigate();
     const [queryParam] = useSearchParams()
     const etappeId = queryParam.get("etappeid")
+    const missieId = queryParam.get("missieid")
+    const etappetitel = queryParam.get("etappetitel")
+    const[images, setImages] = useState([])
 
     const {
         data: bestanden,
@@ -21,26 +26,24 @@ const ToonEtappeBestanden = () => {
         queryKey: ["etappebestanden", etappeId],
         queryFn: async () => {
           const response = await axiosPrivate.get(
-            `${axiosUrls("GetEtappeBestanden")}?etappeid=${etappeId}`
+            `${axiosUrls("GetImageGalleryBestanden")}?etappeid=${etappeId}`
           );
-          console.log(response.data);
+          //console.log(afbeeldingen)
           return response.data;
         },
       });
-
 
   return (
     <>
           <ErrorBoundary fallback={ErrorFallback}>
               <section>
-                  <Row>
-                      {
-                          bestanden?.map((bestand) =>
-                              <Col xs={6} md={3} lg={4}>
-                                  <Image src={bestand.thumbnail} thumbnail key={bestand.id}/>
-                              </Col>
-                          )}
-                  </Row>
+<h2>Etappe "{etappetitel}" <Button variant="outline-info" onClick={()=>{navigate({ pathname: '/missie/missiedetail', search: `?missieid=${missieId}` })}}>Terug naar missie</Button></h2>
+<hr/>
+                  {
+                    bestanden?.length ? (
+                      <ImageGallery items={bestanden} showPlayButton={false}/>
+                    ) : ('')
+                  }
 
               </section>
           </ErrorBoundary>

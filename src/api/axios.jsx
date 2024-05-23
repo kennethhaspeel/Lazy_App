@@ -5,7 +5,7 @@ import useAuth from '../hooks/useAuth';
 export const axiosUrls = (url) => {
     const overzicht = {
       base_url: 'https://api.lazy-company.be',
-        //   base_url: 'https://localhost:7023',
+        base_url_dev: 'https://localhost:7023',
         login: '/Auth/login',
         loguit: 'Auth/loguit',
         registratie: 'Auth/registreer',
@@ -38,17 +38,17 @@ export const axiosUrls = (url) => {
 }
 
 export default axios.create({
-    baseURL: axiosUrls('base_url')
+    baseURL: window.location.hostname ==='localhost' ? axiosUrls('base_url_dev') : axiosUrls('base_url')
 });
 
 export const axiosPrivate = axios.create({
-    baseURL: axiosUrls('base_url'),
+    baseURL: window.location.hostname ==='localhost' ? axiosUrls('base_url_dev') : axiosUrls('base_url'),
     headers: { 'Content-Type': 'application/json' },
     withCredentials: true
 });
 
 export const axiosPrivateFile = axios.create({
-    baseURL: axiosUrls('base_url'),
+    baseURL: window.location.hostname ==='localhost' ? axiosUrls('base_url_dev') : axiosUrls('base_url'),
     headers: { 'Content-Type': 'multipart/form-data' },
     withCredentials: true
 });

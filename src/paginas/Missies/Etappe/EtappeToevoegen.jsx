@@ -160,7 +160,6 @@ const EtappeToevoegen = () => {
                         onChange={(e) =>
                             setNieuweEtappe({ ...nieuweEtappe, bedrag: e.target.value })
                         }
-                        min="0.01"
                         step="0.01"
                         required={!zonderKost}
                     ></Form.Control>

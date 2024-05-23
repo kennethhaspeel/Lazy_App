@@ -1,40 +1,25 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQueryClient,useQuery } from "@tanstack/react-query";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import { axiosUrls } from "../../../api/axios";
 import { ErrorBoundary } from "react-error-boundary";
 import ErrorFallback from "../../../components/ErrorFallback";
 import { useState, useEffect } from "react";
-import {
-  CompareDates,
-  DateToDDMMYYYY,
-  GetMissieDagen,
-  DateToYYYYMMDDstring,
-} from "../../../components/DatumFuncties";
-import {
-  Accordion,
-  Button,
-  ButtonGroup,
-  Col,
-  ListGroup,
-  Row,
-} from "react-bootstrap";
+import {  CompareDates,  DateToDDMMYYYY, GetMissieDagen,  DateToYYYYMMDDstring,} from "../../../components/DatumFuncties";
+import {  Accordion,  Button,  ButtonGroup,  Col,  ListGroup,  Row,  Modal} from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFile, faImages, faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faFile, faImages, faPlus, faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
 import { isMobile } from "react-device-detect";
 import SuspenseParagraaf from "../../../components/SuspenseParagraaf";
 
-const EtappeOverzicht = ({
-  missieId,
-  startDatum,
-  eindDatum,
-  totaalKost,
-  setTotaalKost,
-  missieAfgesloten,
-}) => {
+const EtappeOverzicht = ({  missieId,  startDatum,  eindDatum,  totaalKost,  setTotaalKost,  missieAfgesloten,}) => {
   const navigate = useNavigate();
   const axiosPrivate = useAxiosPrivate();
+  const queryClient = useQueryClient()
   const [missiedata, setMissiedata] = useState([]);
+  const [toonDeleteModal, setToonDeleteModal] = useState(false)
+  const [etappeToDelete, setEtappeToDelete] = useState(0)
+  const [deletingEtappe, setDeletingEtappe] = useState(false)
 
   let totaleKost = 0;
   const {
@@ -58,8 +43,20 @@ const EtappeOverzicht = ({
     setTotaalKost(totaleKost.toFixed(2));
   }, [etappes]);
 
+  const { mutate } = useMutation({
+    mutationFn: async (etappeid) => {
+      return axiosPrivate.delete(`${axiosUrls("DeleteEtappe")}/${etappeid}`);
+    },
+    onSuccess: () => {
+        queryClient.invalidateQueries(["missieetappes", missieId]);
+        setToonDeleteModal(false)
+        setDeletingEtappe(false)
+    },
+  });
   const handleVerwijder = (etappeid)=>{
-    
+    setDeletingEtappe(true)
+    mutate(etappeToDelete)
+console.log(etappeToDelete)
   }
 
   return (
@@ -97,7 +94,12 @@ const EtappeOverzicht = ({
                 )}
               </ListGroup.Item>
             </ListGroup>
-            <Accordion className="pb-2" defaultActiveKey="0" border="primary" key={`accordion_${index}`}>
+            <Accordion
+              className="pb-2"
+              defaultActiveKey="0"
+              border="primary"
+              key={`accordion_${index}`}
+            >
               {etappes.filter((etappe) => CompareDates(dag, etappe.datumTijd))
                 .length > 0 ? (
                 etappes
@@ -117,13 +119,15 @@ const EtappeOverzicht = ({
                             style={{ width: "35%" }}
                           >
                             &euro; {et.kost.toFixed(2)}{" "}
-                            {() =>  setTotaalKost(totaalKost + et.kost)}
+                            {() => setTotaalKost(totaalKost + et.kost)}
                           </span>
                         </Accordion.Header>
                         <Accordion.Body className="bg-secondary  bg-opacity-25">
                           <Row>
-                            <Col xs={6}  key={'col-fotostitel'}>Foto's</Col>
-                            <Col xs={6}  key={'col-fotos'}>
+                            <Col xs={6} key={"col-fotostitel"}>
+                              Foto's
+                            </Col>
+                            <Col xs={6} key={"col-fotos"}>
                               <ButtonGroup style={{ width: "100%" }}>
                                 <Button
                                   key={`btn_aantalfotos_${et.id.toString()}`}
@@ -132,10 +136,13 @@ const EtappeOverzicht = ({
                                       ? "success"
                                       : "outline-secondary"
                                   }
-                                  disabled={et.aantalEtappeFotos > 0? false : true}
-                                  onClick={()=>{
+                                  disabled={
+                                    et.aantalEtappeFotos > 0 ? false : true
+                                  }
+                                  onClick={() => {
                                     navigate({
-                                      pathname: "/bestanden/ToonEtappeBestanden",
+                                      pathname:
+                                        "/bestanden/ToonEtappeBestanden",
                                       search: `etappeid=${et.id}&missieid=${missieId}&etappetitel=${et.titel}`,
                                     });
                                   }}
@@ -146,7 +153,7 @@ const EtappeOverzicht = ({
                                 <Button
                                   key={`btn_bekijkfotos_${et.id.toString()}`}
                                   variant="outline-success"
-                                  onClick={()=>{
+                                  onClick={() => {
                                     navigate({
                                       pathname: "/bestanden/BestandOpladen",
                                       search: `etappeid=${et.id}&onderwerp=1&missieid=${missieId}`,
@@ -166,8 +173,10 @@ const EtappeOverzicht = ({
                             </Col>
                           </Row>
                           <Row className="pt-1 pb-1">
-                            <Col xs={6} key={'col-bewijsstukkentitel'}>Bewijsstukken</Col>
-                            <Col xs={6}  key={'col-bewijsstukkeninhoud'}> 
+                            <Col xs={6} key={"col-bewijsstukkentitel"}>
+                              Bewijsstukken
+                            </Col>
+                            <Col xs={6} key={"col-bewijsstukkeninhoud"}>
                               <ButtonGroup style={{ width: "100%" }}>
                                 <Button
                                   key={`btn_aantalbewijsstukken_${et.id.toString()}`}
@@ -176,8 +185,10 @@ const EtappeOverzicht = ({
                                       ? "success"
                                       : "outline-secondary"
                                   }
-                                  disabled={et.aantalEtappeFotos > 0? false : true}
-                                  onClick={()=>{
+                                  disabled={
+                                    et.aantalEtappeFotos > 0 ? false : true
+                                  }
+                                  onClick={() => {
                                     navigate({
                                       pathname: "/bestanden/bekijkbestand",
                                       search: `etappeid=${et.id}&onderwerp=2&missieid=${missieId}`,
@@ -190,7 +201,7 @@ const EtappeOverzicht = ({
                                 <Button
                                   key={`btn_toonbewijsstukken_${et.id.toString()}`}
                                   variant="outline-success"
-                                  onClick={()=>{
+                                  onClick={() => {
                                     navigate({
                                       pathname: "/bestanden/BestandOpladen",
                                       search: `etappeid=${et.id}&onderwerp=2&missieid=${missieId}`,
@@ -202,13 +213,22 @@ const EtappeOverzicht = ({
                               </ButtonGroup>
                             </Col>
                           </Row>
-                          {missieAfgesloten ? (''):(
+                          {missieAfgesloten ? (
+                            ""
+                          ) : (
                             <Row className="pt-2">
                               <Col>
-                              <Button variant="danger">Verwijder</Button>
+                                <Button 
+                                variant="danger"
+                                onClick={()=>{
+                                  setEtappeToDelete(et.id)
+                                  setToonDeleteModal(true)
+                                }}
+                                >
+                                  Verwijder
+                                  </Button>
                               </Col>
                             </Row>
-                            
                           )}
                         </Accordion.Body>
                       </Accordion.Item>
@@ -220,6 +240,27 @@ const EtappeOverzicht = ({
                 </Row>
               )}
             </Accordion>
+
+            <Modal show={toonDeleteModal} onHide={()=>{setToonDeleteModal(false)}}>
+              <Modal.Header closeButton>
+                <Modal.Title>Bent u zeker</Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                Bent u zeker dat u deze etappe wilt verwijderen ?
+              </Modal.Body>
+              <Modal.Footer>
+                <Button variant="secondary" onClick={()=>{setToonDeleteModal(false)}}>
+                  Annuleer
+                </Button>
+                <Button variant="primary" onClick={()=>{
+                  handleVerwijder()
+                }}>
+                  {
+                    deletingEtappe ?(<FontAwesomeIcon icon={faSpinner} spin size="lg" />) :('Verwijderen')
+                  }
+                </Button>
+              </Modal.Footer>
+            </Modal>
           </div>
         ))
       ) : (

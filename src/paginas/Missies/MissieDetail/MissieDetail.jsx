@@ -51,7 +51,7 @@ const MissieDetail = () => {
   return (
     <>
       <div className="pb-4">
-        {!missieAfgesloten && DatumVoorbij(einddatum) ? (
+        {!missieAfgesloten && DatumVoorbij(einddatum) && isOrganisator? (
           <Button
             variant="success"
             size="lg"

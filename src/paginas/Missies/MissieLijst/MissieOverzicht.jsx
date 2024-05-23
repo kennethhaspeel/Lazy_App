@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom"
 import { axiosUrls } from "../../../api/axios"
 import SuspenseParagraaf from "../../../components/SuspenseParagraaf"
 import { Button, Card, Row, Col, CardGroup, Image, ListGroup, Modal, Form, FloatingLabel } from "react-bootstrap"
-import { DateToDDMMYYYY, DateToYYYYMMDD } from "../../../components/DatumFuncties"
+import { DateToDDMMYYYY, DateToYYYYMMDD, DatumVoorbij } from "../../../components/DatumFuncties"
 import { FaThumbsUp, FaThumbsDown } from "react-icons/fa6"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import {  useState } from "react"
@@ -92,7 +92,7 @@ const [fout, setFout] = useState('')
                                                     </ListGroup>
                                                 </Card.Body>
                                                 <Card.Footer>
-                                                    {mission.isOrganisator ? <Button variant='info' onClick={() => { navigate({ pathname: '/missie/missiedetail', search: `?missieid=${mission.id}` }) }}>Details</Button> : <Button variant='info' disabled>Details</Button>}
+                                                    {mission.isOrganisator || DatumVoorbij(mission.startDatum)? <Button variant='info' onClick={() => { navigate({ pathname: '/missie/missiedetail', search: `?missieid=${mission.id}` }) }}>Details</Button> : <Button variant='info' disabled>Details</Button>}
                                                 </Card.Footer>
                                             </Card>
                                         </Col>

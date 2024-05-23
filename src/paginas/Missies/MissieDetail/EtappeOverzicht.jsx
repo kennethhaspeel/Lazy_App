@@ -58,6 +58,10 @@ const EtappeOverzicht = ({
     setTotaalKost(totaleKost.toFixed(2));
   }, [etappes]);
 
+  const handleVerwijder = (etappeid)=>{
+    
+  }
+
   return (
     <ErrorBoundary FallbackComponent={ErrorFallback}>
       {isLoading ? (
@@ -118,8 +122,8 @@ const EtappeOverzicht = ({
                         </Accordion.Header>
                         <Accordion.Body className="bg-secondary  bg-opacity-25">
                           <Row>
-                            <Col xs={6}>Foto's</Col>
-                            <Col xs={6}>
+                            <Col xs={6}  key={'col-fotostitel'}>Foto's</Col>
+                            <Col xs={6}  key={'col-fotos'}>
                               <ButtonGroup style={{ width: "100%" }}>
                                 <Button
                                   key={`btn_aantalfotos_${et.id.toString()}`}
@@ -162,8 +166,8 @@ const EtappeOverzicht = ({
                             </Col>
                           </Row>
                           <Row className="pt-1 pb-1">
-                            <Col xs={6}>Bewijsstukken</Col>
-                            <Col xs={6}>
+                            <Col xs={6} key={'col-bewijsstukkentitel'}>Bewijsstukken</Col>
+                            <Col xs={6}  key={'col-bewijsstukkeninhoud'}> 
                               <ButtonGroup style={{ width: "100%" }}>
                                 <Button
                                   key={`btn_aantalbewijsstukken_${et.id.toString()}`}
@@ -198,6 +202,14 @@ const EtappeOverzicht = ({
                               </ButtonGroup>
                             </Col>
                           </Row>
+                          {missieAfgesloten ? (''):(
+                            <Row className="pt-2">
+                              <Col>
+                              <Button variant="danger">Verwijder</Button>
+                              </Col>
+                            </Row>
+                            
+                          )}
                         </Accordion.Body>
                       </Accordion.Item>
                     </>

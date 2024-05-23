@@ -15,6 +15,7 @@ const KostToevoegen = () => {
   const etappeId = queryParam.get("etappeid")
   const missieId = queryParam.get("missieid")
 
+  const [zonderKost,setZonderKost]= useState(false)
   const [verschuldigdDoor, setVerschuldigdDoor] = useState(false)
   const [nieuweKost, setNieuweKost] = useState({
     etappeId: etappeId,
@@ -88,9 +89,10 @@ const KostToevoegen = () => {
     <>
       <h4>Kost Toevoegen</h4>
       <Form id="formNieuweKost" className="pt-1" onSubmit={BewaarEtappeKostNieuw}>
-        <Form.Group className="mb-3">
+        <Form.Group className="mb-3" key={'group_titel'}>
           <Form.Label>Titel</Form.Label>
           <Form.Control
+          
             type="text"
             id="titel"
             autoComplete="off"
@@ -102,7 +104,17 @@ const KostToevoegen = () => {
             required
           ></Form.Control>
         </Form.Group>
-        <Form.Group className="mb-3">
+        <Form.Group className="mb-3"  key={'group_zonderkost'}>
+          <Form.Check
+            inline
+            label="Zonder kost"
+            name="chkZonderKost"
+            type='checkbox'
+            checked={zonderKost}
+            onChange={()=>{setZonderKost(prev=>!prev)}}
+          />
+        </Form.Group>
+        <Form.Group className="mb-3" key={'group_bedrag'}>
           <Form.Label>Bedrag</Form.Label>
           <Form.Control
             type="number"
@@ -112,13 +124,12 @@ const KostToevoegen = () => {
             onChange={(e) =>
               setNieuweKost({ ...nieuweKost, bedrag: e.target.value })
             }
-            min="0.01"
             step="0.01"
-            required
+            required={!zonderKost}
           ></Form.Control>
         </Form.Group>
         <hr />
-        <Form.Group className="mb-3">
+        <Form.Group className="mb-3" key={'group_BetaaldDoor'}>
           <Form.Label>Betaald door</Form.Label>
           <Form.Select>
             <option value="a4bb6cd3-f8ad-468f-bc18-37ca7b93c4f1" key="a4bb6cd3-f8ad-468f-bc18-37ca7b93c4f1">Rekening</option>

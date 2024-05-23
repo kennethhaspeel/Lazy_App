@@ -18,6 +18,7 @@ const EtappeToevoegen = () => {
     const etappeDatum = queryParam.get("etappedatum")
     const [show, setShow] = useState(false);
     const [verschuldigdDoor, setVerschuldigdDoor] = useState(false)
+    const [zonderKost,setZonderKost]= useState(false)
 
     const [nieuweEtappe, setNieuweEtappe] = useState({
         missieid: missieId,
@@ -74,7 +75,8 @@ const EtappeToevoegen = () => {
             ),
             bedrag: nieuweEtappe.bedrag,
             betaalddoor: nieuweEtappe.betaaldDoor,
-            verschuldigddoor: nieuweEtappe.verschuldigdDoor
+            verschuldigddoor: nieuweEtappe.verschuldigdDoor,
+            zonderkost: zonderKost
         };
          mutate(postData)
     }
@@ -136,6 +138,18 @@ const EtappeToevoegen = () => {
                         required
                     ></Form.Control>
                 </Form.Group>
+                <Form.Group className="mb-3"  key={'group_zonderkost'}>
+          <Form.Check
+            inline
+            label="Zonder kost"
+            name="chkZonderKost"
+            type='checkbox'
+            checked={zonderKost}
+            onChange={()=>{setZonderKost(prev=>!prev)}}
+          />
+          
+        </Form.Group>
+        <div hidden={zonderKost}>
                 <Form.Group className="mb-3">
                     <Form.Label>Bedrag</Form.Label>
                     <Form.Control
@@ -148,7 +162,7 @@ const EtappeToevoegen = () => {
                         }
                         min="0.01"
                         step="0.01"
-                        required
+                        required={!zonderKost}
                     ></Form.Control>
                 </Form.Group>
                 <hr />
@@ -202,6 +216,7 @@ const EtappeToevoegen = () => {
                     }
 
                 </Form.Group>
+                </div>
                 <hr />
                 <Button variant="primary" type="submit">
                     Bewaar

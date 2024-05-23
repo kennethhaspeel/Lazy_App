@@ -112,7 +112,8 @@ const Details = ({
                 </Col>
                 <Col md={10} sm={12}>
                   <Form.Control
-                    type="text"
+                    as="textarea"
+                    rows={5}
                     id="omschrijving"
                     autoComplete="off"
                     value={missieDetail.omschrijving}

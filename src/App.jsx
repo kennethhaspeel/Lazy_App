@@ -1,38 +1,56 @@
 import { Route, Routes } from "react-router-dom";
 import { QueryClient,QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-
+import {lazy} from "react"
 
 import AuthRequired from "./components/AuthRequired";
 import PersistLogin from "./components/PersistLogin";
 import Layout from "./paginas/basis/Layout";
 import Home from "./paginas/Home";
 import Login from "./paginas/identity/Login";
-import GeenToegang from "./paginas/basis/GeenToegang";
-import NietGevonden from "./paginas/basis/NietGevonden";
-import BevestigRegistratie from "./paginas/identity/BevestigRegistratie";
-import Registreer from "./paginas/identity/Registreer";
-import RegistreerIngediend from "./paginas/identity/RegistreerIngediend";
-import Loguit from "./paginas/identity/Loguit";
-import PaswoordVergeten from "./paginas/identity/PaswoordVergeten";
-import PaswoordInstellen from "./paginas/identity/PaswoordInstellen";
+
+const GeenToegang = lazy(()=> import("./paginas/basis/GeenToegang"))
+const NietGevonden = lazy(()=> import("./paginas/basis/NietGevonden"))
+const BevestigRegistratie = lazy(()=> import("./paginas/identity/BevestigRegistratie"))
+const Registreer = lazy(()=> import("./paginas/identity/Registreer"))
+const RegistreerIngediend = lazy(()=> import("./paginas/identity/RegistreerIngediend"))
+const Loguit = lazy(()=> import("./paginas/identity/Loguit"))
+const PaswoordVergeten = lazy(()=> import("./paginas/identity/PaswoordVergeten"))
+const PaswoordInstellen = lazy(()=> import("./paginas/identity/PaswoordInstellen"))
+
+// import GeenToegang from "./paginas/basis/GeenToegang";
+// import NietGevonden from "./paginas/basis/NietGevonden";
+// import BevestigRegistratie from "./paginas/identity/BevestigRegistratie";
+// import Registreer from "./paginas/identity/Registreer";
+// import RegistreerIngediend from "./paginas/identity/RegistreerIngediend";
+// import Loguit from "./paginas/identity/Loguit";
+// import PaswoordVergeten from "./paginas/identity/PaswoordVergeten";
+// import PaswoordInstellen from "./paginas/identity/PaswoordInstellen";
 
 // financieel
 import Uitleg from "./paginas/financieel/Uitleg";
-import OverzichtSpaarboek from "./paginas/financieel/OverzichtSpaarboek";
-import TransactieOverzicht from "./paginas/financieel/TransactieOverzicht"
-import TransactieToevoegen from "./paginas/financieel/TransactieToevoegen";
+const OverzichtSpaarboek = lazy(()=> import("./paginas/financieel/OverzichtSpaarboek"))
+const TransactieOverzicht = lazy(()=> import("./paginas/financieel/TransactieOverzicht"))
+const TransactieToevoegen = lazy(()=> import("./paginas/financieel/TransactieToevoegen"))
+// import OverzichtSpaarboek from "./paginas/financieel/OverzichtSpaarboek";
+// import TransactieOverzicht from "./paginas/financieel/TransactieOverzicht"
+// import TransactieToevoegen from "./paginas/financieel/TransactieToevoegen";
 
 // missie
-import MissieOverzicht from "./paginas/Missies/MissieLijst/MissieOverzicht";
-import MissieDetail from "./paginas/Missies/MissieDetail/MissieDetail";
-import KostToevoegen from "./paginas/Missies/MissieEtappeKost/KostToevoegen";
-import EtappeToevoegen from "./paginas/Missies/Etappe/EtappeToevoegen";
+const MissieOverzicht = lazy(()=> import("./paginas/Missies/MissieLijst/MissieOverzicht"))
+const MissieDetail = lazy(()=> import("./paginas/Missies/MissieDetail/MissieDetail"))
+const KostToevoegen = lazy(()=> import("./paginas/Missies/MissieEtappeKost/KostToevoegen"))
+const EtappeToevoegen = lazy(()=> import("./paginas/Missies/Etappe/EtappeToevoegen"))
+
+// import MissieOverzicht from "./paginas/Missies/MissieLijst/MissieOverzicht";
+// import MissieDetail from "./paginas/Missies/MissieDetail/MissieDetail";
+// import KostToevoegen from "./paginas/Missies/MissieEtappeKost/KostToevoegen";
+// import EtappeToevoegen from "./paginas/Missies/Etappe/EtappeToevoegen";
 
 // bestanden
 import BestandOpladen from "./paginas/bestanden/BestandOpladen";
-import ToonEtappeBestanden
- from "./paginas/bestanden/ToonEtappeBestanden";
+import ToonEtappeBestanden from "./paginas/bestanden/ToonEtappeBestanden";
+
 const queryClient = new QueryClient()
 
 function App() {

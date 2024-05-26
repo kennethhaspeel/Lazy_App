@@ -48,8 +48,10 @@ const EtappeToevoegen = lazy(()=> import("./paginas/Missies/Etappe/EtappeToevoeg
 // import EtappeToevoegen from "./paginas/Missies/Etappe/EtappeToevoegen";
 
 // bestanden
-import BestandOpladen from "./paginas/bestanden/BestandOpladen";
-import ToonEtappeBestanden from "./paginas/bestanden/ToonEtappeBestanden";
+const BestandOpladen = lazy(()=> import("./paginas/bestanden/BestandOpladen"))
+const ToonEtappeBestanden = lazy(()=> import("./paginas/bestanden/ToonEtappeBestanden"))
+// import BestandOpladen from "./paginas/bestanden/BestandOpladen";
+// import ToonEtappeBestanden from "./paginas/bestanden/ToonEtappeBestanden";
 
 const queryClient = new QueryClient()
 
